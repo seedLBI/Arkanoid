@@ -4,6 +4,8 @@
 #include "Game/Math/Arkanoid_Math.h"
 #include "Core/CoordinateSystem/CoordinateSystem.h"
 
+#include "Core/Engine/Engine.h"
+
 #include <algorithm>
 
 LayerBorder::LayerBorder(const std::vector<glm::vec2>& vertices) {
@@ -25,15 +27,15 @@ std::optional<CollisionInfo> LayerBorder::GetCollision(const glm::vec2& begin, c
 	std::vector<std::pair<size_t,glm::vec2>> collisions;
 
 	for (size_t i = 0; i < vertices.size() - 1; i++) {
-		Segment border{ vertices[i],vertices[i + 1] };
+		Segment border{ vertices[i], vertices[i + 1] };
 
-		float time = getTimeCollisionBetweenTwoSegment(ball_path, border);
+		float time = getTimeCollisionBetweenTwoSegment(border, ball_path);
+		float time2 = getTimeCollisionBetweenTwoSegment(ball_path, border);
 
-		if (time > 1.f || time < 0.f)
+		if (time > 1.f || time < 0.f || time2 > 1.f || time2 < 0.f)
 			continue;
 
-		glm::vec2 point = lerp(ball_path, time);
-
+		glm::vec2 point = lerp(border, time);
 		collisions.push_back({i, point });
 	}
 
@@ -41,12 +43,16 @@ std::optional<CollisionInfo> LayerBorder::GetCollision(const glm::vec2& begin, c
 		return std::nullopt;
 	
 
+
 	std::sort(collisions.begin(), collisions.end(), [&begin](const auto& a, const auto& b) {
 		return glm::length(a.second - begin) > glm::length(b.second - begin);
-		});
+	});
 
-	const glm::vec2& nereast_collision = collisions.back().second;
-	const size_t& index = collisions.back().first;
+
+	const auto& nereast_collision = collisions.front();
+
+	const glm::vec2& point_collision = nereast_collision.second;
+	const size_t& index = nereast_collision.first;
 
 	glm::vec2 border_dir = Segment{ vertices[index],vertices[index + 1] }.getDirection();
 	glm::vec2 ball_dir = ball_path.getDirection();
@@ -58,7 +64,7 @@ std::optional<CollisionInfo> LayerBorder::GetCollision(const glm::vec2& begin, c
 	glm::vec2 tangent_bounce = rotate(glm::normalize(border_dir), angle - glm::pi<float>());
 
 	CollisionInfo output;
-	output.position = nereast_collision;
+	output.position = point_collision;
 	output.tangentBound = tangent_bounce;
 
 	return output;

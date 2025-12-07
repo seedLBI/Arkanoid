@@ -2,14 +2,28 @@
 
 
 float getTimeCollisionBetweenTwoSegment(const Segment& A, const Segment& B) {
-	float numerator = (A.begin.x - B.begin.x) * (B.begin.y - B.end.y) - (A.begin.y - B.begin.y) * (B.begin.x - B.end.x);
-	float denumerator = (A.begin.x - A.end.x) * (B.begin.y - B.end.y) - (A.begin.y - A.end.y) * (B.begin.x - B.begin.y);
+
+	const float& D1x = A.begin.x;
+	const float& D1y = A.begin.y;
+	const float& D2x = A.end.x;
+	const float& D2y = A.end.y;
+
+	const float& D3x = B.begin.x;
+	const float& D3y = B.begin.y;
+	const float& D4x = B.end.x;
+	const float& D4y = B.end.y;
+
+	float numerator   = (D1x - D3x) * (D3y - D4y) - (D1y - D3y) * (D3x - D4x);
+	float denumerator = (D1x - D2x) * (D3y - D4y) - (D1y - D2y) * (D3x - D4x);
+
+	//float numerator =   (A.begin.x - B.begin.x) * (B.begin.y - B.end.y) - (A.begin.y - B.begin.y) * (B.begin.x - B.end.x);
+	//float denumerator = (A.begin.x - A.end.x)   * (B.begin.y - B.end.y) - (A.begin.y - A.end.y)   * (B.begin.x - B.end.x);
 
 	return numerator / denumerator;
 }
 
 glm::vec2 lerp(const Segment& s, const float& time) {
-	return s.begin + time * s.getDirection();
+	return s.begin + time * (s.end - s.begin);
 }
 
 glm::vec2 lerp(const glm::vec2& A, const glm::vec2& B, const float& time) {

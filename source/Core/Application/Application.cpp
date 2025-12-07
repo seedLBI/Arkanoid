@@ -26,8 +26,10 @@ void Application::MainLoop() {
 		{
 			0.5f * glm::vec2(-1, 1),
 			0.5f * glm::vec2(1, 1),
+			0.5f * glm::vec2(0.5f, 0.f),
 			0.5f * glm::vec2(1, -1),
 			0.5f * glm::vec2(-1, -1),
+			0.5f * glm::vec2(-0.5f, 0.f),
 			0.5f * glm::vec2(-1, 1)
 		}
 	);
@@ -52,24 +54,21 @@ void Application::MainLoop() {
 
 		auto collision = borderBox.GetCollision(glm::vec2(0, 0), mouse_global);
 
+
 		if (collision.has_value()) {
 
 			const CollisionInfo& info = collision.value();
 			circles.Add(info.position, 20.f, COLOR_GREEN, TranslateGlobalToScreen);
 
-			
-
 			float length_path_after_collision = glm::length(mouse_global - info.position);
 
 			glm::vec2 pos_bound = info.position + info.tangentBound * length_path_after_collision;
 
-			circles.Add(pos_bound, 20.f, COLOR_BLUE, TranslateGlobalToScreen);
+			glm::vec2 prev_collision = info.position + info.tangentBound * 0.001f;
 
 			lines.Add({0.f,0.f}, info.position, COLOR_RED, TranslateGlobalToScreen);
 			lines.Add(mouse_global, info.position,COLOR_BLUE, TranslateGlobalToScreen);
 			lines.Add(info.position, pos_bound, COLOR_GREEN, TranslateGlobalToScreen);
-
-
 		}
 
 		
