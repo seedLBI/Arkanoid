@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Arkanoid_OpenGL.vcxproj" Id="01f1d949-2d24-41f7-acd1-431e912c91d0" />
+</Solution>
