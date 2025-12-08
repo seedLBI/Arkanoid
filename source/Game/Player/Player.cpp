@@ -9,6 +9,8 @@ Player::Player() {
 
 	pos.y = 0.6f;
 	pos.x = (pos_left_bound + pos_right_bound) / 2.f;
+
+	begin_position = pos;
 }
 
 Player::~Player() {
@@ -48,6 +50,16 @@ void Player::SetRightBound(const float& global_value) {
 void Player::SetBeginPosition(const glm::vec2& global_pos) {
 	this->pos = global_pos;
 	this->begin_position = pos;
+}
+
+const glm::vec2& Player::GetBeginPosition() {
+	return begin_position;
+}
+const float& Player::GetLeftBound() {
+	return pos_left_bound;
+}
+const float& Player::GetRightBound() {
+	return pos_right_bound;
 }
 
 

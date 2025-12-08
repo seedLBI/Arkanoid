@@ -6,7 +6,7 @@
 #include <fstream>
 
 LevelCreator::LevelCreator() {
-
+	global_pos_player = player.GetBeginPosition();
 }
 
 LevelCreator::~LevelCreator() {
@@ -40,6 +40,7 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 		quads.AddLine({ global_left_border_player,-1.f }, { global_left_border_player,1.f }, 10.f, glm::vec4(1.f, 0.f, 0.f, 0.5f), TranslateGlobalToScreen);
 		quads.AddLine({ global_right_border_player,-1.f }, { global_right_border_player,1.f }, 10.f, glm::vec4(1.f, 0.f, 0.f, 0.5f), TranslateGlobalToScreen);
 
+		quads.AddLine({ -10.f, global_pos_player.y }, { 10.f, global_pos_player.y }, 3.f, glm::vec4(1.f, 0.4f, 0.4f, 0.8f), TranslateGlobalToScreen);
 	}
 
 
@@ -132,6 +133,8 @@ void LevelCreator::Update() {
 
 	}
 	else if (flag_MODE_EditPlayer) {
+
+
 		player_hovered = false;
 		
 		if (isIntersectPointCircle(mouse_global, global_pos_player, TranslateScalar_ScreenToGlobal(radius_control_player_position))) {
@@ -205,6 +208,12 @@ void LevelCreator::Load() {
 
 		if (data.contains("player")) {
 			player.Load(data["player"]);
+
+			global_left_border_player = player.GetLeftBound();
+			global_right_border_player = player.GetRightBound();
+
+			global_pos_player = player.GetBeginPosition();
+
 
 		}
 

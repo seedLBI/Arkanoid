@@ -22,6 +22,10 @@ public:
 	void SetBeginPosition(const glm::vec2& global_pos);
 
 
+	const glm::vec2& GetBeginPosition();
+	const float& GetLeftBound();
+	const float& GetRightBound();
+
 	nlohmann::json Save();
 	void Load(const nlohmann::json& data);
 

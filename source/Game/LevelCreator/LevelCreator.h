@@ -42,8 +42,8 @@ private:
 	bool player_hovered = false, player_draging = false;
 	float radius_control_player_position = 30.f;
 	glm::vec2 global_pos_player = {0.f,0.f};
-	float global_left_border_player = 1.f;
-	float global_right_border_player = -1.f;
+	float global_left_border_player = -1.f;
+	float global_right_border_player = 1.f;
 
 
 
