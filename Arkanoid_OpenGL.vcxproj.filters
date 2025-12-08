@@ -126,7 +126,7 @@
     <ClCompile Include="source\Core\Application\Application.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="source\Game\LevelBorder\LayerBorder.cpp">
+    <ClCompile Include="source\Game\LevelBorder\LevelBorder.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="source\Game\Segment\Segment.cpp">
@@ -278,7 +278,7 @@
     <ClInclude Include="source\Game\Player\Player.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="source\Game\LevelBorder\LayerBorder.h">
+    <ClInclude Include="source\Game\LevelBorder\LevelBorder.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="source\Game\CollisionInfo\CollisionInfo.h">

@@ -153,7 +153,7 @@
     <ClCompile Include="source\Core\Engine\Engine.Shader.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Time.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Window.cpp" />
-    <ClCompile Include="source\Game\LevelBorder\LayerBorder.cpp" />
+    <ClCompile Include="source\Game\LevelBorder\LevelBorder.cpp" />
     <ClCompile Include="source\Game\Math\Arkanoid_Math.cpp" />
     <ClCompile Include="source\Game\Segment\Segment.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\DebugCircle\Render.Debug.Circle.cpp" />
@@ -196,7 +196,7 @@
     <ClInclude Include="source\Core\Engine\Engine.Mouse.Enums.h" />
     <ClInclude Include="source\Core\UBOs\MainBlock.h" />
     <ClInclude Include="source\Game\CollisionInfo\CollisionInfo.h" />
-    <ClInclude Include="source\Game\LevelBorder\LayerBorder.h" />
+    <ClInclude Include="source\Game\LevelBorder\LevelBorder.h" />
     <ClInclude Include="source\Game\Math\Arkanoid_Math.h" />
     <ClInclude Include="source\Game\Player\Player.h" />
     <ClInclude Include="source\Game\Segment\Segment.h" />

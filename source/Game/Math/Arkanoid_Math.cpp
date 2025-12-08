@@ -1,5 +1,5 @@
 #include "Arkanoid_Math.h"
-
+#include <glm/gtc/constants.hpp>
 
 float getTimeCollisionBetweenTwoSegment(const Segment& A, const Segment& B) {
 
@@ -37,6 +37,17 @@ float cross2d(glm::vec2 a, glm::vec2 b) {
 float angleBetweenVectors(const glm::vec2& dir1, const glm::vec2& dir2) {
 	return std::acosf(glm::dot(dir1, dir2) / (glm::length(dir1) * glm::length(dir2)));
 }
+
+
+float atan2(const glm::vec2& dir) {
+	return std::atan2f(dir.y,dir.x);
+}
+
+
+glm::vec2 getPointOnCircle(const float& angle) {
+	return glm::vec2{ std::cosf(angle), std::sinf(angle) };
+}
+
 
 glm::vec2 rotate(const glm::vec2& dir1, const float& angle) {
 	const glm::mat2 rot_mat = {

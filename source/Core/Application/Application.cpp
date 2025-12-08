@@ -3,7 +3,7 @@
 #include "Rendering/RenderObjects/DebugLine/Render.Debug.Line.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
 
-#include "Game/LevelBorder/LayerBorder.h"
+#include "Game/LevelBorder/LevelBorder.h"
 #include "Game/Segment/Segment.h"
 #include "Game/Math/Arkanoid_Math.h"
 
@@ -25,7 +25,7 @@ void Application::MainLoop() {
 	DebugLine lines;
 	DebugCircle circles;
 
-	LayerBorder borderBox(
+	LevelBorder borderBox(
 		{
 			0.5f * glm::vec2(-1, 1),
 			0.5f * glm::vec2(1, 1),
@@ -33,7 +33,6 @@ void Application::MainLoop() {
 			0.5f * glm::vec2(1, -1),
 			0.5f * glm::vec2(-1, -1),
 			0.5f * glm::vec2(-0.5f, 0.f),
-			0.5f * glm::vec2(-1, 1)
 		}
 	);
 
@@ -97,8 +96,6 @@ void Application::MainLoop() {
 		}
 		*/
 
-
-
 		
 		auto collision = borderBox.GetCollision(start_pos, mouse_global);
 		glm::vec2 pos_bound;
@@ -109,8 +106,6 @@ void Application::MainLoop() {
 			const CollisionInfo& info = collision.value();
 
 			float length_path_after_collision = glm::length(info.position - mouse_global);
-
-			
 
 			pos_bound = info.position + info.tangentBound * length_path_after_collision;
 			prev_collision = info.position + info.tangentBound * 0.01f;
@@ -128,21 +123,17 @@ void Application::MainLoop() {
 
 					const CollisionInfo& next_info = next_collision.value();
 
-					circles.Add(next_info.position, 5.f, COLOR_GREEN, TranslateGlobalToScreen);
+
+					float radius = abs( TranslateGlobalToScreen(glm::vec2{ 0.05f,0.f }).x - TranslateGlobalToScreen(glm::vec2{ 0.f,0.f }).x);
+
+					circles.Add(next_info.position, radius, COLOR_GREEN, TranslateGlobalToScreen);
 
 					length_path_after_collision = glm::length(next_info.position - pos_bound);
 
-
 					pos_bound = next_info.position + length_path_after_collision * next_info.tangentBound;
 
-
 					lines.Add(prev_collision, next_info.position, COLOR_GREEN, TranslateGlobalToScreen);
-
-					
 					prev_collision = next_info.position + 0.001f * next_info.tangentBound ;
-
-
-					
 				}
 				else {
 					break;
