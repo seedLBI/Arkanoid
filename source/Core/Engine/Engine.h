@@ -4,15 +4,16 @@
 #include <vector>
 #include <cstdint>
 #include <string>
+#include <optional>
 
 #define GLEW_STATIC
 #include <GL/glew.h>
 
-#ifdef _WIN32
-	#define  EXPOSE_NATIVE_WIN32
-#endif
+#define  GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
+
+#include <nfd_glfw3.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -28,6 +29,8 @@
 
 #include "Utils/OpenGL/UBO/UBO.h"
 #include "Core/UBOs/MainBlock.h"
+
+
 
 
 namespace engine {
@@ -59,6 +62,7 @@ namespace engine {
 		void Terminate();
 
 		void InitGLFW();
+		void InitNFD();
 		void InitWindow();
 		void InitGLEW();
 		void InitImGui();
@@ -171,6 +175,18 @@ namespace engine {
 		
 		bool IsShouldClose();
 	}
+
+	namespace filedialog {
+		struct FileDialogFilter {
+			std::string name;
+			std::string extensions; // "cpp,hpp,h"
+		};
+
+		std::optional<std::string> OpenSaveDialog(const std::string& nameWindow, const std::vector<FileDialogFilter>& filters);
+
+		std::optional<std::string> OpenLoadDialog(const std::string& nameWindow, const std::vector<FileDialogFilter>& filters);
+	}
+
 
 	namespace shader{
 		void BindUBO_MainBlock(const Shader& shader);

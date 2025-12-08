@@ -27,7 +27,17 @@ namespace engine {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            glfwWindowHint(GLFW_SAMPLES, 8);
         }
+
+        void InitNFD() {
+            nfdresult_t nfdInitResult = NFD_Init();
+            if (nfdInitResult != NFD_OKAY)
+                printf("NFD_Init failed: %s\n", NFD_GetError());
+            else if (nfdInitResult == NFD_OKAY)
+                printf("NFD_Init: NFD_OKAY\n");
+        }
+
         void InitWindow() {
             using namespace vars;
             handle_window = glfwCreateWindow(1280, 720, "Arkanoid", NULL, NULL);
@@ -56,6 +66,7 @@ namespace engine {
                 exit(-2);
             }
 
+            glEnable(GL_MULTISAMPLE);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glBlendEquation(GL_FUNC_ADD);
@@ -118,12 +129,16 @@ namespace engine {
             }
             WasTerminated = true;
 
+
+
             ImGui_ImplOpenGL3_Shutdown();
             ImGui_ImplGlfw_Shutdown();
             ImGui::DestroyContext();
 
+            NFD_Quit();
             glfwDestroyWindow(handle_window);
             glfwTerminate();
+            
         }
         void Initialize() {
             bool static WasInited = false;
@@ -134,6 +149,7 @@ namespace engine {
             WasInited = true;
 
             InitGLFW();
+            InitNFD();
             InitWindow();
             InitGLEW();
             InitImGui();

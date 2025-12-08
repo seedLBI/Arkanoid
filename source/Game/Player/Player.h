@@ -4,19 +4,31 @@
 #include "Core/Engine/Engine.h"
 #include "Core/CoordinateSystem/CoordinateSystem.h"
 
-#include "Rendering/RenderObjects/DebugLine/Render.Debug.Line.h"
+#include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 
 #include <glm/glm.hpp>
+#include <nlohmann/json.hpp>
 
 class Player {
 public:
 	Player();
 	~Player();
 
-	void Draw(DebugLine& renderer);
+	void Draw(QuadInstanced& renderer);
 	void Update();
 
+	void SetLeftBound(const float& global_value);
+	void SetRightBound(const float& global_value);
+	void SetBeginPosition(const glm::vec2& global_pos);
+
+
+	nlohmann::json Save();
+	void Load(const nlohmann::json& data);
+
 private:
+
+	glm::vec2 begin_position;
+
 	glm::vec2 pos;
 	glm::vec2 size;
 
@@ -25,20 +37,5 @@ private:
 
 };
 
-Player::Player() {
-
-}
-
-Player::~Player() {
-
-}
-
-void Player::Draw(DebugLine& renderer) {
-
-}
-
-void Player::Update() {
-
-}
 
 #endif

@@ -2,10 +2,14 @@
 
 #include "Rendering/RenderObjects/DebugLine/Render.Debug.Line.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
+#include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"	
 
 #include "Game/LevelBorder/LevelBorder.h"
 #include "Game/Segment/Segment.h"
 #include "Game/Math/Arkanoid_Math.h"
+#include "Game/Player/Player.h"
+
+#include "Game/LevelCreator/LevelCreator.h"
 
 
 #include "Core/Colors/Colors.h"
@@ -24,6 +28,11 @@ Application::~Application() {
 void Application::MainLoop() {
 	DebugLine lines;
 	DebugCircle circles;
+	QuadInstanced quads;
+
+	float global_radius = 0.05f;
+	float screen_radius = TranslateScalar_GlobalToScreen(0.05f);
+
 
 	LevelBorder borderBox(
 		{
@@ -33,18 +42,22 @@ void Application::MainLoop() {
 			0.5f * glm::vec2(1, -1),
 			0.5f * glm::vec2(-1, -1),
 			0.5f * glm::vec2(-0.5f, 0.f),
-		}
+		},
+		global_radius
 	);
 
 	glm::vec2 start_pos = { 0,0 };
 
+	Player player;
+
+	LevelCreator levelCreator;
 
 	while (!engine::window::IsShouldClose()) {
 		DrawBegin();
+		//player.Update();
+		levelCreator.Update();
 
 		glm::vec2 mouse_global = TranslateScreenToGlobal(engine::input::GetMouseWindow());
-
-
 
 		if (engine::input::IsKeyPressed(KeyboardButton::KEY_ESCAPE))
 			engine::window::Close();
@@ -59,45 +72,18 @@ void Application::MainLoop() {
 			start_pos = mouse_global;
 
 
-		borderBox.Draw(lines);
+		levelCreator.Draw(circles,quads);
 
-		/*
-		const auto& vertices = borderBox.GetVertices();
-		Segment ball_path{ start_pos, mouse_global };
-
-		std::vector<std::pair<size_t, glm::vec2>> collisions;
-
-		for (size_t i = 0; i < vertices.size() - 1; i++) {
-			Segment border{ vertices[i], vertices[i + 1] };
-
-			float time = getTimeCollisionBetweenTwoSegment(border, ball_path);
-			float time2 = getTimeCollisionBetweenTwoSegment(ball_path, border);
-
-			if (time > 1.f || time < 0.f || time2 > 1.f || time2 < 0.f)
-				continue;
-
-			glm::vec2 point = lerp(border, time);
-			collisions.push_back({ i, point });
-		}
-
-		std::sort(collisions.begin(), collisions.end(), [&start_pos](const auto& a, const auto& b) {
-			return glm::length(a.second - start_pos) > glm::length(b.second - start_pos);
-		});
-		if (collisions.empty() == false)
-		{
-			circles.Add(collisions.back().second, 10.f, COLOR_GREEN, TranslateGlobalToScreen);
-		}
 
 
 
-		for (size_t i = 0; i < collisions.size(); i++)
-		{
-			circles.Add(collisions[i].second, 5.f, COLOR_RED, TranslateGlobalToScreen);
-		}
-		*/
+		/*
+		borderBox.Draw(quads);
+		player.Draw(quads);
 
 		
-		auto collision = borderBox.GetCollision(start_pos, mouse_global);
+		
+		auto collision = GetCollision(borderBox.GetVertices(), start_pos, mouse_global);
 		glm::vec2 pos_bound;
 		glm::vec2 prev_collision;
 		
@@ -110,29 +96,26 @@ void Application::MainLoop() {
 			pos_bound = info.position + info.tangentBound * length_path_after_collision;
 			prev_collision = info.position + info.tangentBound * 0.01f;
 
-			lines.Add(start_pos, info.position, COLOR_RED, TranslateGlobalToScreen);
-			lines.Add(mouse_global, info.position,COLOR_BLUE, TranslateGlobalToScreen);
-			lines.Add(info.position, pos_bound, COLOR_GREEN, TranslateGlobalToScreen);
+			quads.AddLine(start_pos, info.position, COLOR_RED, TranslateGlobalToScreen);
+			quads.AddLine(mouse_global, info.position,COLOR_BLUE, TranslateGlobalToScreen);
+			quads.AddLine(info.position, pos_bound, COLOR_GREEN, TranslateGlobalToScreen);
 
 			collision.reset();
 			int index = 0;
 			while(true)
 			{
-				auto next_collision = borderBox.GetCollision(prev_collision, pos_bound);
+				auto next_collision = GetCollision(borderBox.GetVertices(), prev_collision, pos_bound);
 				if (next_collision.has_value()) {
 
 					const CollisionInfo& next_info = next_collision.value();
 
-
-					float radius = abs( TranslateGlobalToScreen(glm::vec2{ 0.05f,0.f }).x - TranslateGlobalToScreen(glm::vec2{ 0.f,0.f }).x);
-
-					circles.Add(next_info.position, radius, COLOR_GREEN, TranslateGlobalToScreen);
+					circles.Add(next_info.position, screen_radius, COLOR_GREEN, TranslateGlobalToScreen);
 
 					length_path_after_collision = glm::length(next_info.position - pos_bound);
 
 					pos_bound = next_info.position + length_path_after_collision * next_info.tangentBound;
 
-					lines.Add(prev_collision, next_info.position, COLOR_GREEN, TranslateGlobalToScreen);
+					quads.AddLine(prev_collision, next_info.position, COLOR_GREEN, TranslateGlobalToScreen);
 					prev_collision = next_info.position + 0.001f * next_info.tangentBound ;
 				}
 				else {
@@ -147,16 +130,25 @@ void Application::MainLoop() {
 			
 
 		}
-
+		
 		
 
 
-		circles.Add(mouse_global, 20.f, COLOR_RED, TranslateGlobalToScreen);
+		circles.Add(mouse_global, 20.f, glm::vec4(1.f,0.f,0.f,0.2f), TranslateGlobalToScreen);
 		circles.Add(start_pos, 10.f, COLOR_GREEN, TranslateGlobalToScreen);
-
+		quads.AddRectangle(mouse_global, { 20.f,20.f }, glm::vec4(1.f), TranslateGlobalToScreen);
 
 		lines.Render();
+		quads.Render();
 		circles.Render();
+
+		*/
+
+
+		//lines.Render();
+		quads.Render();
+		circles.Render();
+
 		DrawDebugOverlay();
 		DrawEnd();
 	}

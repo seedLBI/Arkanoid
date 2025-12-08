@@ -148,17 +148,22 @@
     <ClCompile Include="source\Core\Application\Application.cpp" />
     <ClCompile Include="source\Core\CoordinateSystem\CoordinateSystem.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Core.cpp" />
+    <ClCompile Include="source\Core\Engine\Engine.FileDialog.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Keyboard.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Mouse.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Shader.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Time.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Window.cpp" />
+    <ClCompile Include="source\Game\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="source\Game\LevelBorder\LevelBorder.cpp" />
+    <ClCompile Include="source\Game\LevelCreator\LevelCreator.cpp" />
     <ClCompile Include="source\Game\Math\Arkanoid_Math.cpp" />
+    <ClCompile Include="source\Game\Player\Player.cpp" />
     <ClCompile Include="source\Game\Segment\Segment.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\DebugCircle\Render.Debug.Circle.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\DebugLine\Render.Debug.Line.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\QuadInstancedTextured\Render.Quad.Instanced.Textured.cpp" />
+    <ClCompile Include="source\Rendering\RenderObjects\QuadInstanced\Render.Quad.Instanced.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\QuadTexture\Render.QuadTexture.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\Quad\Render.Quad.cpp" />
     <ClCompile Include="source\Utils\File\File.cpp" />
@@ -195,14 +200,19 @@
     <ClInclude Include="source\Core\Engine\Engine.Keyboard.Enums.h" />
     <ClInclude Include="source\Core\Engine\Engine.Mouse.Enums.h" />
     <ClInclude Include="source\Core\UBOs\MainBlock.h" />
+    <ClInclude Include="source\Game\Ball\Ball.h" />
     <ClInclude Include="source\Game\CollisionInfo\CollisionInfo.h" />
+    <ClInclude Include="source\Game\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="source\Game\DestroyableObject\DestroyableObject.h" />
     <ClInclude Include="source\Game\LevelBorder\LevelBorder.h" />
+    <ClInclude Include="source\Game\LevelCreator\LevelCreator.h" />
     <ClInclude Include="source\Game\Math\Arkanoid_Math.h" />
     <ClInclude Include="source\Game\Player\Player.h" />
     <ClInclude Include="source\Game\Segment\Segment.h" />
     <ClInclude Include="source\Rendering\RenderObjects\DebugCircle\Render.Debug.Circle.h" />
     <ClInclude Include="source\Rendering\RenderObjects\DebugLine\Render.Debug.Line.h" />
     <ClInclude Include="source\Rendering\RenderObjects\QuadInstancedTextured\Render.Quad.Instanced.Textured.h" />
+    <ClInclude Include="source\Rendering\RenderObjects\QuadInstanced\Render.Quad.Instanced.h" />
     <ClInclude Include="source\Rendering\RenderObjects\QuadTexture\Render.QuadTexture.h" />
     <ClInclude Include="source\Rendering\RenderObjects\Quad\Render.Quad.h" />
     <ClInclude Include="source\ThirdParty\utf8.h" />
@@ -262,6 +272,18 @@
       <FileType>Document</FileType>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\Debug\Line</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\Debug\Line</DestinationFolders>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="resources\shaders\QuadInstanced\QuadInstanced.frag">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\QuadInstanced</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\QuadInstanced</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\shaders\QuadInstanced\QuadInstanced.vert">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\QuadInstanced</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\QuadInstanced</DestinationFolders>
     </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

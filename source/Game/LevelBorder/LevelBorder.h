@@ -3,35 +3,42 @@
 
 #include <optional>
 #include <glm/glm.hpp>
+#include <nlohmann/json.hpp>
 
 #include "Game/CollisionInfo/CollisionInfo.h"
 
 #include "Rendering/RenderObjects/DebugLine/Render.Debug.Line.h"
+#include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"	
 
 
 class LevelBorder {
 public:
-	LevelBorder(const std::vector<glm::vec2>& vertices);
+	LevelBorder();
+	LevelBorder(const std::vector<glm::vec2>& vertices, const float& global_radius);
 	~LevelBorder();
 
+	void Draw(QuadInstanced& renderer);
 	void Draw(DebugLine& renderer);
+	void DrawDebug(QuadInstanced& renderer);
 
 	const std::vector<glm::vec2>& GetVertices();
+	const std::vector<glm::vec2>& GetVertices_OriginalBorder();
 
-	std::optional<CollisionInfo> GetCollision(const glm::vec2& begin, const glm::vec2& end);
+
+
+	void SetVertices(const std::vector<glm::vec2>& vertices, const float& global_radius);
+	void SetRadius(const float& global_radius);
+
+	nlohmann::json Save();
+	void Load(const nlohmann::json& data);
 
 private:
-
-	const float MaxSampleRateCircle = 120;
 
 	const glm::vec4 color_borders = glm::vec4(1.f);
 
 	std::vector<glm::vec2> vertices;
 
-	std::vector<glm::vec2> vertices_outer;
 	std::vector<glm::vec2> vertices_inner;
-
-	std::vector<glm::vec2> GenerateRadiusBorder(const float& radius, const bool& outer_border);
 };
 
 

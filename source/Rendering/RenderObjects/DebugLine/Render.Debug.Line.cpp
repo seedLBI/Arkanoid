@@ -107,12 +107,18 @@ void DebugLine::AddRectangle(
 	const glm::vec2 v3 = p_s - n_s - t_s;
 	const glm::vec2 v4 = p_s + n_s - t_s;
 
-
-	data.emplace_back(DebugLineData{ v1, v2, color, 5.f });
-	data.emplace_back(DebugLineData{ v2, v3, color, 5.f });
-	data.emplace_back(DebugLineData{ v3, v4, color, 5.f });
-	data.emplace_back(DebugLineData{ v4, v1, color, 5.f });
-	data.emplace_back(DebugLineData{ v1, v3, color, 5.f });
+	if (func_transform == nullptr){
+		data.emplace_back(DebugLineData{ v1, v2, color, 5.f });
+		data.emplace_back(DebugLineData{ v2, v3, color, 5.f });
+		data.emplace_back(DebugLineData{ v3, v4, color, 5.f });
+		data.emplace_back(DebugLineData{ v4, v1, color, 5.f });
+	}
+	else {
+		data.emplace_back(DebugLineData{ func_transform(v1), func_transform(v2), color, 5.f });
+		data.emplace_back(DebugLineData{ func_transform(v2), func_transform(v3), color, 5.f });
+		data.emplace_back(DebugLineData{ func_transform(v3), func_transform(v4), color, 5.f });
+		data.emplace_back(DebugLineData{ func_transform(v4), func_transform(v1), color, 5.f });
+	}
 
 }
 

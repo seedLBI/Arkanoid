@@ -16,6 +16,15 @@ glm::vec2 TranslateScreenToGlobal(const glm::vec2& screen) {
 	return (screen * 2.f - size) / min;
 }
 
+float TranslateScalar_GlobalToScreen(const float& value) {
+	return TranslateGlobalToScreen({ value,0.f }).x - TranslateGlobalToScreen({ 0.f,0.f }).x;
+}
+
+float TranslateScalar_ScreenToGlobal(const float& value) {
+	return TranslateScreenToGlobal({ value,0.f }).x - TranslateScreenToGlobal({ 0.f,0.f }).x;
+}
+
+
 float ref_scale() {
 
 	const glm::vec2& fSize = engine::window::GetFramebufferSize();

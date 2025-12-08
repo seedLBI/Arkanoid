@@ -135,6 +135,21 @@
     <ClCompile Include="source\Game\Math\Arkanoid_Math.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="source\Game\CollisionManager\CollisionManager.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Game\Player\Player.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Game\LevelCreator\LevelCreator.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Rendering\RenderObjects\QuadInstanced\Render.Quad.Instanced.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Core\Engine\Engine.FileDialog.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Utils\File\File.h">
@@ -290,6 +305,21 @@
     <ClInclude Include="source\Game\Math\Arkanoid_Math.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="source\Game\Ball\Ball.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Game\CollisionManager\CollisionManager.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Game\LevelCreator\LevelCreator.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Rendering\RenderObjects\QuadInstanced\Render.Quad.Instanced.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Game\DestroyableObject\DestroyableObject.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.frag" />
@@ -297,5 +327,7 @@
     <CopyFileToFolders Include="resources\shaders\Debug\Line\DebugLine.frag" />
     <CopyFileToFolders Include="resources\shaders\Debug\Line\DebugLine.geom" />
     <CopyFileToFolders Include="resources\shaders\Debug\Line\DebugLine.vert" />
+    <CopyFileToFolders Include="resources\shaders\QuadInstanced\QuadInstanced.frag" />
+    <CopyFileToFolders Include="resources\shaders\QuadInstanced\QuadInstanced.vert" />
   </ItemGroup>
 </Project>
