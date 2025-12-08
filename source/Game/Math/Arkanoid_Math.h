@@ -14,4 +14,6 @@ float angleBetweenVectors(const glm::vec2& dir1, const glm::vec2& dir2);
 
 glm::vec2 rotate(const glm::vec2& dir1, const float& angle);
 
+glm::vec2 perp_normalized(const glm::vec2& p);
+
 #endif

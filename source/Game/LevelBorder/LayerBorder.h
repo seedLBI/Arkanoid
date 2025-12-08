@@ -16,6 +16,8 @@ public:
 
 	void Draw(DebugLine& renderer);
 
+	const std::vector<glm::vec2>& GetVertices();
+
 	std::optional<CollisionInfo> GetCollision(const glm::vec2& begin, const glm::vec2& end);
 
 private:

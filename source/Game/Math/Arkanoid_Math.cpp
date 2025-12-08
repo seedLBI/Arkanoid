@@ -43,5 +43,9 @@ glm::vec2 rotate(const glm::vec2& dir1, const float& angle) {
 		{cosf(angle),-sinf(angle)},
 		{sinf(angle), cosf(angle)}
 	};
-	return dir1 * rot_mat;
+	return rot_mat * dir1;
+}
+
+glm::vec2 perp_normalized(const glm::vec2& p) {
+	return glm::normalize(glm::vec2{ -p.y,p.x });
 }

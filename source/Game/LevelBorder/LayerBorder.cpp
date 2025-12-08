@@ -16,15 +16,33 @@ LayerBorder::~LayerBorder() {
 
 }
 
+const std::vector<glm::vec2>& LayerBorder::GetVertices() {
+	return vertices;
+}
+
+
 void LayerBorder::Draw(DebugLine& renderer) {
 	for (size_t i = 0; i < vertices.size() - 1; i++)
 		renderer.Add(vertices[i], vertices[i + 1], 13.f, color_borders, TranslateGlobalToScreen);
+
+	float radius = 0.25f;
+
+
+
+
+
 }
 
 std::optional<CollisionInfo> LayerBorder::GetCollision(const glm::vec2& begin, const glm::vec2& end) {
 	const Segment ball_path{ begin,end };
 
 	std::vector<std::pair<size_t,glm::vec2>> collisions;
+
+
+	if (engine::input::IsKeyPressed(KEY_0)) {
+		std::cout << "in debug\n";
+	}
+	
 
 	for (size_t i = 0; i < vertices.size() - 1; i++) {
 		Segment border{ vertices[i], vertices[i + 1] };
@@ -42,14 +60,11 @@ std::optional<CollisionInfo> LayerBorder::GetCollision(const glm::vec2& begin, c
 	if (collisions.empty())
 		return std::nullopt;
 	
-
-
 	std::sort(collisions.begin(), collisions.end(), [&begin](const auto& a, const auto& b) {
 		return glm::length(a.second - begin) > glm::length(b.second - begin);
 	});
 
-
-	const auto& nereast_collision = collisions.front();
+	const auto& nereast_collision = collisions.back();
 
 	const glm::vec2& point_collision = nereast_collision.second;
 	const size_t& index = nereast_collision.first;
@@ -57,11 +72,11 @@ std::optional<CollisionInfo> LayerBorder::GetCollision(const glm::vec2& begin, c
 	glm::vec2 border_dir = Segment{ vertices[index],vertices[index + 1] }.getDirection();
 	glm::vec2 ball_dir = ball_path.getDirection();
 
-	if (cross2d(border_dir,ball_dir) > 0.f)
-		ball_dir *= -1.f;
+	float sign = -cross2d(ball_dir, border_dir) < 0.f ? -1.f : 1.f;
+	border_dir *= sign;
 
 	float angle = angleBetweenVectors(ball_dir, border_dir);
-	glm::vec2 tangent_bounce = rotate(glm::normalize(border_dir), angle - glm::pi<float>());
+	glm::vec2 tangent_bounce = glm::normalize(rotate(glm::normalize(border_dir), angle));
 
 	CollisionInfo output;
 	output.position = point_collision;
