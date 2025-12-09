@@ -68,6 +68,26 @@ glm::vec2 perp_normalized(const glm::vec2& p) {
 	return glm::normalize(glm::vec2{ -p.y,p.x });
 }
 
+bool isClockwise(const std::vector<glm::vec2>& polygon, bool yAxisUp ) {
+	if (polygon.size() < 3) return false;
+
+	float sum = 0.0f;
+	size_t n = polygon.size();
+	size_t vertexCount = polygon[0] == polygon[n - 1] ? n - 1 : n;
+
+	for (size_t i = 0; i < vertexCount; i++) {
+		size_t j = (i + 1) % vertexCount;
+		sum += (polygon[j].x - polygon[i].x) *
+			(polygon[j].y + polygon[i].y);
+	}
+
+	if (yAxisUp) {
+		return sum > 0.0f;
+	}
+	else {
+		return sum < 0.0f;
+	}
+}
 
 
 std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_vertices, const glm::vec2& begin, const glm::vec2& end) {
@@ -119,6 +139,10 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 
 
 std::vector<glm::vec2> GenerateRadiusBorder(const std::vector<glm::vec2>& original_border, const float& radius, const bool& outer_border) {
+
+	if (original_border.size() == 1)
+		return {};
+
 	std::vector<glm::vec2> output;
 
 	const float MaxSampleRateCircle = 120;
