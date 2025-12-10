@@ -5,6 +5,7 @@
 #include "Game/Math/Segment/Segment.h"
 
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
+#include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 
 
 struct Ball {
@@ -15,6 +16,7 @@ struct Ball {
 	float speed = 0.1f;
 
 	void Draw(DebugCircle& renderer);
+	void DrawDebug(DebugCircle& renderer, QuadInstanced& quads);
 };
 
 

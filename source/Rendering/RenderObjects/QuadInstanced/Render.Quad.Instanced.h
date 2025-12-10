@@ -65,7 +65,7 @@ protected:
 	GLuint VAO, VBO, VBOinstanced, EBO;
 	Shader* shader;
 
-	const unsigned long long MAX_INSTANCES = 2048;
+	const unsigned long long MAX_INSTANCES = 8192;
 	std::vector<InstanceData> instances;
 
 	void Init();

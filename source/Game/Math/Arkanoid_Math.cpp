@@ -95,6 +95,7 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 
 	std::vector<std::pair<size_t, glm::vec2>> collisions;
 
+	int index_tight_corner = -1;
 
 	for (size_t i = 0; i < border_vertices.size() - 1; i++) {
 		Segment border{ border_vertices[i], border_vertices[i + 1] };
@@ -102,8 +103,19 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 		float time = getTimeCollisionBetweenTwoSegment(border, ball_path);
 		float time2 = getTimeCollisionBetweenTwoSegment(ball_path, border);
 
-		if (time > 1.f || time < 0.f || time2 > 1.f || time2 < 0.f)
+		const float EPSILON = 1e-5f;
+
+
+		if (time > 1.f + EPSILON || time < -EPSILON ||
+			time2 > 1.f + EPSILON || time2 < -EPSILON)
 			continue;
+
+
+		const float eps = 0.017f;
+
+		if ((time >= 1.f - eps && time <= 1.f) || (time <= 0.f + eps && time >= 0.f)) {
+			index_tight_corner = i;
+		}
 
 		glm::vec2 point = lerp(border, time);
 		collisions.push_back({ i, point });
@@ -120,9 +132,18 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 
 	const glm::vec2& point_collision = nereast_collision.second;
 	const size_t& index = nereast_collision.first;
+	Segment seg_border{ border_vertices[index],border_vertices[index + 1] };
 
-	glm::vec2 border_dir = Segment{ border_vertices[index],border_vertices[index + 1] }.getDirection();
+	glm::vec2 border_dir = seg_border.getDirection();
 	glm::vec2 ball_dir = ball_path.getDirection();
+
+
+	if (index_tight_corner == index) {
+		CollisionInfo output;
+		output.position = point_collision;
+		output.tangentBound = glm::normalize(- ball_dir);
+		return output;
+	}
 
 	float sign = -cross2d(ball_dir, border_dir) < 0.f ? -1.f : 1.f;
 	border_dir *= sign;

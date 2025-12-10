@@ -30,7 +30,7 @@ void FPS_Timer::wait() {
 		return;
 	}
 
-/*
+
 	#ifdef _WIN32
 		LARGE_INTEGER currentTime;
 		QueryPerformanceCounter(&currentTime);
@@ -86,7 +86,7 @@ void FPS_Timer::wait() {
 		Delta = elapsedTime;
 		lastTime = currentTime;
 	#endif
-*/
+
 
 
 	deltaTimer.start();

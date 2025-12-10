@@ -20,6 +20,13 @@ const AABB_Region& DestroyableObject::GetCurrentAABB() {
 	return aabb;
 }
 
+const std::vector<glm::vec2>& DestroyableObject::GetVertices() {
+	return mesh;
+}
+const std::vector<glm::vec2>& DestroyableObject::GetVertices_OriginalBorder() {
+	return collision_border;
+}
+
 void DestroyableObject::UpdateRadius(const float& radius) {
 	this->collision_border = GenerateRadiusBorder(this->mesh, radius, isClockwise(this->mesh, true));
 	this->aabb = GetAABB(this->collision_border);
