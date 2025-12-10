@@ -1,6 +1,6 @@
 #include "LevelBorder.h"
 
-#include "Game/Segment/Segment.h"
+#include "Game/Math/Segment/Segment.h"
 #include "Game/Math/Arkanoid_Math.h"
 #include "Core/CoordinateSystem/CoordinateSystem.h"
 
@@ -34,7 +34,7 @@ const std::vector<glm::vec2>& LevelBorder::GetVertices_OriginalBorder() {
 }
 
 void LevelBorder::SetRadius(const float& global_radius) {
-	vertices_inner = GenerateRadiusBorder(vertices, global_radius, false);
+	vertices_inner = GenerateRadiusBorder(vertices, global_radius, !isClockwise(this->vertices, true));
 }
 
 void LevelBorder::Draw(QuadInstanced& renderer) {
@@ -93,6 +93,6 @@ void LevelBorder::Load(const nlohmann::json& data) {
 		vertices.push_back(glm::vec2{ x,y });
 	}
 
-	vertices_inner = GenerateRadiusBorder(this->vertices, 0.05f, true);
+	vertices_inner = GenerateRadiusBorder(this->vertices, 0.05f, !isClockwise(this->vertices, true));
 
 }

@@ -19,6 +19,7 @@ struct DestroyableObject {
 
 	void SetMesh(const std::vector<glm::vec2>& mesh, const float& radius);
 
+	const AABB_Region& GetCurrentAABB();
 
 	void UpdateRadius(const float& radius);
 

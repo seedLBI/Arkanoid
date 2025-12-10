@@ -3,6 +3,8 @@
 
 #include "Game/CollisionInfo/CollisionInfo.h"
 #include "Game/LevelBorder/LevelBorder.h"
+#include "Game/Ball/Ball.h"
+#include "Game/DestroyableObject/DestroyableObject.h"
 #include "Game/Player/Player.h"
 
 

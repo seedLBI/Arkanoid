@@ -5,7 +5,7 @@
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"	
 
 #include "Game/LevelBorder/LevelBorder.h"
-#include "Game/Segment/Segment.h"
+#include "Game/Math/Segment/Segment.h"
 #include "Game/Math/Arkanoid_Math.h"
 #include "Game/Player/Player.h"
 

@@ -1,7 +1,7 @@
 #ifndef ARKANOID_MATH_H
 #define ARKANOID_MATH_H
 
-#include "Game/Segment/Segment.h"
+#include "Game/Math/Segment/Segment.h"
 #include "Game/CollisionInfo/CollisionInfo.h"
 #include <glm/glm.hpp>
 #include <vector>

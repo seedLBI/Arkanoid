@@ -8,6 +8,8 @@
 #include "Game/DestroyableObject/DestroyableObject.h"
 #include "Game/LevelBorder/LevelBorder.h"
 #include "Game/Player/Player.h"
+#include "Game/BallSpawnPosition/BallSpawnPosition.h"
+
 
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
@@ -30,11 +32,10 @@ private:
 	bool flag_MODE_CreatorBorder = true;
 	LevelBorder levelBorder;
 	std::vector<glm::vec2> vertices_border;
-	float global_radius = 0.05f;
 
 	int index_vertex_cover = -1;
 	int index_vertex_grab = -1;
-	float radius_control_points = 15.f;
+	float radius_control_points = 10.f;
 
 
 	// Player
@@ -45,6 +46,16 @@ private:
 	glm::vec2 global_pos_player = {0.f,0.f};
 	float global_left_border_player = -1.f;
 	float global_right_border_player = 1.f;
+
+
+	// Ball spawn position
+	bool flag_MODE_EditBallPosition = false;
+	BallSpawnPosition ballSpawnPosition;
+	bool ball_pos_hovered = false, ball_pos_draging = false;
+	bool ball_tangent_hovered = false, ball_tangent_draging = false;
+
+
+
 
 	// DestroyableObject
 	bool flag_MODE_CreatorDestroyableObject = false;

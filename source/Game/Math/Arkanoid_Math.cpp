@@ -140,7 +140,7 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 
 std::vector<glm::vec2> GenerateRadiusBorder(const std::vector<glm::vec2>& original_border, const float& radius, const bool& outer_border) {
 
-	if (original_border.size() == 1)
+	if (original_border.size() <= 1)
 		return {};
 
 	std::vector<glm::vec2> output;

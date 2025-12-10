@@ -16,10 +16,10 @@ LevelCreator::~LevelCreator() {
 
 void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 	if (flag_MODE_CreatorBorder) {
-		quads.AddLine(glm::vec2(-1.f, -1.f), glm::vec2(-1.f, 1.f), glm::vec4(1.f), TranslateGlobalToScreen);
-		quads.AddLine(glm::vec2(-1.f, 1.f), glm::vec2(1.f, 1.f), glm::vec4(1.f), TranslateGlobalToScreen);
-		quads.AddLine(glm::vec2(1.f, 1.f), glm::vec2(1.f, -1.f), glm::vec4(1.f), TranslateGlobalToScreen);
-		quads.AddLine(glm::vec2(1.f, -1.f), glm::vec2(1.f, 1.f), glm::vec4(1.f), TranslateGlobalToScreen);
+		quads.AddLine(glm::vec2(-1.f, -1.f), glm::vec2(-1.f,  1.f), glm::vec4(1.f), TranslateGlobalToScreen);
+		quads.AddLine(glm::vec2(-1.f,  1.f), glm::vec2( 1.f,  1.f), glm::vec4(1.f),   TranslateGlobalToScreen);
+		quads.AddLine(glm::vec2( 1.f,  1.f), glm::vec2( 1.f, -1.f), glm::vec4(1.f),   TranslateGlobalToScreen);
+		quads.AddLine(glm::vec2( 1.f, -1.f), glm::vec2( 1.f,  1.f), glm::vec4(1.f),   TranslateGlobalToScreen);
 
 
 		levelBorder.DrawDebug(quads);
@@ -39,10 +39,12 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 	{
 		circles.Add(global_pos_player, radius_control_player_position, glm::vec4(0.3f, 0.3f, 1.f, 0.8f), TranslateGlobalToScreen);
 
-		quads.AddLine({ global_left_border_player,-1.f }, { global_left_border_player,1.f }, 10.f, glm::vec4(1.f, 0.f, 0.f, 0.5f), TranslateGlobalToScreen);
+		quads.AddLine({ global_left_border_player, -1.f }, { global_left_border_player, 1.f }, 10.f, glm::vec4(1.f, 0.f, 0.f, 0.5f), TranslateGlobalToScreen);
 		quads.AddLine({ global_right_border_player,-1.f }, { global_right_border_player,1.f }, 10.f, glm::vec4(1.f, 0.f, 0.f, 0.5f), TranslateGlobalToScreen);
 
 		quads.AddLine({ -10.f, global_pos_player.y }, { 10.f, global_pos_player.y }, 3.f, glm::vec4(1.f, 0.4f, 0.4f, 0.8f), TranslateGlobalToScreen);
+
+		player.DrawDebug(quads);
 	}
 
 	if (flag_MODE_CreatorDestroyableObject) {
@@ -57,6 +59,25 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 
 		}
 	}
+
+	if (flag_MODE_EditBallPosition) {
+
+		glm::vec4 color_pos(1.f, 0.3f, 0.3f, 1.f);
+		if (ball_pos_hovered) color_pos.r = 0.1f;
+
+		glm::vec4 color_tangent(0.f, 0.2f, 1.0f, 1.f);
+		if (ball_tangent_hovered) color_tangent.b = 0.1f;
+
+		circles.Add(ballSpawnPosition.globalPos, radius_control_points, color_pos, TranslateGlobalToScreen);
+
+
+		circles.Add(ballSpawnPosition.globalPos, TranslateScalar_GlobalToScreen(ballSpawnPosition.global_radius), glm::vec4(0.1f, 0.1f, 1.f, 0.2f), TranslateGlobalToScreen);
+
+		circles.Add(ballSpawnPosition.globalPos + ballSpawnPosition.tangent, radius_control_points, color_tangent, TranslateGlobalToScreen);
+
+		quads.AddLine(ballSpawnPosition.globalPos, ballSpawnPosition.globalPos + ballSpawnPosition.tangent, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
+	}
+
 
 	levelBorder.Draw(quads);
 	player.Draw(quads);
@@ -79,17 +100,41 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 	if (ImGui::Button("Load")) {
 		Load();
 	}
-
+	ImGui::SameLine();
+	if (ImGui::Button("Play")) {
+		
+	}
 
 
 	if (ImGui::RadioButton("BorderMode", flag_MODE_CreatorBorder)) {
 		flag_MODE_CreatorBorder = !flag_MODE_CreatorBorder;
 		flag_MODE_EditPlayer = false;
 		flag_MODE_CreatorDestroyableObject = false;
+		flag_MODE_EditBallPosition = false;
 	}
+	if (ImGui::RadioButton("BallEditorMode", flag_MODE_EditBallPosition)) {
+		flag_MODE_EditBallPosition = !flag_MODE_EditBallPosition;
+		flag_MODE_EditPlayer = false;
+		flag_MODE_CreatorBorder = false;
+		flag_MODE_CreatorDestroyableObject = false;
+	}
+	if (flag_MODE_EditBallPosition)
+	{
+		if (ImGui::SliderFloat("Radius", &ballSpawnPosition.global_radius, 0.001f,0.2f)) {
+			player.UpdateRadius(ballSpawnPosition.global_radius);
+			levelBorder.SetRadius(ballSpawnPosition.global_radius);
+			
+			for (size_t i = 0; i < destroyable.size(); i++)
+				destroyable[i].UpdateRadius(ballSpawnPosition.global_radius);
+
+		}
+
+	}
+
 
 	if (ImGui::RadioButton("PlayerEditorMode", flag_MODE_EditPlayer)) {
 		flag_MODE_EditPlayer = !flag_MODE_EditPlayer;
+		flag_MODE_EditBallPosition = false;
 		flag_MODE_CreatorBorder = false;
 		flag_MODE_CreatorDestroyableObject = false;
 	}
@@ -106,6 +151,7 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 		flag_MODE_CreatorDestroyableObject = !flag_MODE_CreatorDestroyableObject;
 		flag_MODE_EditPlayer = false;
 		flag_MODE_CreatorBorder = false;
+		flag_MODE_EditBallPosition = false;
 	}
 
 	if (flag_MODE_CreatorDestroyableObject) {
@@ -156,7 +202,7 @@ void LevelCreator::Update() {
 
 		if (engine::input::IsMousePressed(MOUSE_RIGHT)) {
 			vertices_border.push_back(mouse_global);
-			levelBorder.SetVertices(vertices_border, global_radius);
+			levelBorder.SetVertices(vertices_border, ballSpawnPosition.global_radius);
 		}
 
 		index_vertex_cover = -1;
@@ -182,12 +228,47 @@ void LevelCreator::Update() {
 		if (engine::input::IsMouseDown(MOUSE_LEFT) && index_vertex_grab != -1) {
 			vertices_border[index_vertex_grab] = mouse_global;
 
-			levelBorder.SetVertices(vertices_border, global_radius);
+			levelBorder.SetVertices(vertices_border, ballSpawnPosition.global_radius);
 		}
 		else {
 			index_vertex_grab = -1;
 		}
 		
+
+
+	}
+	else if (flag_MODE_EditBallPosition) {
+		ball_pos_hovered = false;
+		ball_tangent_hovered = false;
+
+		if (isIntersectPointCircle(mouse_global, ballSpawnPosition.globalPos, TranslateScalar_ScreenToGlobal(radius_control_points))) {
+			ball_pos_hovered = true;
+
+			if (engine::input::IsMousePressed(MOUSE_LEFT)) {
+				ball_pos_draging = true;
+			}
+		}
+		else if (isIntersectPointCircle(mouse_global, ballSpawnPosition.globalPos + ballSpawnPosition.tangent, TranslateScalar_ScreenToGlobal(radius_control_points))) {
+			ball_tangent_hovered = true;
+
+			if (engine::input::IsMousePressed(MOUSE_LEFT)) {
+				ball_tangent_draging = true;
+			}
+		}
+
+
+		if (engine::input::IsMouseDown(MOUSE_LEFT) && ball_pos_draging) {
+			ballSpawnPosition.globalPos = mouse_global;
+		}
+		else
+			ball_pos_draging = false;
+
+
+		if (engine::input::IsMouseDown(MOUSE_LEFT) && ball_tangent_draging) {
+			ballSpawnPosition.tangent = mouse_global- ballSpawnPosition.globalPos;
+		}
+		else
+			ball_tangent_draging = false;
 
 
 	}
@@ -216,14 +297,13 @@ void LevelCreator::Update() {
 	}
 	else if (flag_MODE_CreatorDestroyableObject) {
 
-
 		if (index_destroyable_choosed != -1) {
 
 
 			if (engine::input::IsMousePressed(MOUSE_RIGHT)) {
 				mesh_destroyables[index_destroyable_choosed].push_back(mouse_global);
 
-				destroyable[index_destroyable_choosed].SetMesh(mesh_destroyables[index_destroyable_choosed], global_radius);
+				destroyable[index_destroyable_choosed].SetMesh(mesh_destroyables[index_destroyable_choosed], ballSpawnPosition.global_radius);
 			}
 
 			index_destroyable_cover_vertex = -1;
@@ -250,7 +330,7 @@ void LevelCreator::Update() {
 				if (engine::input::IsMouseDown(MOUSE_LEFT) && index_destroyable_grab_vertex != -1) {
 					mesh_destroyables[index_destroyable_choosed][index_destroyable_grab_vertex] = mouse_global;
 
-					destroyable[index_destroyable_choosed].SetMesh(mesh_destroyables[index_destroyable_choosed], global_radius);
+					destroyable[index_destroyable_choosed].SetMesh(mesh_destroyables[index_destroyable_choosed], ballSpawnPosition.global_radius);
 				}
 				else {
 					index_destroyable_grab_vertex = -1;
@@ -288,7 +368,7 @@ void LevelCreator::Update() {
 						mesh_destroyables[index_destroyable_choosed][i] = mesh_movable[i] + delta_mouse;
 					}
 
-					destroyable[index_destroyable_choosed].SetMesh(mesh_destroyables[index_destroyable_choosed], global_radius);
+					destroyable[index_destroyable_choosed].SetMesh(mesh_destroyables[index_destroyable_choosed], ballSpawnPosition.global_radius);
 				}
 				else {
 					index_destroyable_grab = -1;
@@ -324,6 +404,9 @@ void LevelCreator::Save() {
 		for (size_t i = 0; i < destroyable.size(); i++)
 			data["destroyable"][i] = destroyable[i].Save();
 
+		data["ballSpawn"] = ballSpawnPosition.Save();
+
+
 
 		std::ofstream ofn(path.value());
 
@@ -344,6 +427,10 @@ void LevelCreator::Load() {
 		nlohmann::json data = nlohmann::json::parse(ifn);
 		ifn.close();
 
+		if (data.contains("ballSpawn")) {
+			ballSpawnPosition.Load(data["ballSpawn"]);
+		}
+
 		if (data.contains("border")) {
 			levelBorder.Load(data["border"]);
 
@@ -355,7 +442,7 @@ void LevelCreator::Load() {
 			for (size_t i = 0; i < vertices_level.size() - 1; i++)
 				vertices_border[i] = vertices_level[i];
 
-
+			levelBorder.SetRadius(ballSpawnPosition.global_radius);
 		}
 
 		if (data.contains("player")) {
@@ -366,9 +453,9 @@ void LevelCreator::Load() {
 
 			global_pos_player = player.GetBeginPosition();
 
+			player.UpdateRadius(ballSpawnPosition.global_radius);
 
 		}
-
 
 		if (data.contains("destroyable")) {
 
@@ -379,10 +466,15 @@ void LevelCreator::Load() {
 				DestroyableObject temp;
 				temp.Load(destroyableData);
 
+				temp.UpdateRadius(ballSpawnPosition.global_radius);
+
 				destroyable.emplace_back(temp);
 
 				mesh_destroyables.emplace_back(temp.mesh);
 				mesh_destroyables.back().pop_back();
+
+
+
 			}
 
 			choosedForEdit.clear();

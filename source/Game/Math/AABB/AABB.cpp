@@ -40,3 +40,33 @@ bool Collision_AABB_and_AABB(const AABB_Region& A, const AABB_Region& B) {
 	return (A.min.x <= B.max.x) && (A.max.x >= B.min.x) &&
 		(A.min.y <= B.max.y) && (A.max.y >= B.min.y);
 }
+
+bool Collision_Segment_and_AABB(const Segment& segment, AABB_Region& region) {
+	AABB_Region region_from_segment = GetAABB({segment.begin, segment.end});
+	return Collision_AABB_and_AABB(region_from_segment, region);
+}
+
+bool Collision_Segment_and_AABB(const Segment& segment, const float& global_radius, AABB_Region& region) {
+	std::vector<glm::vec2> points_check(8);
+
+	const glm::vec2 left_check  = { -1.f * global_radius ,0.f };
+	const glm::vec2 right_check = {  1.f * global_radius ,0.f };
+	const glm::vec2 up_check    = { 0.f , 1.f * global_radius };
+	const glm::vec2 down_check  = { 0.f ,-1.f * global_radius };
+
+
+	points_check[0] = segment.begin + left_check;
+	points_check[1] = segment.begin + right_check;
+	points_check[2] = segment.begin + up_check;
+	points_check[3] = segment.begin + down_check;
+
+	points_check[4] = segment.end + left_check;
+	points_check[5] = segment.end + right_check;
+	points_check[6] = segment.end + up_check;
+	points_check[7] = segment.end + down_check;
+
+
+	AABB_Region region_from_segment = GetAABB(points_check);
+
+	return Collision_AABB_and_AABB(region_from_segment, region);
+}
