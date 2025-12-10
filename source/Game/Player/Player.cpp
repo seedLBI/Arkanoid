@@ -48,7 +48,7 @@ Player::~Player() {
 
 void Player::Draw(QuadInstanced& renderer) {
 	for (size_t i = 0; i < mesh.size() - 1; i++)
-		renderer.AddLine(mesh[i] + pos, mesh[i + 1] + pos, glm::vec4(1.f), TranslateGlobalToScreen);
+		renderer.AddLine(mesh[i] + pos, mesh[i + 1] + pos,2.f, glm::vec4(1.f), TranslateGlobalToScreen);
 }
 
 void Player::DrawDebug(QuadInstanced& renderer) {
@@ -60,6 +60,9 @@ void Player::DrawDebug(QuadInstanced& renderer) {
 
 const AABB_Region& Player::GetCurrentAABB() {
 	return updated_aabb;
+}
+const std::vector<glm::vec2>& Player::GetVertices() {
+	return updated_mesh_border;
 }
 
 void Player::SetLeftBound(const float& global_value) {

@@ -41,12 +41,12 @@ bool Collision_AABB_and_AABB(const AABB_Region& A, const AABB_Region& B) {
 		(A.min.y <= B.max.y) && (A.max.y >= B.min.y);
 }
 
-bool Collision_Segment_and_AABB(const Segment& segment, AABB_Region& region) {
+bool Collision_Segment_and_AABB(const Segment& segment,const AABB_Region& region) {
 	AABB_Region region_from_segment = GetAABB({segment.begin, segment.end});
 	return Collision_AABB_and_AABB(region_from_segment, region);
 }
 
-bool Collision_Segment_and_AABB(const Segment& segment, const float& global_radius, AABB_Region& region) {
+bool Collision_Segment_and_AABB(const Segment& segment, const float& global_radius,const AABB_Region& region) {
 	std::vector<glm::vec2> points_check(8);
 
 	const glm::vec2 left_check  = { -1.f * global_radius ,0.f };

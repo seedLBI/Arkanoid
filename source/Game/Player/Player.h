@@ -29,6 +29,7 @@ public:
 	void UpdateRadius(const float& global_radius);
 
 	const AABB_Region& GetCurrentAABB();
+	const std::vector<glm::vec2>& GetVertices();
 
 	const glm::vec2& GetBeginPosition();
 	const float& GetLeftBound();

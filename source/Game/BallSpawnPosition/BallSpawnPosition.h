@@ -7,6 +7,7 @@
 
 struct BallSpawnPosition {
 	float global_radius = 0.05f;
+	float delta_speed = 0.01f;
 	glm::vec2 globalPos = {0.f,0.f};
 	glm::vec2 tangent = {0.f,0.1f};
 

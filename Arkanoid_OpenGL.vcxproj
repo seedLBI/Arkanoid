@@ -155,8 +155,9 @@
     <ClCompile Include="source\Core\Engine\Engine.Time.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Window.cpp" />
     <ClCompile Include="source\Game\BallSpawnPosition\BallSpawnPosition.cpp" />
-    <ClCompile Include="source\Game\CollisionManager\CollisionManager.cpp" />
+    <ClCompile Include="source\Game\Ball\Ball.cpp" />
     <ClCompile Include="source\Game\DestroyableObject\DestroyableObject.cpp" />
+    <ClCompile Include="source\Game\Game.cpp" />
     <ClCompile Include="source\Game\LevelBorder\LevelBorder.cpp" />
     <ClCompile Include="source\Game\LevelCreator\LevelCreator.cpp" />
     <ClCompile Include="source\Game\Math\AABB\AABB.cpp" />
@@ -206,8 +207,8 @@
     <ClInclude Include="source\Game\BallSpawnPosition\BallSpawnPosition.h" />
     <ClInclude Include="source\Game\Ball\Ball.h" />
     <ClInclude Include="source\Game\CollisionInfo\CollisionInfo.h" />
-    <ClInclude Include="source\Game\CollisionManager\CollisionManager.h" />
     <ClInclude Include="source\Game\DestroyableObject\DestroyableObject.h" />
+    <ClInclude Include="source\Game\Game.h" />
     <ClInclude Include="source\Game\LevelBorder\LevelBorder.h" />
     <ClInclude Include="source\Game\LevelCreator\LevelCreator.h" />
     <ClInclude Include="source\Game\Math\AABB\AABB.h" />
