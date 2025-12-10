@@ -18,7 +18,7 @@ LevelBorder::LevelBorder(const std::vector<glm::vec2>& vertices_input, const flo
 
 	vertices.push_back(vertices.front());
 
-	vertices_inner = GenerateRadiusBorder(vertices, global_radius, false);
+	vertices_inner = GenerateRadiusBorder(vertices, global_radius, !isClockwise(this->vertices, true));
 }
 
 LevelBorder::~LevelBorder() {
@@ -68,7 +68,8 @@ void LevelBorder::SetVertices(const std::vector<glm::vec2>& vertices, const floa
 	this->vertices = vertices;
 	this->vertices.push_back(this->vertices.front());
 
-	vertices_inner = GenerateRadiusBorder(this->vertices, global_radius, true);
+
+	vertices_inner = GenerateRadiusBorder(this->vertices, global_radius, !isClockwise(this->vertices, true));
 }
 
 nlohmann::json LevelBorder::Save() {

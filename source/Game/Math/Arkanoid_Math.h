@@ -25,6 +25,9 @@ glm::vec2 rotate(const glm::vec2& dir1, const float& angle);
 
 glm::vec2 perp_normalized(const glm::vec2& p);
 
+bool isClockwise(const std::vector<glm::vec2>& polygon, bool yAxisUp = true);
+
+
 std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_vertices, const glm::vec2& begin, const glm::vec2& end);
 std::vector<glm::vec2> GenerateRadiusBorder(const std::vector<glm::vec2>& original_border, const float& radius, const bool& outer_border);
 

@@ -85,6 +85,23 @@ void QuadInstanced::AddRectangleRotated(
 	instances.push_back(temp);
 }
 
+void QuadInstanced::AddRectangleLines(
+	const glm::vec2& min,
+	const glm::vec2& max,
+	const float& thikness,
+	const glm::vec4& color,
+	glm::vec2(*func_transform)(const glm::vec2&)) {
+
+	glm::vec2 v1 = min;
+	glm::vec2 v2 = { min.x, max.y };
+	glm::vec2 v3 = max;
+	glm::vec2 v4 = { max.x,min.y };
+
+	AddLine(v1, v2, thikness, color, func_transform);
+	AddLine(v2, v3, thikness, color, func_transform);
+	AddLine(v3, v4, thikness, color, func_transform);
+	AddLine(v4, v1, thikness, color, func_transform);
+}
 
 void QuadInstanced::AddRectangle(
 	const glm::vec2& position,

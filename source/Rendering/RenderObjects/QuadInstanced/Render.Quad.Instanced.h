@@ -43,6 +43,14 @@ public:
 		const glm::vec4& color = glm::vec4(1.f),
 		glm::vec2(*func_transform)(const glm::vec2&) = nullptr);
 
+	void AddRectangleLines(
+		const glm::vec2& min,
+		const glm::vec2& max,
+		const float& thikness,
+		const glm::vec4& color = glm::vec4(1.f),
+		glm::vec2(*func_transform)(const glm::vec2&) = nullptr);
+
+
 	void AddRectangleRotated(
 		const glm::vec2& position,
 		const glm::vec2& size,
@@ -57,7 +65,7 @@ protected:
 	GLuint VAO, VBO, VBOinstanced, EBO;
 	Shader* shader;
 
-	const unsigned long long MAX_INSTANCES = 1024;
+	const unsigned long long MAX_INSTANCES = 2048;
 	std::vector<InstanceData> instances;
 
 	void Init();

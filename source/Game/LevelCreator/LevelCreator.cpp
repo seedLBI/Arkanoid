@@ -7,6 +7,7 @@
 
 LevelCreator::LevelCreator() {
 	global_pos_player = player.GetBeginPosition();
+	choosedForEdit.reserve(100);
 }
 
 LevelCreator::~LevelCreator() {
@@ -19,6 +20,7 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 		quads.AddLine(glm::vec2(-1.f, 1.f), glm::vec2(1.f, 1.f), glm::vec4(1.f), TranslateGlobalToScreen);
 		quads.AddLine(glm::vec2(1.f, 1.f), glm::vec2(1.f, -1.f), glm::vec4(1.f), TranslateGlobalToScreen);
 		quads.AddLine(glm::vec2(1.f, -1.f), glm::vec2(1.f, 1.f), glm::vec4(1.f), TranslateGlobalToScreen);
+
 
 		levelBorder.DrawDebug(quads);
 
@@ -43,9 +45,28 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 		quads.AddLine({ -10.f, global_pos_player.y }, { 10.f, global_pos_player.y }, 3.f, glm::vec4(1.f, 0.4f, 0.4f, 0.8f), TranslateGlobalToScreen);
 	}
 
+	if (flag_MODE_CreatorDestroyableObject) {
+		if (index_destroyable_choosed != -1) {
+			glm::vec4 color(1.f, 0.3f, 0.3f, 1.f);
+			for (size_t i = 0; i < mesh_destroyables[index_destroyable_choosed].size(); i++)
+			{
+				circles.Add(mesh_destroyables[index_destroyable_choosed][i], radius_control_points, color, TranslateGlobalToScreen);
+			}
+
+			destroyable[index_destroyable_choosed].DrawDebug(quads);
+
+		}
+	}
 
 	levelBorder.Draw(quads);
 	player.Draw(quads);
+	for (size_t i = 0; i < destroyable.size(); i++)
+		destroyable[i].Draw(quads);
+
+
+
+
+
 
 
 
@@ -64,13 +85,14 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 	if (ImGui::RadioButton("BorderMode", flag_MODE_CreatorBorder)) {
 		flag_MODE_CreatorBorder = !flag_MODE_CreatorBorder;
 		flag_MODE_EditPlayer = false;
+		flag_MODE_CreatorDestroyableObject = false;
 	}
 
 	if (ImGui::RadioButton("PlayerEditorMode", flag_MODE_EditPlayer)) {
 		flag_MODE_EditPlayer = !flag_MODE_EditPlayer;
 		flag_MODE_CreatorBorder = false;
+		flag_MODE_CreatorDestroyableObject = false;
 	}
-
 	if (flag_MODE_EditPlayer)
 	{
 		if (ImGui::SliderFloat("leftBound", &global_left_border_player, -2.f, 2.f)) {
@@ -80,8 +102,46 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 			player.SetRightBound(global_right_border_player);
 		}
 	}
+	if (ImGui::RadioButton("DestroyableCreatorMode", flag_MODE_CreatorDestroyableObject)) {
+		flag_MODE_CreatorDestroyableObject = !flag_MODE_CreatorDestroyableObject;
+		flag_MODE_EditPlayer = false;
+		flag_MODE_CreatorBorder = false;
+	}
 
+	if (flag_MODE_CreatorDestroyableObject) {
 
+		for (size_t i = 0; i < choosedForEdit.size(); i++) {
+			if (ImGui::RadioButton(("Edit ##" + std::to_string(i)).c_str(), choosedForEdit[i])) {
+
+				for (size_t k = 0; k < choosedForEdit.size(); k++) {
+					if (i != k) {
+						choosedForEdit[k] = false;
+					}
+					index_destroyable_choosed = -1;
+
+				}
+				if (choosedForEdit[i] == 0) {
+					choosedForEdit[i] = 1;
+					index_destroyable_choosed = i;
+				}
+				else {
+					choosedForEdit[i] = 0;
+					index_destroyable_choosed = -1;
+				}
+			}
+		}
+
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 10.f);
+		if (ImGui::Button("ADD destroyable")) {
+
+			DestroyableObject temp;
+
+			destroyable.push_back(temp);
+			choosedForEdit.push_back(0);
+			mesh_destroyables.push_back(std::vector<glm::vec2>{});
+		}
+
+	}
 
 
 	ImGui::End();
@@ -97,7 +157,6 @@ void LevelCreator::Update() {
 		if (engine::input::IsMousePressed(MOUSE_RIGHT)) {
 			vertices_border.push_back(mouse_global);
 			levelBorder.SetVertices(vertices_border, global_radius);
-			
 		}
 
 		index_vertex_cover = -1;
@@ -155,7 +214,96 @@ void LevelCreator::Update() {
 
 
 	}
+	else if (flag_MODE_CreatorDestroyableObject) {
 
+
+		if (index_destroyable_choosed != -1) {
+
+
+			if (engine::input::IsMousePressed(MOUSE_RIGHT)) {
+				mesh_destroyables[index_destroyable_choosed].push_back(mouse_global);
+
+				destroyable[index_destroyable_choosed].SetMesh(mesh_destroyables[index_destroyable_choosed], global_radius);
+			}
+
+			index_destroyable_cover_vertex = -1;
+			for (size_t i = 0; i < mesh_destroyables[index_destroyable_choosed].size(); i++) {
+
+				if (isIntersectPointCircle(mouse_global, mesh_destroyables[index_destroyable_choosed][i], TranslateScalar_ScreenToGlobal(radius_control_points))) {
+
+					index_destroyable_cover_vertex = i;
+
+					if (engine::input::IsMousePressed(MOUSE_LEFT)) {
+						index_destroyable_grab_vertex = i;
+						break;
+					}
+
+					if (engine::input::IsKeyPressed(KEY_X)) {
+						mesh_destroyables[index_destroyable_choosed].erase(mesh_destroyables[index_destroyable_choosed].begin() + i);
+						break;
+					}
+				}
+
+			}
+
+			if (index_destroyable_grab_vertex != -1){
+				if (engine::input::IsMouseDown(MOUSE_LEFT) && index_destroyable_grab_vertex != -1) {
+					mesh_destroyables[index_destroyable_choosed][index_destroyable_grab_vertex] = mouse_global;
+
+					destroyable[index_destroyable_choosed].SetMesh(mesh_destroyables[index_destroyable_choosed], global_radius);
+				}
+				else {
+					index_destroyable_grab_vertex = -1;
+				}
+			}
+
+
+			if (index_destroyable_grab_vertex == -1)
+			{
+
+				static glm::vec2 global_pos_grab = { 0.f,0.f };
+				if (Collision_Point_and_AABB(mouse_global, destroyable[index_destroyable_choosed].aabb)) {
+					index_destroyable_cover = index_destroyable_choosed;
+
+					if (engine::input::IsMousePressed(MOUSE_LEFT)) {
+						index_destroyable_grab = index_destroyable_choosed;
+						global_pos_grab = mouse_global;
+						mesh_movable = mesh_destroyables[index_destroyable_choosed];
+					}
+
+				}
+				else {
+					index_destroyable_cover = -1;
+				}
+
+
+
+
+				if (engine::input::IsMouseDown(MOUSE_LEFT) && index_destroyable_grab != -1) {
+
+					glm::vec2 delta_mouse = mouse_global - global_pos_grab;
+
+					for (size_t i = 0; i < mesh_movable.size(); i++)
+					{
+						mesh_destroyables[index_destroyable_choosed][i] = mesh_movable[i] + delta_mouse;
+					}
+
+					destroyable[index_destroyable_choosed].SetMesh(mesh_destroyables[index_destroyable_choosed], global_radius);
+				}
+				else {
+					index_destroyable_grab = -1;
+				}
+
+			}
+
+
+		}
+
+
+
+
+
+	}
 
 }
 
@@ -172,6 +320,10 @@ void LevelCreator::Save() {
 
 		data["border"] = levelBorder.Save();
 		data["player"] = player.Save();
+
+		for (size_t i = 0; i < destroyable.size(); i++)
+			data["destroyable"][i] = destroyable[i].Save();
+
 
 		std::ofstream ofn(path.value());
 
@@ -213,6 +365,28 @@ void LevelCreator::Load() {
 			global_right_border_player = player.GetRightBound();
 
 			global_pos_player = player.GetBeginPosition();
+
+
+		}
+
+
+		if (data.contains("destroyable")) {
+
+			destroyable.clear();
+			mesh_destroyables.clear();
+
+			for (const auto& [key, destroyableData] : data["destroyable"].items()) {
+				DestroyableObject temp;
+				temp.Load(destroyableData);
+
+				destroyable.emplace_back(temp);
+
+				mesh_destroyables.emplace_back(temp.mesh);
+				mesh_destroyables.back().pop_back();
+			}
+
+			choosedForEdit.clear();
+			choosedForEdit.resize(mesh_destroyables.size(),false);
 
 
 		}

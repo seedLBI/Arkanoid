@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 
 #include "Game/CollisionInfo/CollisionInfo.h"
+#include "Game/DestroyableObject/DestroyableObject.h"
 #include "Game/LevelBorder/LevelBorder.h"
 #include "Game/Player/Player.h"
 
@@ -45,6 +46,21 @@ private:
 	float global_left_border_player = -1.f;
 	float global_right_border_player = 1.f;
 
+	// DestroyableObject
+	bool flag_MODE_CreatorDestroyableObject = false;
+	std::vector<DestroyableObject> destroyable;
+	std::vector<std::vector<glm::vec2>> mesh_destroyables;
+	std::vector < glm::vec2> mesh_movable;
+
+	std::vector<int> choosedForEdit;
+
+	int index_destroyable_choosed = -1;
+
+	int index_destroyable_cover_vertex = -1;
+	int index_destroyable_grab_vertex = -1;
+
+	int index_destroyable_cover = -1;
+	int index_destroyable_grab = -1;
 
 
 };
