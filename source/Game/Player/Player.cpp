@@ -53,9 +53,9 @@ void Player::Draw(QuadInstanced& renderer) {
 
 void Player::DrawDebug(QuadInstanced& renderer) {
 	for (size_t i = 0; i < updated_mesh_border.size() - 1; i++)
-		renderer.AddLine(updated_mesh_border[i], updated_mesh_border[i + 1], glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
+		renderer.AddLine(updated_mesh_border[i], updated_mesh_border[i + 1],1.f, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
 
-	renderer.AddRectangleLines(updated_aabb.min, updated_aabb.max, 2.f, glm::vec4(0.32f, 0.43f, 1.f, 1.f), TranslateGlobalToScreen);
+	//renderer.AddRectangleLines(updated_aabb.min, updated_aabb.max, 2.f, glm::vec4(0.32f, 0.43f, 1.f, 1.f), TranslateGlobalToScreen);
 }
 
 const AABB_Region& Player::GetCurrentAABB() {

@@ -103,7 +103,7 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 		float time = getTimeCollisionBetweenTwoSegment(border, ball_path);
 		float time2 = getTimeCollisionBetweenTwoSegment(ball_path, border);
 
-		const float EPSILON = 1e-5f;
+		const float EPSILON = 0.f;
 
 
 		if (time > 1.f + EPSILON || time < -EPSILON ||
@@ -111,7 +111,7 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 			continue;
 
 
-		const float eps = 0.017f;
+		const float eps = 0.01f;
 
 		if ((time >= 1.f - eps && time <= 1.f) || (time <= 0.f + eps && time >= 0.f)) {
 			index_tight_corner = i;
