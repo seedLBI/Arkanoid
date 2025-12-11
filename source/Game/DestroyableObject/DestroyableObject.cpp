@@ -42,7 +42,7 @@ void DestroyableObject::Draw(QuadInstanced& renderer) {
 		const glm::vec2& begin = this->mesh[i];
 		const glm::vec2& end   = this->mesh[i + 1];
 
-		renderer.AddLine(begin, end, glm::vec4(1.f, 0.f, 0.f, 1.f), TranslateGlobalToScreen);
+		renderer.AddLine(begin, end,2.f, glm::vec4(1.f, 0.f, 0.f, 1.f), TranslateGlobalToScreen);
 	}
 
 
@@ -54,10 +54,10 @@ void DestroyableObject::DrawDebug(QuadInstanced& renderer) {
 		const glm::vec2& begin = this->collision_border[i];
 		const glm::vec2& end = this->collision_border[i + 1];
 
-		renderer.AddLine(begin, end, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
+		renderer.AddLine(begin, end,1.f, glm::vec4(0.f, 1.f, 0.f, 0.2f), TranslateGlobalToScreen);
 	}
 
-	//renderer.AddRectangleLines(this->aabb.min, this->aabb.max, 2.f, glm::vec4(0.f, 0.f, 1.f, 1.f), TranslateGlobalToScreen);
+	//renderer.AddRectangleLines(this->aabb.min, this->aabb.max, 1.f, glm::vec4(0.f, 0.f, 1.f, 0.4f), TranslateGlobalToScreen);
 }
 
 nlohmann::json DestroyableObject::Save() {

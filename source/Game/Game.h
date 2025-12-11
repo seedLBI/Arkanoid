@@ -36,9 +36,12 @@ private:
 	LevelBorder border;
 	std::vector<DestroyableObject> objs;
 
+
 	std::vector<glm::vec2> path;
 
 	nlohmann::json data;
+
+	void RespawnBall();
 	
 	bool ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2>& vertices);
 	bool ResolveCollision(const std::vector<glm::vec2>& vertices);

@@ -17,7 +17,7 @@ Application::Application() {
 	engine::core::Initialize();
 
 	//engine::window::EnableVSync();
-	engine::time::SetTargetFPS(60);
+	engine::time::SetTargetFPS(0);
 	//engine::window::SetFullscreen();
 }
 Application::~Application() {
@@ -33,7 +33,7 @@ void Application::MainLoop() {
 
 	Game game;
 
-	std::ifstream ifn("resources/levels/Privet.level");
+	std::ifstream ifn("resources/levels/TightCorners.level");
 	nlohmann::json data_level = nlohmann::json::parse(ifn);
 	ifn.close();
 

@@ -13,56 +13,62 @@ Game::~Game() {
 
 void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 
+#ifdef _DEBUG
 	if (path.size() > 1) {
 		for (size_t i = 0; i < path.size() - 1; i++) {
-			quads_renderer.AddLine(path[i], path[i + 1], 1.f, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
-
-
-			circles_renderer.Add(path[i], 2.f, glm::vec4(1.f, 0.f, 0.f, 1.f), TranslateGlobalToScreen);
+			quads_renderer.AddLine(path[i], path[i + 1], 2.f, glm::vec4(0.f, 1.f, 0.f, 0.2f), TranslateGlobalToScreen);
 
 		}
 	}
+	player.DrawDebug(quads_renderer);
+	border.DrawDebug(quads_renderer);
+	for (auto& obj : objs) {
+		obj.DrawDebug(quads_renderer);
+	}
+#endif
+
 
 	player.Draw(quads_renderer);
-	player.DrawDebug(quads_renderer);
-
 	border.Draw(quads_renderer);
-	border.DrawDebug(quads_renderer);
 
 	for (auto& obj : objs) {
 		obj.Draw(quads_renderer);
-		obj.DrawDebug(quads_renderer);
 	}
 
 	ball.Draw(circles_renderer);
+}
 
-
+void Game::RespawnBall() {
+	ball.tangent = glm::normalize(ballSpawn.tangent);
+	ball.path.begin = ballSpawn.globalPos;
+	ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;
 
 }
 
 void Game::Update() {
-	
 	player.Update();
+
+	if (ball.path.end.y > player.GetHeight()*1.15f) {
+		RespawnBall();
+	}
 
 	if (engine::time::GetProgrammTime() <= 1.f)
 		return;
 
 
 	if (engine::input::IsKeyPressed(KEY_Z)) {
-		ball.tangent = glm::normalize(ballSpawn.tangent);
-		ball.path.begin = ballSpawn.globalPos;
-		ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;
+		RespawnBall();
+#ifdef _DEBUG
 		path.clear();
 		path.reserve(1024);
+#endif
 	}
-
+#ifdef _DEBUG
 	if (path.size() > 1024)
-	{
 		path.erase(path.begin(), path.begin() + 1023);
-	}
-
 
 	path.push_back(ball.path.begin);
+#endif
 
 	float deltaTime = engine::time::GetDeltaTime();
 	float speed = ball.speed;
@@ -82,21 +88,77 @@ void Game::Update() {
 
 		bool have_collision = false;
 
+
+
 		if (ResolveCollision(border.GetVertices())) {
 			have_collision = true;
 		}
-		else if (ResolveCollision(player.GetVertices())) {
-			have_collision = true;
-		}
-		else {
-			for (size_t i = 0; i < objs.size(); i++) {
-				if (ResolveCollision(objs[i].GetCurrentAABB(), objs[i].GetVertices())) {
-					objs.erase(objs.begin() + i);
-					have_collision = true;
-					break;
-				}
+
+		if (isIntersectPointPolygon(ball.path.end, border.GetVertices_OriginalBorder()) == false) {
+
+			glm::vec2 normal;
+			glm::vec2 closest = findClosestPointOnPolygon(border.GetVertices(), ball.path.end, normal);
+
+			float len = glm::length(closest - ball.path.end);
+
+			if (len > 0.0001f) {
+				glm::vec2 dir = glm::normalize(normal);
+
+
+				ball.path.begin = closest + dir * len * 0.1f;
+				ball.path.end = closest + dir * len;
+				ball.tangent = dir;
 
 			}
+			else {
+				ball.path.end = ball.path.end - ball.tangent;
+
+			}
+
+		}
+
+
+
+
+		if (ResolveCollision(player.GetVertices())) {
+			have_collision = true;
+		}
+
+		if (isIntersectPointPolygon(ball.path.end, player.GetVertices())) {
+
+			glm::vec2 normal;
+
+			glm::vec2 closest = findClosestPointOnPolygon(player.GetVertices(), ball.path.end, normal);
+
+			float len = glm::length(closest - ball.path.end);
+
+			if (len > 0.0001f) {
+				glm::vec2 dir = glm::normalize(normal);
+
+
+				len = glm::clamp(len, 0.01f, 0.1f);
+
+
+				ball.path.begin = closest + dir * len * 0.1f;
+				ball.path.end = closest + dir * len;
+				ball.tangent = dir;
+				
+			}
+			else {
+				ball.path.end = ball.path.end - ball.tangent;
+
+			}
+
+
+		}
+
+		for (size_t i = 0; i < objs.size(); i++) {
+			if (ResolveCollision(objs[i].GetCurrentAABB(), objs[i].GetVertices())) {
+				objs.erase(objs.begin() + i);
+				have_collision = true;
+				break;
+			}
+
 		}
 		
 		if (have_collision) {
@@ -125,7 +187,7 @@ bool Game::ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2
 bool Game::ResolveCollision(const std::vector<glm::vec2>& vertices) {
 
 	int count_recals = 0;
-	int max_recalc = 3;
+	int max_recalc = 5;
 
 	while (true) {
 		std::optional<CollisionInfo> collision_point;
@@ -144,9 +206,9 @@ bool Game::ResolveCollision(const std::vector<glm::vec2>& vertices) {
 			ball.path.begin = collision.position;
 			ball.path.end = collision.position + collision.tangentBound * length_after_collision;
 
-
+#ifdef _DEBUG
 			path.push_back(ball.path.begin);
-
+#endif // _DEBUG
 		}
 		else {
 			break;
@@ -169,9 +231,8 @@ void Game::Load(const nlohmann::json& dataLevel) {
 
 		ball.radius = ballSpawn.global_radius;
 		ball.speed = 1.7f;
-		ball.tangent = glm::normalize(ballSpawn.tangent);
-		ball.path.begin = ballSpawn.globalPos;
-		ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;
+
+		RespawnBall();
 	}
 
 	if (data.contains("border")) {
