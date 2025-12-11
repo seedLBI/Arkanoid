@@ -33,7 +33,7 @@ const std::vector<glm::vec2>& LevelBorder::GetVertices_OriginalBorder() {
 	return vertices;
 }
 
-void LevelBorder::SetRadius(const float& global_radius) {
+void LevelBorder::UpdateRadius(const float& global_radius) {
 	vertices_inner = GenerateRadiusBorder(vertices, global_radius, !isClockwise(this->vertices, true));
 }
 
@@ -50,7 +50,7 @@ void LevelBorder::DrawDebug(QuadInstanced& renderer) {
 		return;
 
 	for (size_t i = 0; i < vertices_inner.size() - 1; i++)
-		renderer.AddLine(vertices_inner[i], vertices_inner[i + 1], 4.f, glm::vec4(0.2f, 1.f, 0.2f, 1.f), TranslateGlobalToScreen);
+		renderer.AddLine(vertices_inner[i], vertices_inner[i + 1], 1.f, glm::vec4(1.0f, 0.6f, 0.3f, 1.f), TranslateGlobalToScreen);
 }
 
 void LevelBorder::Draw(DebugLine& renderer) {
@@ -91,6 +91,9 @@ void LevelBorder::Load(const nlohmann::json& data) {
 		float y = pointData["y"].get<float>();
 
 		vertices.push_back(glm::vec2{ x,y });
+
+		std::cout << "(" << x << ", " << y << "), ";
+
 	}
 
 	vertices_inner = GenerateRadiusBorder(this->vertices, 0.05f, !isClockwise(this->vertices, true));

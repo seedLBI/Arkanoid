@@ -36,6 +36,7 @@ private:
 	LevelBorder border;
 	std::vector<DestroyableObject> objs;
 
+	std::vector<glm::vec2> path;
 
 	nlohmann::json data;
 	

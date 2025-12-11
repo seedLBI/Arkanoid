@@ -53,9 +53,9 @@ void Player::Draw(QuadInstanced& renderer) {
 
 void Player::DrawDebug(QuadInstanced& renderer) {
 	for (size_t i = 0; i < updated_mesh_border.size() - 1; i++)
-		renderer.AddLine(updated_mesh_border[i], updated_mesh_border[i + 1], glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
+		renderer.AddLine(updated_mesh_border[i], updated_mesh_border[i + 1],1.f, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
 
-	renderer.AddRectangleLines(updated_aabb.min, updated_aabb.max, 2.f, glm::vec4(0.32f, 0.43f, 1.f, 1.f), TranslateGlobalToScreen);
+	//renderer.AddRectangleLines(updated_aabb.min, updated_aabb.max, 2.f, glm::vec4(0.32f, 0.43f, 1.f, 1.f), TranslateGlobalToScreen);
 }
 
 const AABB_Region& Player::GetCurrentAABB() {
@@ -63,6 +63,9 @@ const AABB_Region& Player::GetCurrentAABB() {
 }
 const std::vector<glm::vec2>& Player::GetVertices() {
 	return updated_mesh_border;
+}
+const std::vector<glm::vec2>& Player::GetVertices_OriginalBorder() {
+	return updated_mesh;
 }
 
 void Player::SetLeftBound(const float& global_value) {
@@ -96,11 +99,12 @@ void Player::Update() {
 	pos.x = glm::clamp(pos_center.x, pos_left_bound  + width/2.f, pos_right_bound - width/2.f);
 
 
-	updated_mesh_border.resize(mesh_border.size());
-
-	for (size_t i = 0; i < mesh_border.size(); i++) {
+	for (size_t i = 0; i < mesh_border.size(); i++)
 		updated_mesh_border[i] = mesh_border[i] + pos;
-	}
+
+	for (size_t i = 0; i < mesh.size(); i++)
+		updated_mesh[i] = mesh[i] + pos;
+
 
 	updated_aabb = aabb;
 
@@ -113,6 +117,9 @@ void Player::UpdateRadius(const float& global_radius) {
 
 	mesh_border = GenerateRadiusBorder(this->mesh, global_radius, true);
 	this->aabb = GetAABB(mesh_border);
+
+	updated_mesh_border.resize(mesh_border.size());
+	updated_mesh.resize(mesh.size());
 
 }
 
@@ -167,7 +174,7 @@ void Player::Load(const nlohmann::json& data) {
 	}
 
 	updated_mesh_border = mesh_border;
-
+	updated_mesh = mesh;
 
 
 	pos_left_bound = data["left_bound"].get<float>();

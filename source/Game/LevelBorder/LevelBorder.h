@@ -27,7 +27,7 @@ public:
 
 
 	void SetVertices(const std::vector<glm::vec2>& vertices, const float& global_radius);
-	void SetRadius(const float& global_radius);
+	void UpdateRadius(const float& global_radius);
 
 	nlohmann::json Save();
 	void Load(const nlohmann::json& data);

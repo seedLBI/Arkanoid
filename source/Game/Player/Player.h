@@ -30,6 +30,7 @@ public:
 
 	const AABB_Region& GetCurrentAABB();
 	const std::vector<glm::vec2>& GetVertices();
+	const std::vector<glm::vec2>& GetVertices_OriginalBorder();
 
 	const glm::vec2& GetBeginPosition();
 	const float& GetLeftBound();
@@ -43,6 +44,7 @@ private:
 	std::vector<glm::vec2> mesh_border;
 
 
+	std::vector<glm::vec2> updated_mesh;
 	std::vector<glm::vec2> updated_mesh_border;
 	AABB_Region updated_aabb;
 

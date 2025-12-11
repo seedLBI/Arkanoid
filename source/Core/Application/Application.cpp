@@ -16,7 +16,8 @@
 Application::Application() {
 	engine::core::Initialize();
 
-	engine::window::EnableVSync();
+	//engine::window::EnableVSync();
+	engine::time::SetTargetFPS(60);
 	//engine::window::SetFullscreen();
 }
 Application::~Application() {

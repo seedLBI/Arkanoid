@@ -259,11 +259,6 @@
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\Debug\Circle</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\Debug\Circle</DestinationFolders>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.vert">
-      <FileType>Document</FileType>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\Debug\Circle</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\Debug\Circle</DestinationFolders>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="resources\shaders\Debug\Line\DebugLine.frag">
       <FileType>Document</FileType>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\Debug\Line</DestinationFolders>
@@ -291,6 +286,9 @@
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\QuadInstanced</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\QuadInstanced</DestinationFolders>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

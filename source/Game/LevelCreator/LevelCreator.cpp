@@ -122,7 +122,7 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 	{
 		if (ImGui::SliderFloat("Radius", &ballSpawnPosition.global_radius, 0.001f,0.2f)) {
 			player.UpdateRadius(ballSpawnPosition.global_radius);
-			levelBorder.SetRadius(ballSpawnPosition.global_radius);
+			levelBorder.UpdateRadius(ballSpawnPosition.global_radius);
 			
 			for (size_t i = 0; i < destroyable.size(); i++)
 				destroyable[i].UpdateRadius(ballSpawnPosition.global_radius);
@@ -442,7 +442,7 @@ void LevelCreator::Load() {
 			for (size_t i = 0; i < vertices_level.size() - 1; i++)
 				vertices_border[i] = vertices_level[i];
 
-			levelBorder.SetRadius(ballSpawnPosition.global_radius);
+			levelBorder.UpdateRadius(ballSpawnPosition.global_radius);
 		}
 
 		if (data.contains("player")) {

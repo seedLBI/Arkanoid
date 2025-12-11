@@ -341,11 +341,13 @@
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.frag" />
-    <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
     <CopyFileToFolders Include="resources\shaders\Debug\Line\DebugLine.frag" />
     <CopyFileToFolders Include="resources\shaders\Debug\Line\DebugLine.geom" />
     <CopyFileToFolders Include="resources\shaders\Debug\Line\DebugLine.vert" />
     <CopyFileToFolders Include="resources\shaders\QuadInstanced\QuadInstanced.frag" />
     <CopyFileToFolders Include="resources\shaders\QuadInstanced\QuadInstanced.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
   </ItemGroup>
 </Project>
