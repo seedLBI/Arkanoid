@@ -32,6 +32,12 @@ public:
 private:
 	Player player;
 	Ball ball;
+
+	float speedAnim = 0.f;
+	float speedAnimValue = 1.5f;
+
+
+
 	BallSpawnPosition ballSpawn;
 	LevelBorder border;
 	std::vector<DestroyableObject> objs;

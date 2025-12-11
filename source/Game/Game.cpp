@@ -46,6 +46,12 @@ void Game::RespawnBall() {
 }
 
 void Game::Update() {
+
+	speedAnim = speedAnim + engine::time::GetDeltaTime() * (0.f - speedAnim);
+	ball.color = ball.color + engine::time::GetDeltaTime() * 2.f * (glm::vec4(1.f,1.f,1.f,1.f) - ball.color);
+
+	ball.speed = 1.f + speedAnim;
+
 	player.Update();
 
 	if (ball.path.end.y > player.GetHeight()*1.15f) {
@@ -122,6 +128,9 @@ void Game::Update() {
 
 		if (ResolveCollision(player.GetVertices())) {
 			have_collision = true;
+			speedAnim = speedAnimValue;
+			ball.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+			player.ReactToCollision();
 		}
 
 		if (isIntersectPointPolygon(ball.path.end, player.GetVertices())) {
@@ -134,22 +143,19 @@ void Game::Update() {
 
 			if (len > 0.0001f) {
 				glm::vec2 dir = glm::normalize(normal);
-
-
 				len = glm::clamp(len, 0.01f, 0.1f);
-
 
 				ball.path.begin = closest + dir * len * 0.1f;
 				ball.path.end = closest + dir * len;
-				ball.tangent = dir;
-				
+				ball.tangent = dir;				
 			}
 			else {
 				ball.path.end = ball.path.end - ball.tangent;
 
 			}
-
-
+			speedAnim = speedAnimValue;
+			ball.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+			player.ReactToCollision();
 		}
 
 		for (size_t i = 0; i < objs.size(); i++) {

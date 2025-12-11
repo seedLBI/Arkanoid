@@ -50,7 +50,7 @@ Player::~Player() {
 
 void Player::Draw(QuadInstanced& renderer) {
 	for (size_t i = 0; i < mesh.size() - 1; i++)
-		renderer.AddLine(mesh[i] + pos, mesh[i + 1] + pos,2.f, glm::vec4(1.f), TranslateGlobalToScreen);
+		renderer.AddLine(mesh[i] + pos + glm::vec2{0.f, fake_height_anim}, mesh[i + 1] + pos + glm::vec2{0.f, fake_height_anim}, 2.f, glm::vec4(1.f), TranslateGlobalToScreen);
 }
 
 void Player::DrawDebug(QuadInstanced& renderer) {
@@ -92,6 +92,11 @@ const float& Player::GetRightBound() {
 }
 
 
+void Player::ReactToCollision() {
+	fake_height_anim = fake_height_anim_value;
+}
+
+
 glm::vec2 Player::GetDirectionMove() {
 	if (pos == last_pos)
 		return { 0.f,0.f };
@@ -101,6 +106,9 @@ glm::vec2 Player::GetDirectionMove() {
 
 
 void Player::Update() {
+	fake_height_anim = fake_height_anim + engine::time::GetDeltaTime() * 4.f * (0.f - fake_height_anim);
+
+
 	last_pos = pos;
 	pos.x = TranslateScreenToGlobal(engine::input::GetMouseWindow()).x;
 

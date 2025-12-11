@@ -28,6 +28,8 @@ public:
 
 	void UpdateRadius(const float& global_radius);
 
+	void ReactToCollision();
+
 	glm::vec2 GetDirectionMove();
 	float GetHeight();
 
@@ -50,6 +52,11 @@ private:
 	std::vector<glm::vec2> updated_mesh;
 	std::vector<glm::vec2> updated_mesh_border;
 	AABB_Region updated_aabb;
+
+
+	float fake_height_anim = 0.f;
+	float fake_height_anim_value = 0.02f;
+
 
 	glm::vec2 begin_position;
 
