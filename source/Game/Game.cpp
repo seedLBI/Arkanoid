@@ -29,8 +29,10 @@ void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 	border.Draw(quads_renderer);
 	border.DrawDebug(quads_renderer);
 
-	for (auto& obj: objs)
+	for (auto& obj : objs) {
 		obj.Draw(quads_renderer);
+		obj.DrawDebug(quads_renderer);
+	}
 
 	ball.Draw(circles_renderer);
 
@@ -51,6 +53,12 @@ void Game::Update() {
 		ball.path.begin = ballSpawn.globalPos;
 		ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;
 		path.clear();
+		path.reserve(1024);
+	}
+
+	if (path.size() > 1024)
+	{
+		path.erase(path.begin(), path.begin() + 1023);
 	}
 
 
@@ -160,7 +168,7 @@ void Game::Load(const nlohmann::json& dataLevel) {
 		ballSpawn.Load(data["ballSpawn"]);
 
 		ball.radius = ballSpawn.global_radius;
-		ball.speed = 4.7f;
+		ball.speed = 1.7f;
 		ball.tangent = glm::normalize(ballSpawn.tangent);
 		ball.path.begin = ballSpawn.globalPos;
 		ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;

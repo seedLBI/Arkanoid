@@ -21,10 +21,10 @@ const AABB_Region& DestroyableObject::GetCurrentAABB() {
 }
 
 const std::vector<glm::vec2>& DestroyableObject::GetVertices() {
-	return mesh;
+	return collision_border;
 }
 const std::vector<glm::vec2>& DestroyableObject::GetVertices_OriginalBorder() {
-	return collision_border;
+	return mesh;
 }
 
 void DestroyableObject::UpdateRadius(const float& radius) {
@@ -57,7 +57,7 @@ void DestroyableObject::DrawDebug(QuadInstanced& renderer) {
 		renderer.AddLine(begin, end, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
 	}
 
-	renderer.AddRectangleLines(this->aabb.min, this->aabb.max, 2.f, glm::vec4(0.f, 0.f, 1.f, 1.f), TranslateGlobalToScreen);
+	//renderer.AddRectangleLines(this->aabb.min, this->aabb.max, 2.f, glm::vec4(0.f, 0.f, 1.f, 1.f), TranslateGlobalToScreen);
 }
 
 nlohmann::json DestroyableObject::Save() {
