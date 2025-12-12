@@ -35,17 +35,29 @@ void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 		obj.Draw(quads_renderer);
 	}
 
+	for (size_t i = 0; i < trail.size(); i++) {
+
+		float time = (float)i / (float)MAX_count_trail;
+		circles_renderer.Add(trail[i].pos, TranslateScalar_GlobalToScreen(ball.radius) , ball.color * glm::vec4(1.f, 1.f, 1.f, time), TranslateGlobalToScreen);
+	}
+
+
 	ball.Draw(circles_renderer);
+
+
 }
 
 void Game::RespawnBall() {
 	ball.tangent = glm::normalize(ballSpawn.tangent);
 	ball.path.begin = ballSpawn.globalPos;
 	ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;
-
+	trail.clear();
 }
 
 void Game::Update() {
+
+
+
 
 	speedAnim = speedAnim + engine::time::GetDeltaTime() * (0.f - speedAnim);
 	ball.color = ball.color + engine::time::GetDeltaTime() * 2.f * (glm::vec4(1.f,1.f,1.f,1.f) - ball.color);
@@ -53,6 +65,22 @@ void Game::Update() {
 	ball.speed = 1.f + speedAnim;
 
 	player.Update();
+
+
+	MAX_count_trail = (1.f / engine::time::GetDeltaTime()) * 0.5f;
+	
+	trail.push_back({ ball.path.begin,engine::time::GetProgrammTime()});
+
+	if (trail.size() > MAX_count_trail) {
+		trail.erase(trail.begin(), trail.begin() + (trail.size() - MAX_count_trail));
+	}
+
+	float currentTime = engine::time::GetProgrammTime();
+	while (!trail.empty() && currentTime - trail.front().timeCreation > TrailLifeTime) {
+		trail.pop_front();
+	}
+
+
 
 	if (ball.path.end.y > player.GetHeight()*1.15f) {
 		RespawnBall();

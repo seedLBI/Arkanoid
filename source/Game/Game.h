@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <vector>
+#include <deque>
 #include <nlohmann/json.hpp>
 
 
@@ -36,14 +37,23 @@ private:
 	float speedAnim = 0.f;
 	float speedAnimValue = 1.5f;
 
-
-
 	BallSpawnPosition ballSpawn;
 	LevelBorder border;
 	std::vector<DestroyableObject> objs;
 
-
 	std::vector<glm::vec2> path;
+
+	struct TrailPoint {
+		glm::vec2 pos;
+		float timeCreation;
+	};
+
+	std::deque<TrailPoint> trail;
+
+	float TrailLifeTime = 0.2f;
+	int MAX_count_trail = 10;
+
+
 
 	nlohmann::json data;
 
