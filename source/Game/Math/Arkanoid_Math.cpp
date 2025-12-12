@@ -205,12 +205,12 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 	bool is_tight_corner = (dist_min < eps_dist);
 
 	if (is_tight_corner) {
-		bool is_start_vertex = time > 0.5f;
+		bool is_start_vertex = time < 0.5f;
 		size_t prev_index = (is_start_vertex) ? (index - 1) % border_vertices.size() : index;
 		size_t next_index = (is_start_vertex) ? index : (index + 1) % border_vertices.size();
 
-		glm::vec2 prev_dir = border_vertices[prev_index + 1] - border_vertices[prev_index];
-		glm::vec2 curr_dir = border_vertices[next_index + 1] - border_vertices[next_index];
+		glm::vec2 prev_dir = border_vertices[(prev_index + 1) % border_vertices.size()] - border_vertices[prev_index];
+		glm::vec2 curr_dir = border_vertices[(next_index + 1) % border_vertices.size()] - border_vertices[next_index];
 
 		glm::vec2 normal1 = glm::normalize(glm::vec2(-prev_dir.y, prev_dir.x));
 		glm::vec2 normal2 = glm::normalize(glm::vec2(-curr_dir.y, curr_dir.x));

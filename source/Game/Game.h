@@ -43,19 +43,22 @@ private:
 
 	std::vector<glm::vec2> path;
 
+
 	struct TrailPoint {
 		glm::vec2 pos;
 		float timeCreation;
 	};
-
 	std::deque<TrailPoint> trail;
-
-	float TrailLifeTime = 0.2f;
-	int MAX_count_trail = 10;
+	float LifeTimePoints = 0.5f;
+	float LengthTrail = 0.5f;
+	int MAX_count_trail = 130;
 
 
 
 	nlohmann::json data;
+
+	void TrailUpdate();
+	void UpdateAnimValues();
 
 	void RespawnBall();
 	
