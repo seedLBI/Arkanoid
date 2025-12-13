@@ -2,11 +2,14 @@
 #include "Game/Math/Arkanoid_Math.h"
 #include "Game/Math/Segment/Segment.h"
 
+#include <set>
+#include <iostream>
+
 
 #include <algorithm>
 
 std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
-	std::vector<Triangle> trigs;
+
 
 	std::vector<std::pair<size_t, size_t>> indexes_connected;
 
@@ -59,9 +62,6 @@ std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
 			if (correctIndexes == false)
 				continue;
 
-
-
-
 			const glm::vec2& j_p = polygon[j];
 			float len = glm::length(i_p - j_p);
 			length_segment.push_back({ j, len });
@@ -113,6 +113,8 @@ std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
 
 	}
 
+
+
 	printf("\n");
 	for (size_t i = 0; i < indexes_connected.size(); i++) {
 
@@ -121,6 +123,100 @@ std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
 
 		printf("polygon((%f, %f), (%f, %f))\n", a.x, a.y, b.x, b.y);
 	}
+
+	for (size_t i = 0; i < polygon.size() - 1; i++)
+	{
+		indexes_connected.push_back({ i,i + 1 });
+	}
+
+
+
+	std::vector<std::set<size_t>> setsIndexedTrigs;
+	for (size_t i = 0; i < polygon.size(); i++) {
+
+
+		for (size_t j = 0; j < polygon.size(); j++) {
+			if (i == j) continue;
+
+
+			bool have_path_to_first = false;
+			for (size_t check = 0; check < indexes_connected.size(); check++) {
+				size_t& i_check = indexes_connected[check].first;
+				size_t& j_check = indexes_connected[check].second;
+				if (
+					(i_check == i && j_check == j) || 
+					(i_check == j && j_check == i)) {
+					have_path_to_first = true;
+					break;
+				}
+			}
+			if (!have_path_to_first) {
+				continue;
+			}
+
+
+
+			for (size_t k = 0; k < polygon.size(); k++) {
+				if (k == i || k == j) continue;
+
+				bool have_path_to_first = false;
+				for (size_t check = 0; check < indexes_connected.size(); check++) {
+					size_t& i_check = indexes_connected[check].first;
+					size_t& j_check = indexes_connected[check].second;
+					if ((i_check == i && j_check == k) || 
+						(i_check == k && j_check == i)) {
+						have_path_to_first = true;
+						break;
+					}
+				}
+				if (!have_path_to_first) {
+					continue;
+				}
+
+				have_path_to_first = false;
+				for (size_t check = 0; check < indexes_connected.size(); check++) {
+					size_t& i_check = indexes_connected[check].first;
+					size_t& j_check = indexes_connected[check].second;
+					if ((i_check == j && j_check == k) || 
+						(i_check == k && j_check == j)) {
+						have_path_to_first = true;
+						break;
+					}
+				}
+				if (!have_path_to_first) {
+					continue;
+				}
+
+
+				std::set<size_t> temp = { i,j,k };
+
+				for (size_t q = 0; q < setsIndexedTrigs.size(); q++) {
+					if (temp == setsIndexedTrigs[q]) {
+						have_path_to_first = false;
+						break;
+					}
+				}
+
+				if (have_path_to_first) {
+					setsIndexedTrigs.emplace_back(temp);
+					break;
+				}
+			}
+		}
+	}
+
+	for (size_t i = 0; i < setsIndexedTrigs.size(); i++)
+	{
+		printf("(");
+		for (const size_t& index : setsIndexedTrigs[i]) {
+			printf("%i, ", int(index));
+		}
+		printf(")\n");
+	}
+
+
+
+	std::vector<Triangle> trigs;
 
 
 
