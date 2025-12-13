@@ -52,6 +52,9 @@ void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 	ball.Draw(circles_renderer);
 
 
+	for (size_t i = 0; i < trianglesBorder.size(); i++)
+		trianglesBorder[i].DrawLine(quads_renderer);
+
 }
 
 void Game::RespawnBall() {
@@ -335,5 +338,10 @@ void Game::Load(const nlohmann::json& dataLevel) {
 			objs.emplace_back(temp);
 		}
 	}
+
+
+	std::vector<glm::vec2> vertices_without_loop = border.GetVertices_OriginalBorder();
+	vertices_without_loop.pop_back();
+	trianglesBorder = MakeTriangulationGreedy(vertices_without_loop);
 
 }

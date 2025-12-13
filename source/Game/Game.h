@@ -16,6 +16,8 @@
 #include "Game/Player/Player.h"
 #include "Game/Ball/Ball.h"
 
+#include "Game/Math/Triangle/Triangle.h"
+#include "Game/Math/Triangulation/Triangulation.Greedy.h"
 
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
@@ -53,7 +55,7 @@ private:
 	float LengthTrail = 0.5f;
 	int MAX_count_trail = 130;
 
-
+	std::vector<Triangle> trianglesBorder;
 
 	nlohmann::json data;
 

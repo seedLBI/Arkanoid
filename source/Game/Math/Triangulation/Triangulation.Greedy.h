@@ -4,11 +4,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-
-struct Triangle {
-	glm::vec2 p1, p2, p3;
-};
-
+#include "Game/Math/Triangle/Triangle.h"
 
 std::vector<Triangle> MakeTriangulationGreedy(
 	std::vector<glm::vec2>& polygon);

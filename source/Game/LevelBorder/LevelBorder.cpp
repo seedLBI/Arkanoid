@@ -98,10 +98,6 @@ void LevelBorder::Load(const nlohmann::json& data) {
 
 	}
 
-	std::vector<glm::vec2> vertices_without_loop = vertices;
-	vertices_without_loop.pop_back();
-	MakeTriangulationGreedy(vertices_without_loop);
-
 
 	vertices_inner = GenerateRadiusBorder(this->vertices, 0.05f, !isClockwise(this->vertices, true));
 

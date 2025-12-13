@@ -9,8 +9,6 @@
 #include <algorithm>
 
 std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
-
-
 	std::vector<std::pair<size_t, size_t>> indexes_connected;
 
 	for (size_t i = 0; i < polygon.size(); i++) {
@@ -115,21 +113,9 @@ std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
 
 
 
-	printf("\n");
-	for (size_t i = 0; i < indexes_connected.size(); i++) {
-
-		const glm::vec2& a = polygon[indexes_connected[i].first];
-		const glm::vec2& b = polygon[indexes_connected[i].second];
-
-		printf("polygon((%f, %f), (%f, %f))\n", a.x, a.y, b.x, b.y);
+	for (size_t i = 0; i < polygon.size(); i++) {
+		indexes_connected.push_back({ i % polygon.size(),(i + 1)% polygon.size() });
 	}
-
-	for (size_t i = 0; i < polygon.size() - 1; i++)
-	{
-		indexes_connected.push_back({ i,i + 1 });
-	}
-
-
 
 	std::vector<std::set<size_t>> setsIndexedTrigs;
 	for (size_t i = 0; i < polygon.size(); i++) {
@@ -138,11 +124,10 @@ std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
 		for (size_t j = 0; j < polygon.size(); j++) {
 			if (i == j) continue;
 
-
 			bool have_path_to_first = false;
 			for (size_t check = 0; check < indexes_connected.size(); check++) {
-				size_t& i_check = indexes_connected[check].first;
-				size_t& j_check = indexes_connected[check].second;
+				const size_t& i_check = indexes_connected[check].first;
+				const size_t& j_check = indexes_connected[check].second;
 				if (
 					(i_check == i && j_check == j) || 
 					(i_check == j && j_check == i)) {
@@ -159,10 +144,10 @@ std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
 			for (size_t k = 0; k < polygon.size(); k++) {
 				if (k == i || k == j) continue;
 
-				bool have_path_to_first = false;
+				have_path_to_first = false;
 				for (size_t check = 0; check < indexes_connected.size(); check++) {
-					size_t& i_check = indexes_connected[check].first;
-					size_t& j_check = indexes_connected[check].second;
+					const size_t& i_check = indexes_connected[check].first;
+					const size_t& j_check = indexes_connected[check].second;
 					if ((i_check == i && j_check == k) || 
 						(i_check == k && j_check == i)) {
 						have_path_to_first = true;
@@ -175,8 +160,8 @@ std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
 
 				have_path_to_first = false;
 				for (size_t check = 0; check < indexes_connected.size(); check++) {
-					size_t& i_check = indexes_connected[check].first;
-					size_t& j_check = indexes_connected[check].second;
+					const size_t& i_check = indexes_connected[check].first;
+					const size_t& j_check = indexes_connected[check].second;
 					if ((i_check == j && j_check == k) || 
 						(i_check == k && j_check == j)) {
 						have_path_to_first = true;
@@ -205,20 +190,17 @@ std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {
 		}
 	}
 
-	for (size_t i = 0; i < setsIndexedTrigs.size(); i++)
-	{
-		printf("(");
-		for (const size_t& index : setsIndexedTrigs[i]) {
-			printf("%i, ", int(index));
+	std::vector<Triangle> trigs(setsIndexedTrigs.size());
+	
+	for (size_t i = 0; i < setsIndexedTrigs.size(); i++) {
+		glm::vec2 vertexs[3] = {glm::vec2(0,0), glm::vec2(0,0), glm::vec2(0,0)};
+		int index = 0;
+		for (const size_t& indexVertexPolugon : setsIndexedTrigs[i]) {
+			vertexs[index] = polygon[indexVertexPolugon];
+			index++;
 		}
-		printf(")\n");
+		trigs[i] = { vertexs[0],vertexs[1],vertexs[2] };
 	}
-
-
-
-	std::vector<Triangle> trigs;
-
-
 
 	return trigs;
 }
