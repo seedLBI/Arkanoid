@@ -162,6 +162,9 @@
     <ClCompile Include="source\Game\Ball\Ball.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="source\Game\Math\Triangulation\Triangulation.Greedy.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Utils\File\File.h">
@@ -336,6 +339,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="source\Game\Math\Segment\Segment.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Game\Math\Triangulation\Triangulation.Greedy.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
