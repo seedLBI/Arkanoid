@@ -2,6 +2,11 @@
 #include <glm/gtc/constants.hpp>
 #include <iostream>
 
+bool haveCollision(const Segment& A, const Segment& B) {
+	float time1 = getTimeCollisionBetweenTwoSegment(A, B);
+	float time2 = getTimeCollisionBetweenTwoSegment(B, A);
+	return time1 > 0.f && time1 < 1.f && time2 > 0.f && time2 < 1.f;
+}
 
 float getTimeCollisionBetweenTwoSegment(const Segment& A, const Segment& B) {
 
@@ -90,7 +95,7 @@ glm::vec2 findClosestPointOnPolygon(const std::vector<glm::vec2>& polygon, const
 		return glm::vec2(0.0f);
 	}
 
-	glm::vec2 closestPoint;
+	glm::vec2 closestPoint = P;
 	float minDistance = std::numeric_limits<float>::max();
 
 	for (size_t i = 0; i < polygon.size(); ++i) {

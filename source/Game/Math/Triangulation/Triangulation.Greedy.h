@@ -11,10 +11,7 @@ struct Triangle {
 
 
 std::vector<Triangle> MakeTriangulationGreedy(
-	const std::vector<glm::vec2> polygon);
-
-
-
+	std::vector<glm::vec2>& polygon);
 
 
 #endif
