@@ -172,7 +172,8 @@
     <ClCompile Include="source\Game\Math\AABB\AABB.cpp" />
     <ClCompile Include="source\Game\Math\Arkanoid_Math.cpp" />
     <ClCompile Include="source\Game\Math\Triangle\Triangle.cpp" />
-    <ClCompile Include="source\Game\Math\Triangulation\Triangulation.Greedy.cpp" />
+    <ClCompile Include="source\Game\Math\Triangulation\EarClipping\Triangulation.EarClipping.cpp" />
+    <ClCompile Include="source\Game\Math\Triangulation\Greedy\Triangulation.Greedy.cpp" />
     <ClCompile Include="source\Game\Player\Player.cpp" />
     <ClCompile Include="source\Game\Math\Segment\Segment.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\DebugCircle\Render.Debug.Circle.cpp" />
@@ -225,7 +226,8 @@
     <ClInclude Include="source\Game\Math\AABB\AABB.h" />
     <ClInclude Include="source\Game\Math\Arkanoid_Math.h" />
     <ClInclude Include="source\Game\Math\Triangle\Triangle.h" />
-    <ClInclude Include="source\Game\Math\Triangulation\Triangulation.Greedy.h" />
+    <ClInclude Include="source\Game\Math\Triangulation\EarClipping\Triangulation.EarClipping.h" />
+    <ClInclude Include="source\Game\Math\Triangulation\Greedy\Triangulation.Greedy.h" />
     <ClInclude Include="source\Game\Player\Player.h" />
     <ClInclude Include="source\Game\Math\Segment\Segment.h" />
     <ClInclude Include="source\Rendering\RenderObjects\DebugCircle\Render.Debug.Circle.h" />
@@ -362,6 +364,7 @@
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\levels</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\levels</DestinationFolders>
     </CopyFileToFolders>
+    <None Include="README.md" />
     <None Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
   </ItemGroup>

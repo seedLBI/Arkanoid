@@ -342,6 +342,23 @@ void Game::Load(const nlohmann::json& dataLevel) {
 
 	std::vector<glm::vec2> vertices_without_loop = border.GetVertices_OriginalBorder();
 	vertices_without_loop.pop_back();
-	trianglesBorder = MakeTriangulationGreedy(vertices_without_loop);
+	//trianglesBorder = MakeTriangulationGreedy(vertices_without_loop);
+
+	trianglesBorder = MakeTriangulationEarClipping(vertices_without_loop);
+
+	printf("\n");
+
+	for (size_t i = 0; i < trianglesBorder.size(); i++) {
+
+		const auto& t = trianglesBorder[i];
+
+		printf("polygon((%f, %f), (%f, %f), (%f, %f))\n", 
+			t.p1.x, t.p1.y, 
+			t.p2.x, t.p2.y, 
+			t.p3.x, t.p3.y);
+
+
+	}
+
 
 }

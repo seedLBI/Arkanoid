@@ -162,10 +162,13 @@
     <ClCompile Include="source\Game\Ball\Ball.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="source\Game\Math\Triangulation\Triangulation.Greedy.cpp">
+    <ClCompile Include="source\Game\Math\Triangulation\Greedy\Triangulation.Greedy.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="source\Game\Math\Triangle\Triangle.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Game\Math\Triangulation\EarClipping\Triangulation.EarClipping.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -344,7 +347,7 @@
     <ClInclude Include="source\Game\Math\Segment\Segment.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="source\Game\Math\Triangulation\Triangulation.Greedy.h">
+    <ClInclude Include="source\Game\Math\Triangulation\Greedy\Triangulation.Greedy.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="source\Game\Math\Triangle\Triangle.h">
@@ -488,6 +491,9 @@
     <ClInclude Include="THIRD-PARTY\include\nlohmann\ordered_map.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="source\Game\Math\Triangulation\EarClipping\Triangulation.EarClipping.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.frag" />
@@ -496,10 +502,14 @@
     <CopyFileToFolders Include="resources\shaders\Debug\Line\DebugLine.vert" />
     <CopyFileToFolders Include="resources\shaders\QuadInstanced\QuadInstanced.frag" />
     <CopyFileToFolders Include="resources\shaders\QuadInstanced\QuadInstanced.vert" />
+    <CopyFileToFolders Include="resources\levels\arka.level" />
+    <CopyFileToFolders Include="resources\levels\Privet.level" />
+    <CopyFileToFolders Include="resources\levels\TightCorners.level" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="THIRD-PARTY\debug\lib\glew32d.lib" />

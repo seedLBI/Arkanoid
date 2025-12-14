@@ -3,7 +3,6 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-
 #include "Game/Math/Triangle/Triangle.h"
 
 std::vector<Triangle> MakeTriangulationGreedy(

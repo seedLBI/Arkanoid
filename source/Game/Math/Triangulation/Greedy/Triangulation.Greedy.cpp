@@ -1,11 +1,11 @@
 #include "Triangulation.Greedy.h"
+
+
 #include "Game/Math/Arkanoid_Math.h"
 #include "Game/Math/Segment/Segment.h"
 
 #include <set>
 #include <iostream>
-
-
 #include <algorithm>
 
 std::vector<Triangle> MakeTriangulationGreedy(std::vector<glm::vec2>& polygon) {

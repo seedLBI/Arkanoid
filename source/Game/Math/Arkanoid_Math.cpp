@@ -47,6 +47,20 @@ float atan2(const glm::vec2& dir) {
 	return std::atan2f(dir.y,dir.x);
 }
 
+glm::vec2 getDirection(const glm::vec2& A, const glm::vec2& B) {
+	return B - A;
+}
+
+float getAreaParallelogram(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C) {
+	return cross2d(getDirection(A, B), getDirection(A, C));
+}
+float getAreaTriangle(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C) {
+	return getAreaParallelogram(A, B, C) / 2.f;
+}
+
+
+
+
 
 glm::vec2 getPointOnCircle(const float& angle) {
 	return glm::vec2{ std::cosf(angle), std::sinf(angle) };

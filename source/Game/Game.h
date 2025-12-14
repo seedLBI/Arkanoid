@@ -17,7 +17,8 @@
 #include "Game/Ball/Ball.h"
 
 #include "Game/Math/Triangle/Triangle.h"
-#include "Game/Math/Triangulation/Triangulation.Greedy.h"
+#include "Game/Math/Triangulation/Greedy/Triangulation.Greedy.h"
+#include "Game/Math/Triangulation/EarClipping/Triangulation.EarClipping.h"
 
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"

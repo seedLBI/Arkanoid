@@ -81,7 +81,6 @@ nlohmann::json LevelBorder::Save() {
 	return output;
 }
 
-#include "Game/Math/Triangulation/Triangulation.Greedy.h"
 void LevelBorder::Load(const nlohmann::json& data) {
 
 	vertices.clear();
