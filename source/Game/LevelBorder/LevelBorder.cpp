@@ -80,6 +80,8 @@ nlohmann::json LevelBorder::Save() {
 	}
 	return output;
 }
+
+#include "Game/Math/Triangulation/Triangulation.Greedy.h"
 void LevelBorder::Load(const nlohmann::json& data) {
 
 	vertices.clear();
@@ -95,6 +97,7 @@ void LevelBorder::Load(const nlohmann::json& data) {
 		std::cout << "(" << x << ", " << y << "), ";
 
 	}
+
 
 	vertices_inner = GenerateRadiusBorder(this->vertices, 0.05f, !isClockwise(this->vertices, true));
 

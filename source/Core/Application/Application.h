@@ -6,8 +6,6 @@
 
 #include "Utils/OpenGL/Enums/OpenGL.Enums.h"
 
-
-
 class Application {
 public:
 	Application();
