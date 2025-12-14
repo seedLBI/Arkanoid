@@ -36,6 +36,11 @@ void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 	}
 
 	ball.Draw(circles_renderer);
+
+#ifdef _DEBUG
+	for (size_t i = 0; i < trianglesBorder.size(); i++)
+		trianglesBorder[i].DrawLine(quads_renderer);
+#endif
 }
 
 void Game::RespawnBall() {

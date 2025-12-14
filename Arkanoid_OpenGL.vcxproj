@@ -290,6 +290,21 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="resources\levels\arka.level">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\levels</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\levels</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\levels\Privet.level">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\levels</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\levels</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\levels\TightCorners.level">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\levels</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\levels</DestinationFolders>
+    </CopyFileToFolders>
     <None Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
