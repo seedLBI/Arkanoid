@@ -3,6 +3,7 @@
 #include "Rendering/RenderObjects/DebugLine/Render.Debug.Line.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"	
+#include "Rendering/RenderObjects/TriangleInstanced/Render.Triangle.Instanced.h"
 
 
 #include "Game/LevelCreator/LevelCreator.h"
@@ -28,6 +29,7 @@ void Application::MainLoop() {
 	DebugLine lines;
 	DebugCircle circles;
 	QuadInstanced quads;
+	TriangleInstanced triangles;
 
 	LevelCreator levelCreator;
 
@@ -58,10 +60,11 @@ void Application::MainLoop() {
 		//levelCreator.Draw(circles, quads);
 
 		game.Update();
-		game.Draw(quads,circles);
+		game.Draw(triangles, quads, circles);
 
 		quads.Render();
 		circles.Render();
+		triangles.Render();
 
 		DrawDebugOverlay();
 		DrawEnd();

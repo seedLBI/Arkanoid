@@ -20,15 +20,18 @@
 #include "Game/Math/Triangulation/Greedy/Triangulation.Greedy.h"
 #include "Game/Math/Triangulation/EarClipping/Triangulation.EarClipping.h"
 
+#include "Rendering/RenderObjects/TriangleInstanced/Render.Triangle.Instanced.h"
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
+
+
 
 class Game {
 public:
 	Game();
 	~Game();
 
-	void Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer);
+	void Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer);
 	void Update();
 
 	void Load(const nlohmann::json& dataLevel);

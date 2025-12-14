@@ -182,6 +182,7 @@
     <ClCompile Include="source\Rendering\RenderObjects\QuadInstanced\Render.Quad.Instanced.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\QuadTexture\Render.QuadTexture.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\Quad\Render.Quad.cpp" />
+    <ClCompile Include="source\Rendering\RenderObjects\TriangleInstanced\Render.Triangle.Instanced.cpp" />
     <ClCompile Include="source\Utils\File\File.cpp" />
     <ClCompile Include="source\Utils\ImGui\Utils.ImGui.cpp" />
     <ClCompile Include="source\Utils\Keyboard\Keyboard.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="source\Rendering\RenderObjects\QuadInstanced\Render.Quad.Instanced.h" />
     <ClInclude Include="source\Rendering\RenderObjects\QuadTexture\Render.QuadTexture.h" />
     <ClInclude Include="source\Rendering\RenderObjects\Quad\Render.Quad.h" />
+    <ClInclude Include="source\Rendering\RenderObjects\TriangleInstanced\Render.Triangle.Instanced.h" />
     <ClInclude Include="source\ThirdParty\utf8.h" />
     <ClInclude Include="source\ThirdParty\utf8\checked.h" />
     <ClInclude Include="source\ThirdParty\utf8\core.h" />
@@ -366,6 +368,16 @@
     </CopyFileToFolders>
     <None Include="README.md" />
     <None Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
+    <CopyFileToFolders Include="resources\shaders\TriangleInstanced\TriangleInstanced.frag">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\TriangleInstanced</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\TriangleInstanced</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\shaders\TriangleInstanced\TriangleInstanced.vert">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\TriangleInstanced</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\TriangleInstanced</DestinationFolders>
+    </CopyFileToFolders>
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
   </ItemGroup>
   <ItemGroup>

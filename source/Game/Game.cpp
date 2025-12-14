@@ -11,7 +11,7 @@ Game::~Game() {
 
 }
 
-void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
+void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 
 #ifdef _DEBUG
 	if (path.size() > 1) {
@@ -26,9 +26,6 @@ void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 		obj.DrawDebug(quads_renderer);
 	}
 #endif
-
-
-
 
 	player.Draw(quads_renderer);
 	border.Draw(quads_renderer);
@@ -52,8 +49,12 @@ void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 	ball.Draw(circles_renderer);
 
 #ifdef _DEBUG
-	for (size_t i = 0; i < trianglesBorder.size(); i++)
+	for (size_t i = 0; i < trianglesBorder.size(); i++) {
 		trianglesBorder[i].DrawLine(quads_renderer);
+
+		triangles_renderer.Add(trianglesBorder[i].p1, trianglesBorder[i].p2, trianglesBorder[i].p3, glm::vec4(1.f,1.f,1.f,0.2f), TranslateGlobalToScreen);
+
+	}
 #endif
 }
 
@@ -258,8 +259,6 @@ void Game::Update() {
 	
 }
 
-
-
 bool Game::ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2>& vertices) {
 
 	bool collision_have = Collision_Segment_and_AABB(ball.path, ball.radius, aabb);
@@ -342,9 +341,8 @@ void Game::Load(const nlohmann::json& dataLevel) {
 
 	std::vector<glm::vec2> vertices_without_loop = border.GetVertices_OriginalBorder();
 	vertices_without_loop.pop_back();
-	//trianglesBorder = MakeTriangulationGreedy(vertices_without_loop);
-
-	trianglesBorder = MakeTriangulationEarClipping(vertices_without_loop);
+	trianglesBorder = MakeTriangulationGreedy(vertices_without_loop);
+	//trianglesBorder = MakeTriangulationEarClipping(vertices_without_loop);
 
 	printf("\n");
 

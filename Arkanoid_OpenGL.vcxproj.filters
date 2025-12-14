@@ -171,6 +171,9 @@
     <ClCompile Include="source\Game\Math\Triangulation\EarClipping\Triangulation.EarClipping.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="source\Rendering\RenderObjects\TriangleInstanced\Render.Triangle.Instanced.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Utils\File\File.h">
@@ -494,6 +497,9 @@
     <ClInclude Include="source\Game\Math\Triangulation\EarClipping\Triangulation.EarClipping.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="source\Rendering\RenderObjects\TriangleInstanced\Render.Triangle.Instanced.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.frag" />
@@ -505,6 +511,8 @@
     <CopyFileToFolders Include="resources\levels\arka.level" />
     <CopyFileToFolders Include="resources\levels\Privet.level" />
     <CopyFileToFolders Include="resources\levels\TightCorners.level" />
+    <CopyFileToFolders Include="resources\shaders\TriangleInstanced\TriangleInstanced.frag" />
+    <CopyFileToFolders Include="resources\shaders\TriangleInstanced\TriangleInstanced.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
