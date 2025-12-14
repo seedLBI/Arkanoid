@@ -28,6 +28,8 @@ void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 #endif
 
 
+
+
 	player.Draw(quads_renderer);
 	border.Draw(quads_renderer);
 
@@ -35,26 +37,94 @@ void Game::Draw(QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 		obj.Draw(quads_renderer);
 	}
 
+	for (size_t i = 0; i < trail.size(); i++) {
+
+		float time = (float)i / (float)trail.size();
+
+		const glm::vec2& pos = trail[i].pos;
+		float radius = TranslateScalar_GlobalToScreen(ball.radius) * time;
+		glm::vec4 color = ball.color + (1.f - time) * (glm::vec4(0.f, 0.f, 0.f, 0.f) - ball.color) ;
+
+		circles_renderer.Add(pos, radius, color, TranslateGlobalToScreen);
+	}
+
+
 	ball.Draw(circles_renderer);
+
+
+	for (size_t i = 0; i < trianglesBorder.size(); i++)
+		trianglesBorder[i].DrawLine(quads_renderer);
+
 }
 
 void Game::RespawnBall() {
 	ball.tangent = glm::normalize(ballSpawn.tangent);
 	ball.path.begin = ballSpawn.globalPos;
 	ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;
+	trail.clear();
+	path.clear();
+}
+
+void Game::TrailUpdate() {
+	if (trail.empty() == false) {
+		float len_last = glm::length(ball.path.begin - trail.back().pos);
+
+		if (!isnan(len_last)) {
+
+			const float len_need = LengthTrail / (float)MAX_count_trail;
+
+			int countAdd = len_last / len_need;
+			const glm::vec2 begin = ball.path.begin;
+			const glm::vec2 end = trail.back().pos;
+			for (int i = countAdd - 1; i >= 0; i--) {
+
+				float time = (len_need * (float)i) / len_last;
+
+				glm::vec2 pointAdd = lerp(begin, end, time);
+
+				trail.push_back({ pointAdd, engine::time::GetProgrammTime() });
+			}
+		}
+	}
+	else {
+		trail.push_back({ ball.path.begin,engine::time::GetProgrammTime() });
+	}
+
+
+	for (size_t i = 0; i < trail.size(); i++) {
+		auto& p = trail[i];
+		const float currentTime = engine::time::GetProgrammTime();
+
+		if (currentTime - p.timeCreation > LifeTimePoints) {
+			trail.erase(trail.begin() + i);
+			i--;
+		}
+	}
+	if (trail.size() > MAX_count_trail) {
+		trail.erase(trail.begin() , trail.end() - MAX_count_trail);
+	}
+}
+
+void Game::UpdateAnimValues() {
+	speedAnim = speedAnim + engine::time::GetDeltaTime() * (0.f - speedAnim);
+	ball.color = ball.color + engine::time::GetDeltaTime() * 2.f * (glm::vec4(1.f, 1.f, 1.f, 1.f) - ball.color);
+
+	ball.speed = 1.f + speedAnim;
 
 }
 
 void Game::Update() {
-
-	speedAnim = speedAnim + engine::time::GetDeltaTime() * (0.f - speedAnim);
-	ball.color = ball.color + engine::time::GetDeltaTime() * 2.f * (glm::vec4(1.f,1.f,1.f,1.f) - ball.color);
-
-	ball.speed = 1.f + speedAnim;
+	UpdateAnimValues();
+	TrailUpdate();
 
 	player.Update();
 
-	if (ball.path.end.y > player.GetHeight()*1.15f) {
+
+
+
+
+
+	if (ball.path.end.y > player.GetHeight() * 1.05f) {
 		RespawnBall();
 	}
 
@@ -75,6 +145,7 @@ void Game::Update() {
 
 	path.push_back(ball.path.begin);
 #endif
+
 
 	float deltaTime = engine::time::GetDeltaTime();
 	float speed = ball.speed;
@@ -158,14 +229,21 @@ void Game::Update() {
 			player.ReactToCollision();
 		}
 
-		for (size_t i = 0; i < objs.size(); i++) {
-			if (ResolveCollision(objs[i].GetCurrentAABB(), objs[i].GetVertices())) {
-				objs.erase(objs.begin() + i);
-				have_collision = true;
-				break;
-			}
+		bool WasCollision = true;
 
+		while (WasCollision) {
+			WasCollision = false;
+			for (size_t i = 0; i < objs.size(); i++) {
+				if (ResolveCollision(objs[i].GetCurrentAABB(), objs[i].GetVertices())) {
+					objs.erase(objs.begin() + i);
+					WasCollision = true;
+					have_collision = true;
+					break;
+				}
+			}
 		}
+
+
 		
 		if (have_collision) {
 			count_check_collisions++;
@@ -260,5 +338,10 @@ void Game::Load(const nlohmann::json& dataLevel) {
 			objs.emplace_back(temp);
 		}
 	}
+
+
+	std::vector<glm::vec2> vertices_without_loop = border.GetVertices_OriginalBorder();
+	vertices_without_loop.pop_back();
+	trianglesBorder = MakeTriangulationGreedy(vertices_without_loop);
 
 }

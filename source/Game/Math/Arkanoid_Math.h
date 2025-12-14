@@ -8,6 +8,7 @@
 #include <optional>
 #include <algorithm>
 
+bool haveCollision(const Segment& A, const Segment& B);
 float getTimeCollisionBetweenTwoSegment(const Segment& A, const Segment& B);
 glm::vec2 lerp(const Segment& s, const float& time);
 glm::vec2 lerp(const glm::vec2& A, const glm::vec2& B, const float& time);

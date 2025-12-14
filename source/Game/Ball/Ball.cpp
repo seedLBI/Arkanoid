@@ -3,6 +3,8 @@
 #include "Core/CoordinateSystem/CoordinateSystem.h"
 
 void Ball::Draw(DebugCircle& renderer) {
+	renderer.Add(path.begin, TranslateScalar_GlobalToScreen(radius*1.2f), glm::vec4(0.f,0.f,0.f,1.f), TranslateGlobalToScreen);
+
 	renderer.Add(path.begin, TranslateScalar_GlobalToScreen(radius), color, TranslateGlobalToScreen);
 }
 

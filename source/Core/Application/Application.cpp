@@ -33,7 +33,7 @@ void Application::MainLoop() {
 
 	Game game;
 
-	std::ifstream ifn("resources/levels/TightCorners.level");
+	std::ifstream ifn("resources/levels/arka.level");
 	nlohmann::json data_level = nlohmann::json::parse(ifn);
 	ifn.close();
 

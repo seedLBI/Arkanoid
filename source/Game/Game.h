@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <vector>
+#include <deque>
 #include <nlohmann/json.hpp>
 
 
@@ -15,6 +16,8 @@
 #include "Game/Player/Player.h"
 #include "Game/Ball/Ball.h"
 
+#include "Game/Math/Triangle/Triangle.h"
+#include "Game/Math/Triangulation/Triangulation.Greedy.h"
 
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
@@ -36,16 +39,28 @@ private:
 	float speedAnim = 0.f;
 	float speedAnimValue = 1.5f;
 
-
-
 	BallSpawnPosition ballSpawn;
 	LevelBorder border;
 	std::vector<DestroyableObject> objs;
 
-
 	std::vector<glm::vec2> path;
 
+
+	struct TrailPoint {
+		glm::vec2 pos;
+		float timeCreation;
+	};
+	std::deque<TrailPoint> trail;
+	float LifeTimePoints = 0.5f;
+	float LengthTrail = 0.5f;
+	int MAX_count_trail = 130;
+
+	std::vector<Triangle> trianglesBorder;
+
 	nlohmann::json data;
+
+	void TrailUpdate();
+	void UpdateAnimValues();
 
 	void RespawnBall();
 	
