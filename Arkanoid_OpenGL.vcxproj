@@ -71,16 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <SourcePath>$(VC_SourcePath);$(ProjectDir)\source;</SourcePath>
+    <SourcePath>$(ProjectDir)\THIRD-PARTY\include;$(VC_SourcePath);$(ProjectDir)\source</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <SourcePath>$(VC_SourcePath);$(ProjectDir)\source;</SourcePath>
+    <SourcePath>$(VC_SourcePath);$(ProjectDir)\source;$(ProjectDir)\THIRD-PARTY\include</SourcePath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseStatic>false</VcpkgUseStatic>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -118,11 +121,13 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\source;$(ProjectDir)\THIRD-PARTY\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\THIRD-PARTY\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32d.lib;glfw3.lib;glm.lib;imguid.lib;nfd.lib;OpenGL32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,13 +140,15 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\THIRD-PARTY\include;$(ProjectDir)\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\THIRD-PARTY\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;glm.lib;imgui.lib;nfd.lib;OpenGL32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -258,6 +265,52 @@
     <ClInclude Include="source\Utils\Timer\Timer.h" />
     <ClInclude Include="source\Utils\Time\Time.h" />
     <ClInclude Include="source\Utils\Values\Values.h" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\adl_serializer.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\byte_container_with_subtype.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\abi_macros.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\conversions\from_json.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\conversions\to_chars.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\conversions\to_json.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\exceptions.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\hash.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\input\binary_reader.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\input\input_adapters.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\input\json_sax.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\input\lexer.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\input\parser.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\input\position_t.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\iterators\internal_iterator.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\iterators\iteration_proxy.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\iterators\iterator_traits.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\iterators\iter_impl.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\iterators\json_reverse_iterator.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\iterators\primitive_iterator.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\json_custom_base_class.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\json_pointer.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\json_ref.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\macro_scope.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\macro_unscope.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\meta\call_std\begin.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\meta\call_std\end.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\meta\cpp_future.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\meta\detected.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\meta\identity_tag.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\meta\is_sax.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\meta\std_fs.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\meta\type_traits.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\meta\void_t.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\output\binary_writer.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\output\output_adapters.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\output\serializer.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\string_concat.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\string_escape.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\string_utils.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\detail\value_t.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\json.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\json_fwd.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\ordered_map.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\thirdparty\hedley\hedley.hpp" />
+    <ClInclude Include="THIRD-PARTY\include\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.frag">
@@ -295,6 +348,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
+    <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="THIRD-PARTY\debug\lib\glew32d.lib" />
+    <Library Include="THIRD-PARTY\debug\lib\glfw3.lib" />
+    <Library Include="THIRD-PARTY\debug\lib\glm.lib" />
+    <Library Include="THIRD-PARTY\debug\lib\imguid.lib" />
+    <Library Include="THIRD-PARTY\debug\lib\nfd.lib" />
+    <Library Include="THIRD-PARTY\debug\lib\OpenGL32.Lib" />
+    <Library Include="THIRD-PARTY\lib\glew32.lib" />
+    <Library Include="THIRD-PARTY\lib\glfw3.lib" />
+    <Library Include="THIRD-PARTY\lib\glm.lib" />
+    <Library Include="THIRD-PARTY\lib\imgui.lib" />
+    <Library Include="THIRD-PARTY\lib\nfd.lib" />
+    <Library Include="THIRD-PARTY\lib\OpenGL32.Lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
