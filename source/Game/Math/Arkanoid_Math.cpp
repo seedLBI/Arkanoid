@@ -67,7 +67,7 @@ glm::vec2 getPointOnCircle(const float& angle) {
 }
 
 
-bool isIntersectPointCircle(const glm::vec2& point, const glm::vec2& posCircle, const float& radius) {
+bool Collision_Point_and_Circle(const glm::vec2& point, const glm::vec2& posCircle, const float& radius) {
 	return glm::distance(point, posCircle) < radius;
 }
 
@@ -166,22 +166,21 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 
 	std::vector<std::pair<size_t, glm::vec2>> collisions;
 
-	for (size_t i = 0; i < border_vertices.size() - 1; i++) {
-		Segment border{ border_vertices[i], border_vertices[i + 1] };
+	for (size_t i = 0; i < border_vertices.size(); i++) {
+		Segment border{ border_vertices[i], border_vertices[(i + 1) % border_vertices.size()] };
 
 		float time = getTimeCollisionBetweenTwoSegment(border, ball_path);
 		float time2 = getTimeCollisionBetweenTwoSegment(ball_path, border);
 
 
-		if (time > 1.f  || time < 0.f ||
-			time2 > 1.f  || time2 < 0.f)
+		const float EPSILON = 1e-5f;
+
+		if (time > 1.f + EPSILON || time < 0.f - EPSILON ||
+			time2 > 1.f + EPSILON || time2 < 0.f - EPSILON)
 			continue;
-
-
 
 		glm::vec2 point = lerp(border, time);
 
-		const float EPSILON = 1e-4f;
 
 		bool duplicate = false;
 		for (const auto& existing : collisions) {
@@ -206,7 +205,7 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 
 	const glm::vec2& point_collision = nereast_collision.second;
 	const size_t& index = nereast_collision.first;
-	Segment seg_border{ border_vertices[index],border_vertices[index + 1] };
+	Segment seg_border{ border_vertices[index],border_vertices[ (index + 1) % border_vertices.size()]};
 
 	glm::vec2 border_dir = seg_border.getDirection();
 	glm::vec2 ball_dir = ball_path.getDirection();
@@ -214,7 +213,7 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 
 	float time = getTimeCollisionBetweenTwoSegment(seg_border, ball_path);
 
-	const float eps_dist = 0.008f;
+	const float eps_dist = 0.05f;
 
 	float dist_to_start = glm::length(point_collision - seg_border.begin);
 	float dist_to_end = glm::length(point_collision - seg_border.end);
@@ -224,35 +223,59 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 	bool is_tight_corner = (dist_min < eps_dist);
 
 	if (is_tight_corner) {
-		bool is_start_vertex = time < 0.5f;
-		size_t prev_index = (is_start_vertex) ? (index - 1) % border_vertices.size() : index;
-		size_t next_index = (is_start_vertex) ? index : (index + 1) % border_vertices.size();
+		size_t start_index = time < 0.5f ? index : (index + 1) % border_vertices.size();
+		size_t prev_index = (start_index - 1) % border_vertices.size();
+		size_t next_index = (start_index + 1) % border_vertices.size();
 
-		glm::vec2 prev_dir = border_vertices[(prev_index + 1) % border_vertices.size()] - border_vertices[prev_index];
-		glm::vec2 curr_dir = border_vertices[(next_index + 1) % border_vertices.size()] - border_vertices[next_index];
+		glm::vec2 prev_dir = getDirection(border_vertices[prev_index], border_vertices[start_index]);
+		glm::vec2 curr_dir = getDirection(border_vertices[start_index], border_vertices[next_index]);
 
-		glm::vec2 normal1 = glm::normalize(glm::vec2(-prev_dir.y, prev_dir.x));
-		glm::vec2 normal2 = glm::normalize(glm::vec2(-curr_dir.y, curr_dir.x));
+		float cross = cross2d(prev_dir, curr_dir);
+		bool isConvex = cross < 0 ? false : true;
 
-		if (glm::dot(normal1, ball_dir) > 0) normal1 = -normal1;
-		if (glm::dot(normal2, ball_dir) > 0) normal2 = -normal2;
+		if (isConvex == false)
+		{
+			glm::vec2 dir1 = getDirection(border_vertices[start_index], border_vertices[prev_index]);
+			glm::vec2 dir2 = getDirection(border_vertices[start_index], border_vertices[next_index]);
 
-		glm::vec2 avg_normal = glm::normalize(normal1 + normal2);
+			glm::vec2 bisector = glm::normalize(dir1 + dir2);
 
-		glm::vec2 reflected = ball_dir - 2.0f * glm::dot(ball_dir, avg_normal) * avg_normal;
+			CollisionInfo output;
 
-		CollisionInfo output;
+			output.position = point_collision;
+			output.tangentBound = bisector;
+			return output;
+		}
+		else {
 
-		output.position = point_collision;
-		output.tangentBound = glm::normalize(reflected);
-		return output;
+			glm::vec2 prev_dir = border_vertices[start_index] - border_vertices[prev_index];
+			glm::vec2 curr_dir = border_vertices[next_index] - border_vertices[start_index];
+
+			glm::vec2 normal1 = glm::normalize(glm::vec2(-prev_dir.y, prev_dir.x));
+			glm::vec2 normal2 = glm::normalize(glm::vec2(-curr_dir.y, curr_dir.x));
+
+			if (glm::dot(normal1, ball_dir) > 0) normal1 = -normal1;
+			if (glm::dot(normal2, ball_dir) > 0) normal2 = -normal2;
+
+			glm::vec2 avg_normal = glm::normalize(normal1 + normal2);
+
+			glm::vec2 reflected = ball_dir - 2.0f * glm::dot(ball_dir, avg_normal) * avg_normal;
+
+			CollisionInfo output;
+
+			output.position = point_collision;
+			output.tangentBound = glm::normalize(reflected);
+			return output;
+		}
 	}
 
-	float sign = -cross2d(ball_dir, border_dir) < 0.f ? -1.f : 1.f;
-	border_dir *= sign;
+	//float sign = -cross2d(ball_dir, border_dir) < 0.f ? -1.f : 1.f;
+	//border_dir *= sign;
+	//float angle = angleBetweenVectors(ball_dir, border_dir);
+	//glm::vec2 tangent_bounce = glm::normalize(rotate(glm::normalize(border_dir), angle));
 
-	float angle = angleBetweenVectors(ball_dir, border_dir);
-	glm::vec2 tangent_bounce = glm::normalize(rotate(glm::normalize(border_dir), angle));
+	glm::vec2 tangent_bounce = glm::normalize(glm::reflect(ball_dir, perp_normalized(border_dir)));
+
 
 	CollisionInfo output;
 	output.position = point_collision;
@@ -272,18 +295,16 @@ std::vector<glm::vec2> GenerateRadiusBorder(const std::vector<glm::vec2>& origin
 
 	const std::vector<glm::vec2>& vertices = original_border;
 
-	for (size_t i = 1; i < vertices.size(); i++) {
+	for (size_t i = 0; i < vertices.size(); i++) {
 
 		Segment A, B;
 
-		if (i == vertices.size() - 1) {
-			A = { vertices[i - 1], vertices[i] };
-			B = { vertices[i], vertices[1] };
-		}
-		else {
-			A = { vertices[i - 1], vertices[i] };
-			B = { vertices[i], vertices[i + 1] };
-		}
+		size_t prev_index = i == 0 ? vertices.size() - 1 : i - 1;
+		size_t curr_index = i;
+		size_t next_index = (i + 1) % vertices.size();
+
+		A = { vertices[prev_index], vertices[curr_index] };
+		B = { vertices[curr_index], vertices[next_index] };
 
 		glm::vec2 dirA = A.begin - A.end;
 		glm::vec2 dirB = B.begin - B.end;
@@ -353,9 +374,6 @@ std::vector<glm::vec2> GenerateRadiusBorder(const std::vector<glm::vec2>& origin
 		}
 
 	}
-
-
-	output.push_back(output.front());
 
 	return output;
 }

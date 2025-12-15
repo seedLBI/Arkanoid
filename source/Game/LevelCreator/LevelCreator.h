@@ -13,13 +13,14 @@
 
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
+#include "Rendering/RenderObjects/TriangleInstanced/Render.Triangle.Instanced.h"
 
 class LevelCreator {
 public:
 	LevelCreator();
 	~LevelCreator();
 
-	void Draw(DebugCircle& circles, QuadInstanced& quads);
+	void Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInstanced& triangles);
 	void Update();
 
 	void Save();

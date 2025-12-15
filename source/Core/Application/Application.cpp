@@ -59,8 +59,12 @@ void Application::MainLoop() {
 		//levelCreator.Update();
 		//levelCreator.Draw(circles, quads);
 
-		game.Update();
-		game.Draw(triangles, quads, circles);
+		//game.Update();
+		//game.Draw(triangles, quads, circles);
+
+		game.UpdateDebug();
+		game.DrawDebug(triangles, quads, circles);
+
 
 		quads.Render();
 		circles.Render();

@@ -27,12 +27,39 @@
 
 
 class Game {
+private:
+
+	glm::vec2 debug_ball_begin = {0.f,0.f};
+	glm::vec2 debug_ball_end = {0.f,-0.01f};
+	Ball debug_ball;
+	float debug_FPS = 1.f;
+	float debug_deltaTime = 0.16f;
+
+	float debug_speed = 3.f;
+
+	float debug_length_path = 1.f;
+
+
+	std::vector<glm::vec2> debug_path;
+	float GetLengthPath();
+
+
+	void UpdateDebugInput();
+
+
+	void SetNextPosition(Ball& ball_, const  glm::vec2 tangent, const  glm::vec2 begin, const glm::vec2 end);
+
 public:
 	Game();
 	~Game();
 
 	void Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer);
 	void Update();
+
+	void DrawDebug(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer);
+	void UpdateDebug();
+
+
 
 	void Load(const nlohmann::json& dataLevel);
 
@@ -41,13 +68,11 @@ private:
 	Ball ball;
 
 	float speedAnim = 0.f;
-	float speedAnimValue = 1.5f;
+	float speedAnimValue = 0.2f;
 
 	BallSpawnPosition ballSpawn;
 	LevelBorder border;
 	std::vector<DestroyableObject> objs;
-
-	std::vector<glm::vec2> path;
 
 
 	struct TrailPoint {
@@ -59,7 +84,6 @@ private:
 	float LengthTrail = 0.5f;
 	int MAX_count_trail = 130;
 
-	std::vector<Triangle> trianglesBorder;
 
 	nlohmann::json data;
 
@@ -68,8 +92,8 @@ private:
 
 	void RespawnBall();
 	
-	bool ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2>& vertices);
-	bool ResolveCollision(const std::vector<glm::vec2>& vertices);
+	bool ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, Ball& ball_);
+	bool ResolveCollision(const std::vector<glm::vec2>& vertices, Ball& ball_);
 };
 
 #endif

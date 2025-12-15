@@ -21,7 +21,7 @@ float atan2(const glm::vec2& dir);
 
 glm::vec2 getPointOnCircle(const float& angle);
 
-bool isIntersectPointCircle(const glm::vec2& point,const glm::vec2& posCircle, const float& radius);
+bool Collision_Point_and_Circle(const glm::vec2& point,const glm::vec2& posCircle, const float& radius);
 bool isIntersectPointPolygon(const glm::vec2& point, const std::vector<glm::vec2>& polygon);
 
 glm::vec2 closestPointOnSegment(const glm::vec2& A, const glm::vec2& B, const glm::vec2& P);

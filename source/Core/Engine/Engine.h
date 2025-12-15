@@ -143,9 +143,10 @@ namespace engine {
 		};
 
 
+		GLFWwindow* GetHandle();
+
 		void SetCursor(const Cursor& type);
 
-		GLFWwindow* GetHandle();
 
 		void Centerize();
 		void Maximize();
@@ -183,7 +184,6 @@ namespace engine {
 		};
 
 		std::optional<std::string> OpenSaveDialog(const std::string& nameWindow, const std::vector<FileDialogFilter>& filters);
-
 		std::optional<std::string> OpenLoadDialog(const std::string& nameWindow, const std::vector<FileDialogFilter>& filters);
 	}
 

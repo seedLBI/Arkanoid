@@ -14,7 +14,7 @@ LevelCreator::~LevelCreator() {
 
 }
 
-void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
+void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInstanced& triangles) {
 	if (flag_MODE_CreatorBorder) {
 		quads.AddLine(glm::vec2(-1.f, -1.f), glm::vec2(-1.f,  1.f), glm::vec4(1.f), TranslateGlobalToScreen);
 		quads.AddLine(glm::vec2(-1.f,  1.f), glm::vec2( 1.f,  1.f), glm::vec4(1.f),   TranslateGlobalToScreen);
@@ -82,11 +82,11 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads) {
 	levelBorder.Draw(quads);
 	player.Draw(quads);
 	for (size_t i = 0; i < destroyable.size(); i++)
-		destroyable[i].Draw(quads);
+		destroyable[i].Draw(quads, triangles);
 
 
 
-
+	 
 
 
 
@@ -208,7 +208,7 @@ void LevelCreator::Update() {
 		index_vertex_cover = -1;
 		for (size_t i = 0; i < vertices_border.size(); i++) {
 
-			if (isIntersectPointCircle(mouse_global, vertices_border[i], TranslateScalar_ScreenToGlobal(radius_control_points))){
+			if (Collision_Point_and_Circle(mouse_global, vertices_border[i], TranslateScalar_ScreenToGlobal(radius_control_points))){
 
 				index_vertex_cover = i;
 
@@ -241,14 +241,14 @@ void LevelCreator::Update() {
 		ball_pos_hovered = false;
 		ball_tangent_hovered = false;
 
-		if (isIntersectPointCircle(mouse_global, ballSpawnPosition.globalPos, TranslateScalar_ScreenToGlobal(radius_control_points))) {
+		if (Collision_Point_and_Circle(mouse_global, ballSpawnPosition.globalPos, TranslateScalar_ScreenToGlobal(radius_control_points))) {
 			ball_pos_hovered = true;
 
 			if (engine::input::IsMousePressed(MOUSE_LEFT)) {
 				ball_pos_draging = true;
 			}
 		}
-		else if (isIntersectPointCircle(mouse_global, ballSpawnPosition.globalPos + ballSpawnPosition.tangent, TranslateScalar_ScreenToGlobal(radius_control_points))) {
+		else if (Collision_Point_and_Circle(mouse_global, ballSpawnPosition.globalPos + ballSpawnPosition.tangent, TranslateScalar_ScreenToGlobal(radius_control_points))) {
 			ball_tangent_hovered = true;
 
 			if (engine::input::IsMousePressed(MOUSE_LEFT)) {
@@ -277,7 +277,7 @@ void LevelCreator::Update() {
 
 		player_hovered = false;
 		
-		if (isIntersectPointCircle(mouse_global, global_pos_player, TranslateScalar_ScreenToGlobal(radius_control_player_position))) {
+		if (Collision_Point_and_Circle(mouse_global, global_pos_player, TranslateScalar_ScreenToGlobal(radius_control_player_position))) {
 			player_hovered = true;
 
 			if (engine::input::IsMousePressed(MOUSE_LEFT)) {
@@ -309,7 +309,7 @@ void LevelCreator::Update() {
 			index_destroyable_cover_vertex = -1;
 			for (size_t i = 0; i < mesh_destroyables[index_destroyable_choosed].size(); i++) {
 
-				if (isIntersectPointCircle(mouse_global, mesh_destroyables[index_destroyable_choosed][i], TranslateScalar_ScreenToGlobal(radius_control_points))) {
+				if (Collision_Point_and_Circle(mouse_global, mesh_destroyables[index_destroyable_choosed][i], TranslateScalar_ScreenToGlobal(radius_control_points))) {
 
 					index_destroyable_cover_vertex = i;
 

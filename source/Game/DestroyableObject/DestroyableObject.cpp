@@ -33,8 +33,17 @@ void DestroyableObject::UpdateRadius(const float& radius) {
 }
 
 
+void DestroyableObject::SetDamage(const float& damage) {
+	Health = glm::clamp(Health - damage, 0.f, MaxHealth);
+	UpdateColor();
+}
 
-void DestroyableObject::Draw(QuadInstanced& renderer) {
+bool DestroyableObject::IsShouldDelete() {
+	return Health <= 0.f;
+}
+
+
+void DestroyableObject::Draw(QuadInstanced& renderer, TriangleInstanced& triangles_renderer) {
 
 	if (this->mesh.empty()) return;
 
@@ -46,6 +55,9 @@ void DestroyableObject::Draw(QuadInstanced& renderer) {
 	}
 
 
+	for (size_t i = 0; i < triangles.size(); i++) {
+		triangles_renderer.Add(triangles[i], color, TranslateGlobalToScreen);
+	}
 }
 
 void DestroyableObject::DrawDebug(QuadInstanced& renderer) {
@@ -58,6 +70,11 @@ void DestroyableObject::DrawDebug(QuadInstanced& renderer) {
 	}
 
 	//renderer.AddRectangleLines(this->aabb.min, this->aabb.max, 1.f, glm::vec4(0.f, 0.f, 1.f, 0.4f), TranslateGlobalToScreen);
+}
+
+void DestroyableObject::UpdateColor() {
+	float time = 1.f - Health / MaxHealth;
+	color = colorFrom + time * (colorTo - colorFrom);
 }
 
 nlohmann::json DestroyableObject::Save() {
@@ -84,6 +101,19 @@ void DestroyableObject::Load(const nlohmann::json& data) {
 
 			mesh.push_back(point_mesh);
 		}
+
+		std::vector<glm::vec2> mesh_without_loop = mesh;
+		mesh_without_loop.pop_back();
+		triangles = MakeTriangulationEarClipping(mesh_without_loop);
+
+		Health = 100.f;
+		MaxHealth = 100.f;
+
+		colorFrom = glm::vec4(1.f, 1.f, 1.f, 1.f);
+		colorTo = glm::vec4(1.f, 0.f, 0.f, 0.f);
+
+		UpdateColor();
+
 
 	}
 
