@@ -34,6 +34,14 @@ void Game::DrawDebug(
 		ImGui::End();
 	}
 
+
+	for (auto& obj : objs) {
+		obj.DrawDebug(quads_renderer);
+	}
+
+	player.Draw(quads_renderer);
+	player.DrawDebug(quads_renderer);
+
 	border.Draw(quads_renderer);
 	border.DrawDebug(quads_renderer);
 
@@ -62,6 +70,7 @@ void Game::DrawDebug(
 	}
 
 }
+
 void Game::UpdateDebugInput() {
 	glm::vec2 global_mouse = TranslateScreenToGlobal(engine::input::GetMouseWindow());
 
@@ -107,6 +116,7 @@ float Game::GetLengthPath() {
 
 void Game::UpdateDebug() {
 	UpdateDebugInput();
+	player.Update();
 
 	debug_path.erase(debug_path.begin(), debug_path.end());
 	debug_path.clear();
@@ -152,40 +162,22 @@ void Game::UpdateDebug() {
 				return;
 			}
 
+			if (ResolveCollision(player.GetVertices(), debug_ball)) {
+				have_collision = true;
+			}
+
 			if (ResolveCollision(border.GetVertices(), debug_ball)) {
 				have_collision = true;
 			}
+
+
+
 
 			if (GetLengthPath() > debug_length_path)
 				return;
 
 			if (debug_path.size() > 1000)
 				return;
-
-			/*
-			if (isIntersectPointPolygon(debug_ball.path.end, border.GetVertices_OriginalBorder()) == false) {
-
-				glm::vec2 normal;
-				glm::vec2 closest = findClosestPointOnPolygon(border.GetVertices(), debug_ball.path.end, normal);
-
-				float len = glm::length(closest - debug_ball.path.end);
-
-				if (len > 0.0001f) {
-					glm::vec2 dir = glm::normalize(normal);
-
-
-					debug_ball.path.begin = closest + dir * len * 0.1f;
-					debug_ball.path.end = closest + dir * len;
-					debug_ball.tangent = dir;
-
-				}
-				else {
-					debug_ball.path.end = debug_ball.path.end - debug_ball.tangent;
-
-				}
-
-			}
-			*/
 
 
 			if (have_collision) {
@@ -208,6 +200,13 @@ void Game::UpdateDebug() {
 
 void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 
+#ifdef _DEBUG
+	player.DrawDebug(quads_renderer);
+	border.DrawDebug(quads_renderer);
+	for (auto& obj : objs) {
+		obj.DrawDebug(quads_renderer);
+	}
+#endif
 
 	player.Draw(quads_renderer);
 	border.Draw(quads_renderer);
@@ -225,6 +224,9 @@ void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_rend
 
 		circles_renderer.Add(pos, radius, color, TranslateGlobalToScreen);
 	}
+
+	quads_renderer.AddLine(ball.path.begin, ball.path.end, glm::vec4(0.f, 0.f, 1.f, 1.f), TranslateGlobalToScreen);
+
 
 	ball.Draw(circles_renderer);
 }
@@ -327,6 +329,7 @@ void Game::Update() {
 			have_collision = true;
 		}
 
+		/*
 		if (isIntersectPointPolygon(ball.path.end, border.GetVertices_OriginalBorder()) == false) {
 
 			glm::vec2 normal;
@@ -349,7 +352,7 @@ void Game::Update() {
 			}
 
 		}
-
+		*/
 
 
 
@@ -360,6 +363,7 @@ void Game::Update() {
 			player.ReactToCollision();
 		}
 
+		/*
 		if (isIntersectPointPolygon(ball.path.end, player.GetVertices())) {
 
 			glm::vec2 normal;
@@ -384,6 +388,9 @@ void Game::Update() {
 			ball.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 			player.ReactToCollision();
 		}
+		*/
+
+
 
 		bool WasCollision = true;
 
@@ -427,7 +434,7 @@ void Game::SetNextPosition(Ball& ball_,const glm::vec2 tangent, const  glm::vec2
 	ball_.path.begin = begin;
 	ball_.path.end   = end;
 
-	debug_path.push_back(ball_.path.begin);
+	//debug_path.push_back(ball_.path.begin);
 }
 
 bool Game::ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, Ball& ball_) {
