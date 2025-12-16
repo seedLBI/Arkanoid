@@ -151,7 +151,7 @@ void Player::Update() {
 
 void Player::UpdateRadius(const float& global_radius) {
 
-	mesh_border = GenerateRadiusBorder(this->mesh, global_radius, true);
+	mesh_border = GenerateRadiusBorder(this->fake_mesh, global_radius, true);
 	this->aabb = GetAABB(mesh_border);
 
 	updated_mesh_border.resize(mesh_border.size());
@@ -204,6 +204,12 @@ void Player::Load(const nlohmann::json& data) {
 
 		}
 
+		fake_mesh = mesh;
+
+		fake_mesh.insert(fake_mesh.begin(), { fake_mesh.front().x,1.f });
+		fake_mesh.insert(fake_mesh.end(),   { fake_mesh.back().x,1.f});
+
+
 		if (mesh.front() == mesh.back())
 			mesh.pop_back();
 
@@ -227,7 +233,7 @@ void Player::Load(const nlohmann::json& data) {
 
 
 
-		mesh_border = GenerateRadiusBorder(mesh, 0.05f, isClockwise(mesh, true));
+		mesh_border = GenerateRadiusBorder(fake_mesh, 0.05f, isClockwise(fake_mesh, true));
 		aabb = GetAABB(mesh_border);
 	}
 	else {

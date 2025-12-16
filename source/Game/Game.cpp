@@ -39,12 +39,10 @@ void Game::DrawDebug(
 	}
 
 
-	//for (auto& obj : objs) {
-	//	obj.DrawDebug(quads_renderer);
-	//}
-
-	//player.Draw(quads_renderer);
-	//player.DrawDebug(quads_renderer);
+	for (auto& obj : objs)
+		obj.DrawDebug(quads_renderer);
+	player.Draw(quads_renderer);
+	player.DrawDebug(quads_renderer);
 
 	border.Draw(quads_renderer);
 	border.DrawDebug(quads_renderer);
@@ -145,7 +143,7 @@ float Game::GetLengthPath() {
 
 void Game::UpdateDebug() {
 	UpdateDebugInput();
-	//player.Update();
+	player.Update();
 
 	if (!debug_flag_enable_path_tracer) {
 
@@ -185,64 +183,9 @@ void Game::UpdateDebug() {
 			debug_ball.path.end + nextDirection);
 
 
-		int count_check_collisions = 0;
-		const int MAX_COUNT_COLLISIONS_CHECK = 1;
-
-		
-		while (true) {
-
-			bool have_collision = false;
-
-			if (isnan(debug_ball.path.begin.x))
-			{
-				std::cout << "nan\n";
-				return;
-			}
-
-			//if (ResolveCollision(player.GetVertices(), debug_ball)) {
-			//	have_collision = true;
-			//}
-
-			if (ResolveCollision(border.GetVertices(), debug_ball)) {
-				have_collision = true;
-			}
-			/*
-			if (isIntersectPointPolygon(debug_ball.path.end, border.GetVertices()) == false) {
-				std::cout << "inside!!!\n";
-
-				glm::vec2 normal;
-				glm::vec2 closest = findClosestPointOnPolygon(border.GetVertices(), debug_ball.path.end, normal);
-				glm::vec2 dir = glm::normalize(glm::reflect(debug_ball.tangent, normal));
-
-				float len = glm::length(closest - debug_ball.path.end);
-
-				SetNextPosition(debug_ball, dir, closest + dir * len * 0.1f, closest + dir * len);
-			}
-			*/
-
-
-
-			if (GetLengthPath() > debug_length_path)
-				return;
-
-			if (debug_path.size() > 1000)
-				return;
-
-
-			if (have_collision) {
-				count_check_collisions++;
-			}
-			else
-				break;
-
-			if (count_check_collisions >= MAX_COUNT_COLLISIONS_CHECK)
-				break;
-
-		}
-		
+		ResolveCollision(debug_ball);
 
 	}
-
 }
 
 
@@ -362,112 +305,143 @@ void Game::Update() {
 	ball.path.begin = ball.path.end;
 	ball.path.end   = ball.path.begin + nextDirection;
 
-
-
-	//check collisions
-	int count_check_collisions = 0;
-	const int MAX_COUNT_COLLISIONS_CHECK = 1;
-
-	while (true) {
-
-		bool have_collision = false;
-
-
-
-		if (ResolveCollision(border.GetVertices(), ball, true)) {
-			have_collision = true;
-		}
-
-		if (ResolveCollision(player.GetVertices(), ball, false)) {
-			have_collision = true;
-			speedAnim = speedAnimValue;
-			ball.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
-			player.ReactToCollision();
-		}
-
-		bool WasCollision = true;
-
-		while (WasCollision) {
-			WasCollision = false;
-			for (size_t i = 0; i < objs.size(); i++) {
-				if (ResolveCollision(objs[i].GetCurrentAABB(), objs[i].GetVertices(), ball, false)) {
-					
-					objs[i].SetDamage(20.f);
-
-					if (objs[i].IsShouldDelete()) {
-						objs.erase(objs.begin() + i);
-					}
-
-
-					WasCollision = true;
-					have_collision = true;
-					break;
-				}
-			}
-		}
-
-
-		
-		if (have_collision) {
-			count_check_collisions++;
-		}
-		else
-			break;
-
-		if (count_check_collisions >= MAX_COUNT_COLLISIONS_CHECK)
-			break;
-
-	}
-	
+	ResolveCollision(ball);
 }
 
 
-void Game::SetNextPosition(Ball& ball_,const glm::vec2 tangent, const  glm::vec2 begin, const  glm::vec2 end) {
-	ball_.tangent    = tangent;
+void Game::SetNextPosition(Ball& ball_, const glm::vec2 tangent, const  glm::vec2 begin, const  glm::vec2 end) {
+	ball_.tangent = tangent;
 	ball_.path.begin = begin;
-	ball_.path.end   = end;
+	ball_.path.end = end;
 
 	//debug_path.push_back(ball_.path.begin);
 }
 
-bool Game::ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, Ball& ball_, bool alwaysInside ) {
+std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, bool alwaysInside) {
 
-	bool collision_have = Collision_Segment_and_AABB(ball.path, ball.radius, aabb);
-	if (!collision_have) return false;
+	bool collision_have = Collision_Segment_and_AABB(ball_.path, ball_.radius, aabb);
+	if (!collision_have) return std::nullopt;
 
-	return ResolveCollision(vertices, ball_, alwaysInside);
+	return TryCollision(ball_, vertices, alwaysInside);
 
 }
-bool Game::ResolveCollision(const std::vector<glm::vec2>& vertices, Ball& ball_, bool alwaysInside) {
+
+std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const std::vector<glm::vec2>& vertices, bool alwaysInside) {
+	return GetCollision(
+		vertices,
+		ball_.path.begin,
+		ball_.path.end,
+		alwaysInside
+	);
+}
+
+Game::ClosestCollisionData Game::GetClosestCollision(
+	Ball& ball_,
+	const std::vector<std::optional<CollisionInfo>>& collision_destroyable,
+	const std::optional<CollisionInfo>& collision_player,
+	const std::optional<CollisionInfo>& collision_border
+) {
+	ClosestCollisionData output;
+	output.index = 0;
+	output.object = COLLISION_OBJECT_TYPE::COLLISION_NOTHING;
+	output.info = std::nullopt;
+
+	float length_min = std::numeric_limits<float>::max();
+
+	auto calc_length = [&](const CollisionInfo& collision) ->float {
+		return glm::length(ball_.path.begin - collision.position);
+	};
+
+	if (collision_player.has_value()) {
+		float len = calc_length(collision_player.value());
+		if (len < length_min) {
+			length_min = len;
+			output.object = COLLISION_OBJECT_TYPE::COLLISION_PLAYER;
+			output.info = collision_player;
+		}
+	}
+
+	if (collision_border.has_value()) {
+		float len = calc_length(collision_border.value());
+		if (len < length_min) {
+			length_min = len;
+			output.object = COLLISION_OBJECT_TYPE::COLLISION_BORDER;
+			output.info = collision_border;
+		}
+	}
+
+	for (size_t i = 0; i < collision_destroyable.size(); i++) {
+
+		if (collision_destroyable[i].has_value()) {
+			float len = calc_length(collision_destroyable[i].value());
+			if (len < length_min) {
+				length_min = len;
+				output.object = COLLISION_OBJECT_TYPE::COLLISION_DESTROYABLE;
+				output.index = i;
+				output.info = collision_destroyable[i];
+			}
+		}
+	}
+
+	return output;
+}
+
+bool Game::ResolveCollision(Ball& ball_) {
 
 	int count_recals = 0;
-	int max_recalc = 100;
+	const int max_recalc = 100;
 
-	//std::cout << std::endl;
+	while (count_recals <= max_recalc) {
 
+		std::vector<std::optional<CollisionInfo>> collision_objects;
+		collision_objects.reserve(objs.size());
+		for (auto& obj : objs)
+			collision_objects.push_back(
+								 TryCollision(ball_, obj.GetCurrentAABB(), obj.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_OUTSIDE));
+		auto collision_player  = TryCollision(ball_, player.GetCurrentAABB(), player.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_OUTSIDE);
+		auto collision_border  = TryCollision(ball_, border.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_INSIDE);
 
-	while (true) {
-		std::optional<CollisionInfo> collision_point;
+		auto collisionData = GetClosestCollision(ball_, collision_objects, collision_player, collision_border);
 
-		if (count_recals == 0)
-			collision_point = GetCollision(vertices, ball_.path.begin, ball_.path.end, alwaysInside);
-		else
-			collision_point = GetCollision(vertices, ball_.path.begin + ball_.tangent * 0.001f, ball_.path.end, alwaysInside);
-
-		if (collision_point.has_value()) {
-
-			const CollisionInfo& collision = collision_point.value();
+		if (collisionData.info.has_value()) {
+			const CollisionInfo& collision = collisionData.info.value();
 
 			float length_after_collision = glm::length(ball_.path.end - collision.position);
 
-			SetNextPosition(ball_,
-				collision.tangentBound,
-				collision.position,
-				collision.position + collision.tangentBound * length_after_collision
-			);
+			if (length_after_collision < 1e-4f) {
+				SetNextPosition(ball_,
+					collision.tangentBound,
+					collision.position + collision.tangentBound * 0.0001f,
+					collision.position + collision.tangentBound * 0.001f
+				);
+			}
+			else {
+				SetNextPosition(ball_,
+					collision.tangentBound,
+					collision.position + collision.tangentBound * 0.0001f,
+					collision.position + collision.tangentBound * length_after_collision
+				);
+			}
 
-			if (GetLengthPath() > debug_length_path || debug_path.size() > 1000)
-				return true;
+			// reacting to collision
+			switch (collisionData.object) {
+			case COLLISION_OBJECT_TYPE::COLLISION_PLAYER:
+				speedAnim = speedAnimValue;
+				ball.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+				player.ReactToCollision();
+				break;
+			case COLLISION_OBJECT_TYPE::COLLISION_DESTROYABLE:
+				objs[collisionData.index].SetDamage(25.f);
+				if (objs[collisionData.index].IsShouldDelete())
+					objs.erase(objs.begin() + collisionData.index);
+				break;
+			default:
+				break;
+			}
+
+
+			//if (GetLengthPath() > debug_length_path || debug_path.size() > 1000)
+			//	return true;
 		}
 		else {
 			break;

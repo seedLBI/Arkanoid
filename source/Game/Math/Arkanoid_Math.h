@@ -38,7 +38,14 @@ float getAreaTriangle(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C
 bool isClockwise(const std::vector<glm::vec2>& polygon, bool yAxisUp = true);
 
 
+
+enum COLLISION_PUSH_TYPE {
+	ALWAYS_PUSH_INSIDE = true,
+	ALWAYS_PUSH_OUTSIDE = false,
+};
 std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_vertices, const glm::vec2& begin, const glm::vec2& end, bool always_inside = true);
+
+
 std::vector<glm::vec2> GenerateRadiusBorder(const std::vector<glm::vec2>& original_border, const float& radius, const bool& outer_border);
 
 

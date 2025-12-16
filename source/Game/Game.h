@@ -26,6 +26,7 @@
 
 
 
+
 class Game {
 private:
 
@@ -44,9 +45,7 @@ private:
 	std::vector<glm::vec2> debug_path;
 	float GetLengthPath();
 
-
 	void UpdateDebugInput();
-
 
 	void SetNextPosition(Ball& ball_, const  glm::vec2 tangent, const  glm::vec2 begin, const glm::vec2 end);
 
@@ -68,8 +67,8 @@ private:
 	Player player;
 	Ball ball;
 
-	float speedAnim = 1.7f;
-	float speedAnimValue = 3.f;
+	float speedAnim = 1.f;
+	float speedAnimValue = 1.f;
 
 	BallSpawnPosition ballSpawn;
 	LevelBorder border;
@@ -92,9 +91,33 @@ private:
 	void UpdateAnimValues();
 
 	void RespawnBall();
-	
-	bool ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, Ball& ball_, bool alwaysInside = false);
-	bool ResolveCollision(const std::vector<glm::vec2>& vertices, Ball& ball_, bool alwaysInside = false);
+
+	std::optional<CollisionInfo> TryCollision(Ball& ball_, const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, bool alwaysInside = false);
+	std::optional<CollisionInfo> TryCollision(Ball& ball_, const std::vector<glm::vec2>& vertices, bool alwaysInside = false);
+
+	enum COLLISION_OBJECT_TYPE {
+		COLLISION_NOTHING,
+		COLLISION_DESTROYABLE,
+		COLLISION_BORDER,
+		COLLISION_PLAYER
+	};
+
+	struct ClosestCollisionData {
+		size_t index = 0;
+		COLLISION_OBJECT_TYPE object = COLLISION_DESTROYABLE;
+		std::optional<CollisionInfo> info;
+	};
+
+	ClosestCollisionData GetClosestCollision(
+		Ball& ball_, 
+		const std::vector<std::optional<CollisionInfo>>& collision_destroyable,
+		const std::optional<CollisionInfo>& collision_player,
+		const std::optional<CollisionInfo>& collision_border
+	);
+
+
+
+	bool ResolveCollision(Ball& ball_);
 };
 
 #endif
