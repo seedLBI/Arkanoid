@@ -118,6 +118,9 @@ private:
 
 
 	bool ResolveCollision(Ball& ball_);
+
+	void ReactToCollision(const ClosestCollisionData& data);
+
 };
 
 #endif
