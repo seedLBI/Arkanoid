@@ -284,7 +284,7 @@ void Game::Update() {
 
 	player.Update();
 
-	if (ball.path.end.y > player.GetHeight() * 1.05f) {
+	if (ball.path.end.y > 0.62f) {
 		RespawnBall();
 	}
 
