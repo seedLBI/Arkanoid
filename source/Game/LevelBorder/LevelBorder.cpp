@@ -59,11 +59,22 @@ void LevelBorder::DrawDebug(QuadInstanced& renderer) {
 
 		renderer.AddLine(begin,end,1.f,glm::vec4(1.0f, 0.6f, 0.3f, 1.f),TranslateGlobalToScreen);
 
-		glm::vec2 perp = perp_normalized(getDirection(begin, end)) * 0.05f;
+		glm::vec2 perp = perp_normalized(getDirection(begin, end));
 		const glm::vec4 color_normal = glm::vec4{ 1.f,0.f,1.f,1.f };
 
-		renderer.AddLine(begin, begin + perp, 1.f, color_normal, TranslateGlobalToScreen);
-		renderer.AddLine(end, end + perp, 1.f, color_normal, TranslateGlobalToScreen);
+		renderer.AddLine(begin, begin + perp * 0.05f, 1.f, color_normal, TranslateGlobalToScreen);
+		renderer.AddLine(end,   end   + perp * 0.05f, 1.f, color_normal, TranslateGlobalToScreen);
+
+
+		glm::vec2 left_arrow  = end - rotate( perp, glm::pi<float>() / 3.f) * 0.03f;
+		glm::vec2 right_arrow = end - rotate(-perp, -glm::pi<float>() / 3.f) * 0.03f;
+
+
+		renderer.AddLine(end, left_arrow, 1.f, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
+		renderer.AddLine(end, right_arrow, 1.f, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
+		renderer.AddLine(left_arrow, right_arrow, 1.f, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
+
+
 
 	}
 }

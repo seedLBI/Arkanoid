@@ -127,6 +127,54 @@ glm::vec2 findClosestPointOnPolygon(const std::vector<glm::vec2>& polygon, const
 	return closestPoint;
 }
 
+std::optional<glm::vec2> findClosestIntersection_Segment_and_Polygon(const std::vector<glm::vec2>& polygon, const Segment& segment, glm::vec2& OutNormal, glm::vec2& OutDirection) {
+
+	std::vector<std::pair<size_t, glm::vec2>> collisions;
+
+	for (size_t i = 0; i < polygon.size(); i++) {
+		Segment border{ polygon[i], polygon[(i + 1) % polygon.size()] };
+
+		float time = getTimeCollisionBetweenTwoSegment(border, segment);
+		float time2 = getTimeCollisionBetweenTwoSegment(segment, border);
+
+
+		const float EPSILON = 1e-5f;
+
+		if (time > 1.f + EPSILON || time < 0.f - EPSILON ||
+			time2 > 1.f + EPSILON || time2 < 0.f - EPSILON)
+			continue;
+
+		glm::vec2 point = lerp(border, time);
+
+
+		bool duplicate = false;
+		for (const auto& existing : collisions) {
+			if (glm::length(point - existing.second) < EPSILON) {
+				duplicate = true;
+				break;
+			}
+		}
+		if (!duplicate) {
+			collisions.push_back({ i, point });
+		}
+	}
+
+	if (collisions.empty())
+		return std::nullopt;
+
+	std::sort(collisions.begin(), collisions.end(), [&](const auto& a, const auto& b) {
+		return glm::length(a.second - segment.begin) > glm::length(b.second - segment.begin);
+		});
+
+	size_t& index_segment = collisions.back().first;
+
+	OutDirection = glm::normalize(getDirection(polygon[index_segment], polygon[(index_segment + 1) % polygon.size()]));
+	OutNormal = perp_normalized(OutDirection);
+
+	return collisions.back().second;
+}
+
+
 glm::vec2 rotate(const glm::vec2& dir1, const float& angle) {
 	const glm::mat2 rot_mat = {
 		{cosf(angle),-sinf(angle)},
@@ -161,10 +209,65 @@ bool isClockwise(const std::vector<glm::vec2>& polygon, bool yAxisUp ) {
 }
 
 
-std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_vertices, const glm::vec2& begin, const glm::vec2& end) {
+std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_vertices, const glm::vec2& begin, const glm::vec2& end, bool always_inside) {
 	const Segment ball_path{ begin,end };
+	glm::vec2 direction_path = getDirection(begin, end);
 
 	std::vector<std::pair<size_t, glm::vec2>> collisions;
+
+	bool begin_in_polygon = isIntersectPointPolygon(begin, border_vertices);
+	bool end_in_polygon = isIntersectPointPolygon(end, border_vertices);
+
+	if (begin_in_polygon == false) {
+
+		glm::vec2 normal, direction;
+		auto near_point_data = findClosestIntersection_Segment_and_Polygon(border_vertices, { begin,end }, normal, direction);
+
+		if (near_point_data.has_value()) {
+			auto& near_point = near_point_data.value();
+
+
+			bool opposite = glm::dot(normal, direction_path) < 0.f? true: false;
+			CollisionInfo temp;
+
+			if (opposite)
+				temp.tangentBound = glm::normalize(glm::reflect(direction_path, normal));
+			else
+				temp.tangentBound = glm::normalize(direction_path);
+
+			temp.position = near_point + temp.tangentBound * 0.001f;
+			return temp;
+		}
+		else if (always_inside && end_in_polygon == false) {
+
+			glm::vec2 normal;
+
+			glm::vec2 near = findClosestPointOnPolygon(border_vertices, begin, normal);
+
+			CollisionInfo temp;
+			temp.tangentBound = glm::normalize(glm::reflect(direction_path, normal));
+			temp.position = near + temp.tangentBound * 0.001f;
+			return temp;
+
+		}
+
+	}
+
+
+	if (always_inside == false && begin_in_polygon == true && end_in_polygon == true) {
+
+		glm::vec2 normal;
+
+		glm::vec2 near = findClosestPointOnPolygon(border_vertices, begin, normal);
+
+		CollisionInfo temp;
+		temp.tangentBound = glm::normalize(glm::reflect(direction_path, normal));
+		temp.position = near + temp.tangentBound * 0.001f;
+		return temp;
+
+
+	}
+
 
 	for (size_t i = 0; i < border_vertices.size(); i++) {
 		Segment border{ border_vertices[i], border_vertices[(i + 1) % border_vertices.size()] };
@@ -224,15 +327,14 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 	
 	if (is_tight_corner) {
 		size_t start_index = time < 0.5f ? index : (index + 1) % border_vertices.size();
-		size_t prev_index = (start_index - 1) % border_vertices.size();
+		size_t prev_index = start_index==0 ? border_vertices.size() - 1 : start_index - 1;
 		size_t next_index = (start_index + 1) % border_vertices.size();
 
-		glm::vec2 prev_dir = getDirection(border_vertices[start_index], border_vertices[next_index]);
-		glm::vec2 curr_dir = getDirection(border_vertices[prev_index], border_vertices[start_index]);
-
+		glm::vec2 prev_dir = getDirection(border_vertices[prev_index], border_vertices[start_index]);
+		glm::vec2 curr_dir = getDirection(border_vertices[start_index], border_vertices[next_index]);
 
 		float cross = cross2d(prev_dir, curr_dir);
-		bool isConvex = cross < 0 ? false : true;
+		bool isConvex = cross > 0 ? false : true;
 
 		if (isConvex == false)
 		{
@@ -247,33 +349,12 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 			output.tangentBound = bisector;
 			return output;
 		}
-		else {
-
-			glm::vec2 normal1 = perp_normalized(prev_dir);
-			glm::vec2 normal2 = perp_normalized(curr_dir);
-
-			if (glm::dot(normal1, ball_dir) > 0) 
-				  normal1 = -normal1;
-			if (glm::dot(normal2, ball_dir) > 0) 
-				  normal2 = -normal2;
-
-			glm::vec2 avg_normal = glm::normalize(normal1 + normal2);
-
-			glm::vec2 reflected  = glm::normalize(glm::reflect(ball_dir, avg_normal));
-
-
-			CollisionInfo output;
-
-			output.position = point_collision;
-			output.tangentBound = reflected;
-			return output;
-		}
 	}
 	
+
+
 	glm::vec2 border_normal = perp_normalized(border_dir);
-
 	glm::vec2 tangent_bounce = glm::normalize(glm::reflect(ball_dir, border_normal));
-
 
 	CollisionInfo output;
 	output.position = point_collision;

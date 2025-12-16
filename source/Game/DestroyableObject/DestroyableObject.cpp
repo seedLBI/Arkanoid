@@ -113,8 +113,8 @@ void DestroyableObject::Load(const nlohmann::json& data) {
 
 		triangles = MakeTriangulationEarClipping(mesh);
 
-		Health = 100.f;
-		MaxHealth = 100.f;
+		Health = 21.f;
+		MaxHealth = 21.f;
 
 		colorFrom = glm::vec4(1.f, 1.f, 1.f, 1.f);
 		colorTo = glm::vec4(1.f, 0.f, 0.f, 0.f);

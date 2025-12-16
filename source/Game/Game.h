@@ -39,6 +39,7 @@ private:
 
 	float debug_length_path = 1.f;
 
+	bool debug_flag_enable_path_tracer = false;
 
 	std::vector<glm::vec2> debug_path;
 	float GetLengthPath();
@@ -67,8 +68,8 @@ private:
 	Player player;
 	Ball ball;
 
-	float speedAnim = 0.f;
-	float speedAnimValue = 0.2f;
+	float speedAnim = 1.7f;
+	float speedAnimValue = 3.f;
 
 	BallSpawnPosition ballSpawn;
 	LevelBorder border;
@@ -92,8 +93,8 @@ private:
 
 	void RespawnBall();
 	
-	bool ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, Ball& ball_);
-	bool ResolveCollision(const std::vector<glm::vec2>& vertices, Ball& ball_);
+	bool ResolveCollision(const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, Ball& ball_, bool alwaysInside = false);
+	bool ResolveCollision(const std::vector<glm::vec2>& vertices, Ball& ball_, bool alwaysInside = false);
 };
 
 #endif
