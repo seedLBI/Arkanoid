@@ -11,6 +11,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+
+#include "Game/Math/Triangle/Triangle.h"
+
 class TriangleInstanced {
 private:
 	struct InstanceData {
@@ -27,6 +30,11 @@ public:
 		const glm::vec2& p1,
 		const glm::vec2& p2,
 		const glm::vec2& p3,
+		const glm::vec4& color = glm::vec4(1.f),
+		glm::vec2(*func_transform)(const glm::vec2&) = nullptr);
+	
+	void Add(
+		const Triangle& triangle,
 		const glm::vec4& color = glm::vec4(1.f),
 		glm::vec2(*func_transform)(const glm::vec2&) = nullptr);
 

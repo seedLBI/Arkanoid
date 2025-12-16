@@ -69,7 +69,7 @@ protected:
 #endif // !_DEBUG
 
 #ifdef _DEBUG
-	const unsigned long long MAX_INSTANCES = 8192*4;
+	const unsigned long long MAX_INSTANCES = 8192*6;
 #endif // _DEBUG
 
 	std::vector<InstanceData> instances;

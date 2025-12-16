@@ -21,11 +21,14 @@ float atan2(const glm::vec2& dir);
 
 glm::vec2 getPointOnCircle(const float& angle);
 
-bool isIntersectPointCircle(const glm::vec2& point,const glm::vec2& posCircle, const float& radius);
+bool Collision_Point_and_Circle(const glm::vec2& point,const glm::vec2& posCircle, const float& radius);
 bool isIntersectPointPolygon(const glm::vec2& point, const std::vector<glm::vec2>& polygon);
 
 glm::vec2 closestPointOnSegment(const glm::vec2& A, const glm::vec2& B, const glm::vec2& P);
 glm::vec2 findClosestPointOnPolygon(const std::vector<glm::vec2>& polygon, const glm::vec2& P, glm::vec2& OutNormal);
+
+std::optional<glm::vec2> findClosestIntersection_Segment_and_Polygon(const std::vector<glm::vec2>& polygon, const Segment& segment, glm::vec2& OutNormal, glm::vec2& OutDirection);
+
 
 glm::vec2 getDirection(const glm::vec2& A, const glm::vec2& B);
 
@@ -35,7 +38,14 @@ float getAreaTriangle(const glm::vec2& A, const glm::vec2& B, const glm::vec2& C
 bool isClockwise(const std::vector<glm::vec2>& polygon, bool yAxisUp = true);
 
 
-std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_vertices, const glm::vec2& begin, const glm::vec2& end);
+
+enum COLLISION_PUSH_TYPE {
+	ALWAYS_PUSH_INSIDE = true,
+	ALWAYS_PUSH_OUTSIDE = false,
+};
+std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_vertices, const glm::vec2& begin, const glm::vec2& end, bool always_inside = true);
+
+
 std::vector<glm::vec2> GenerateRadiusBorder(const std::vector<glm::vec2>& original_border, const float& radius, const bool& outer_border);
 
 

@@ -6,13 +6,8 @@
 
 void DestroyableObject::SetMesh(const std::vector<glm::vec2>& mesh, const float& radius) {
 	this->mesh = mesh;
-	this->mesh.push_back(this->mesh.front());
-
 
 	this->collision_border = GenerateRadiusBorder(this->mesh, radius, isClockwise(this->mesh, true));
-
-
-
 	this->aabb = GetAABB(this->collision_border);
 }
 
@@ -33,31 +28,55 @@ void DestroyableObject::UpdateRadius(const float& radius) {
 }
 
 
+void DestroyableObject::SetDamage(const float& damage) {
+	Health = glm::clamp(Health - damage, 0.f, MaxHealth);
+	UpdateColor();
+}
 
-void DestroyableObject::Draw(QuadInstanced& renderer) {
+bool DestroyableObject::IsShouldDelete() {
+	return Health <= 0.f;
+}
+
+
+void DestroyableObject::Draw(QuadInstanced& renderer, TriangleInstanced& triangles_renderer) {
 
 	if (this->mesh.empty()) return;
 
-	for (size_t i = 0; i < this->mesh.size() - 1; i++) {
+	for (size_t i = 0; i < this->mesh.size(); i++) {
 		const glm::vec2& begin = this->mesh[i];
-		const glm::vec2& end   = this->mesh[i + 1];
+		const glm::vec2& end   = this->mesh[(i + 1) % this->mesh.size()];
 
-		renderer.AddLine(begin, end,2.f, glm::vec4(1.f, 0.f, 0.f, 1.f), TranslateGlobalToScreen);
+		renderer.AddLine(begin, end,  2.f, glm::vec4(1.f, 0.f, 0.f, 1.f), TranslateGlobalToScreen);
 	}
 
 
+	for (size_t i = 0; i < triangles.size(); i++) {
+		triangles_renderer.Add(triangles[i], color, TranslateGlobalToScreen);
+	}
 }
 
 void DestroyableObject::DrawDebug(QuadInstanced& renderer) {
 	if (this->collision_border.empty()) return;
-	for (size_t i = 0; i < this->collision_border.size() - 1; i++) {
-		const glm::vec2& begin = this->collision_border[i];
-		const glm::vec2& end = this->collision_border[i + 1];
 
-		renderer.AddLine(begin, end,1.f, glm::vec4(0.f, 1.f, 0.f, 0.2f), TranslateGlobalToScreen);
+	for (size_t i = 0; i < this->collision_border.size(); i++) {
+		glm::vec2& begin = collision_border[i];
+		glm::vec2& end   = collision_border[(i + 1) % collision_border.size()];
+
+		renderer.AddLine(begin, end, 1.f, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
+
+		glm::vec2 perp = perp_normalized(getDirection(begin, end)) * 0.05f;
+		const glm::vec4 color_normal = glm::vec4{ 1.f,0.4f,1.f,1.f };
+
+		renderer.AddLine(begin, begin + perp, 1.f, color_normal, TranslateGlobalToScreen);
+		renderer.AddLine(end, end + perp, 1.f, color_normal, TranslateGlobalToScreen);
 	}
 
-	//renderer.AddRectangleLines(this->aabb.min, this->aabb.max, 1.f, glm::vec4(0.f, 0.f, 1.f, 0.4f), TranslateGlobalToScreen);
+	renderer.AddRectangleLines(this->aabb.min, this->aabb.max, 1.f, glm::vec4(0.f, 0.f, 1.f, 0.2f), TranslateGlobalToScreen);
+}
+
+void DestroyableObject::UpdateColor() {
+	float time = 1.f - Health / MaxHealth;
+	color = colorFrom + time * (colorTo - colorFrom);
 }
 
 nlohmann::json DestroyableObject::Save() {
@@ -84,6 +103,24 @@ void DestroyableObject::Load(const nlohmann::json& data) {
 
 			mesh.push_back(point_mesh);
 		}
+		
+		if (mesh.front() == mesh.back())
+			mesh.pop_back();
+
+		if (isClockwise(mesh, true) == false) {
+			std::reverse(mesh.begin(), mesh.end());
+		}
+
+		triangles = MakeTriangulationEarClipping(mesh);
+
+		Health = 100.f;
+		MaxHealth = 100.f;
+
+		colorFrom = glm::vec4(1.f, 1.f, 1.f, 1.f);
+		colorTo = glm::vec4(1.f, 0.f, 0.f, 0.f);
+
+		UpdateColor();
+
 
 	}
 

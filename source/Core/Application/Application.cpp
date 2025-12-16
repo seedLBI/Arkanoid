@@ -57,10 +57,14 @@ void Application::MainLoop() {
 			engine::window::ToggleVSync();
 
 		//levelCreator.Update();
-		//levelCreator.Draw(circles, quads);
+		//levelCreator.Draw(circles, quads,triangles);
 
 		game.Update();
 		game.Draw(triangles, quads, circles);
+
+		//game.UpdateDebug();
+		//game.DrawDebug(triangles, quads, circles);
+
 
 		quads.Render();
 		circles.Render();

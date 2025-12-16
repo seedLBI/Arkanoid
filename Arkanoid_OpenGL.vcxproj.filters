@@ -513,9 +513,9 @@
     <CopyFileToFolders Include="resources\levels\TightCorners.level" />
     <CopyFileToFolders Include="resources\shaders\TriangleInstanced\TriangleInstanced.frag" />
     <CopyFileToFolders Include="resources\shaders\TriangleInstanced\TriangleInstanced.vert" />
+    <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
     <None Include="README.md" />
   </ItemGroup>

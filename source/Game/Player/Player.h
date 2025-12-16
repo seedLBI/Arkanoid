@@ -46,6 +46,7 @@ public:
 
 private:
 	std::vector<glm::vec2> mesh;
+	std::vector<glm::vec2> fake_mesh;
 	std::vector<glm::vec2> mesh_border;
 
 
@@ -55,7 +56,7 @@ private:
 
 
 	float fake_height_anim = 0.f;
-	float fake_height_anim_value = 0.02f;
+	float fake_height_anim_value = 0.03f;
 
 
 	glm::vec2 begin_position;

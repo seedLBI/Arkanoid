@@ -64,11 +64,9 @@ std::vector<Triangle> MakeTriangulationEarClipping(
 
 			}
 
-
 		}
 		if (!earFound) {
-			std::cout << "WHERE EAR?!?!?!?\n";
-			exit(-1);
+			return {};
 		}
 
 	}

@@ -54,6 +54,16 @@ void TriangleInstanced::Add(
 }
 
 
+void TriangleInstanced::Add(
+	const Triangle& triangle,
+	const glm::vec4& color,
+	glm::vec2(*func_transform)(const glm::vec2&)) {
+
+	Add(triangle.p1, triangle.p2, triangle.p3, color, func_transform);
+
+}
+
+
 void TriangleInstanced::Init() {
 	GLfloat vertices[] = { 
 		0.f, 0.f, 
