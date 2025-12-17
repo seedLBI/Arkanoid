@@ -31,27 +31,39 @@ void DestroyableObject::UpdateRadius(const float& radius) {
 void DestroyableObject::SetDamage(const float& damage) {
 	Health = glm::clamp(Health - damage, 0.f, MaxHealth);
 	UpdateColor();
+	colorAnim = colorTouched;
 }
 
 bool DestroyableObject::IsShouldDelete() {
 	return Health <= 0.f;
 }
 
+void DestroyableObject::Update() {
+	glm::vec2 center = (aabb.min + aabb.max) / 2.f;
+	float sin_height_offset = std::sinf(engine::time::GetProgrammTime() + center.y) * 0.5f + 0.5f;
+
+	colorAnim = colorAnim + engine::time::GetDeltaTime() * 5.f * ( glm::mix(color, colorShining, sin_height_offset * 0.5f) - colorAnim);
+
+
+
+
+
+
+}
 
 void DestroyableObject::Draw(QuadInstanced& renderer, TriangleInstanced& triangles_renderer) {
 
-	if (this->mesh.empty()) return;
-
+	/*
 	for (size_t i = 0; i < this->mesh.size(); i++) {
 		const glm::vec2& begin = this->mesh[i];
 		const glm::vec2& end   = this->mesh[(i + 1) % this->mesh.size()];
 
 		renderer.AddLine(begin, end,  2.f, glm::vec4(1.f, 0.f, 0.f, 1.f), TranslateGlobalToScreen);
 	}
-
+	*/
 
 	for (size_t i = 0; i < triangles.size(); i++) {
-		triangles_renderer.Add(triangles[i], color, TranslateGlobalToScreen);
+		triangles_renderer.Add(triangles[i], colorAnim, TranslateGlobalToScreen);
 	}
 }
 
@@ -116,8 +128,16 @@ void DestroyableObject::Load(const nlohmann::json& data) {
 		Health = 100.f;
 		MaxHealth = 100.f;
 
-		colorFrom = glm::vec4(1.f, 1.f, 1.f, 1.f);
+
+
+		colorFrom = glm::vec4(90.f/255.f, 55.f/255.f, 219.f/255.f, 1.f);
 		colorTo = glm::vec4(1.f, 0.f, 0.f, 0.f);
+		colorTouched = glm::vec4(1.f, 1.f, 1.f, 1.f);
+		colorShining = glm::vec4(1.f, 0.5f, 0.f, 1.f);
+
+
+		color = colorFrom;
+		colorAnim = color;
 
 		UpdateColor();
 

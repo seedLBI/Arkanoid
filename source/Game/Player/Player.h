@@ -62,6 +62,9 @@ private:
 	glm::vec2 begin_position;
 
 	glm::vec2 pos;
+	glm::vec2 posAnim;
+
+
 	glm::vec2 last_pos;
 
 	AABB_Region aabb;

@@ -6,7 +6,12 @@
 #include <imgui.h>
 
 Game::Game() {
+	shader_background = new Shader(
+		"Quad_Pattern_Backgrounnd",
+		(std::string)"resources/shaders/Quad/Quad.vert",
+		(std::string)"resources/shaders/Quad/Quad.Pattern.Pluses.frag");
 
+	engine::shader::BindUBO_MainBlock(*shader_background);
 }
 
 Game::~Game() {
@@ -44,7 +49,7 @@ void Game::DrawDebug(
 	player.Draw(quads_renderer);
 	player.DrawDebug(quads_renderer);
 
-	border.Draw(quads_renderer);
+	border.Draw(quads_renderer,triangles_renderer);
 	border.DrawDebug(quads_renderer);
 
 
@@ -190,6 +195,9 @@ void Game::UpdateDebug() {
 
 
 
+
+
+
 void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
 
 #ifdef _DEBUG
@@ -200,102 +208,41 @@ void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_rend
 	}
 #endif
 
+
+	shader_background->use();
+	quad_fullscreen.Draw();
+
+
 	player.Draw(quads_renderer);
-	border.Draw(quads_renderer);
+	border.Draw(quads_renderer, triangles_renderer);
 
 	for (auto& obj : objs) {
 		obj.Draw(quads_renderer, triangles_renderer);
 	}
 
-	for (size_t i = 0; i < trail.size(); i++) {
-		float time = (float)i / (float)trail.size();
-
-		const glm::vec2& pos = trail[i].pos;
-		float radius = TranslateScalar_GlobalToScreen(ball.radius) * time;
-		glm::vec4 color = ball.color + (1.f - time) * (glm::vec4(0.f, 0.f, 0.f, 0.f) - ball.color) ;
-
-		circles_renderer.Add(pos, radius, color, TranslateGlobalToScreen);
-	}
-
-	quads_renderer.AddLine(ball.path.begin, ball.path.end, glm::vec4(0.f, 0.f, 1.f, 1.f), TranslateGlobalToScreen);
-
-
 	ball.Draw(circles_renderer);
-}
-
-void Game::RespawnBall() {
-	ball.tangent = glm::normalize(ballSpawn.tangent);
-	ball.path.begin = ballSpawn.globalPos;
-	ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;
-	trail.clear();
-}
-
-void Game::TrailUpdate() {
-	if (trail.empty() == false) {
-		float len_last = glm::length(ball.path.begin - trail.back().pos);
-
-		if (!isnan(len_last)) {
-
-			const float len_need = LengthTrail / (float)MAX_count_trail;
-
-			int countAdd = len_last / len_need;
-			const glm::vec2 begin = ball.path.begin;
-			const glm::vec2 end = trail.back().pos;
-			for (int i = countAdd - 1; i >= 0; i--) {
-
-				float time = (len_need * (float)i) / len_last;
-
-				glm::vec2 pointAdd = lerp(begin, end, time);
-
-				trail.push_back({ pointAdd, engine::time::GetProgrammTime() });
-			}
-		}
-	}
-	else {
-		trail.push_back({ ball.path.begin,engine::time::GetProgrammTime() });
-	}
 
 
-	for (size_t i = 0; i < trail.size(); i++) {
-		auto& p = trail[i];
-		const float currentTime = engine::time::GetProgrammTime();
-
-		if (currentTime - p.timeCreation > LifeTimePoints) {
-			trail.erase(trail.begin() + i);
-			i--;
-		}
-	}
-	if (trail.size() > MAX_count_trail) {
-		trail.erase(trail.begin() , trail.end() - MAX_count_trail);
-	}
-}
-
-void Game::UpdateAnimValues() {
-	speedAnim = speedAnim + engine::time::GetDeltaTime() * (0.f - speedAnim);
-	ball.color = ball.color + engine::time::GetDeltaTime() * 2.f * (glm::vec4(1.f, 1.f, 1.f, 1.f) - ball.color);
-
-	ball.speed = 1.f + speedAnim;
 
 }
-
 void Game::Update() {
 	UpdateAnimValues();
-	TrailUpdate();
+	ball.Update();
 
 	player.Update();
+	for (auto& obj : objs)
+		obj.Update();
+
 
 	if (ball.path.end.y > 0.62f) {
 		RespawnBall();
 	}
-
 	if (engine::time::GetProgrammTime() <= 1.f)
 		return;
-
 
 	if (engine::input::IsKeyPressed(KEY_Z)) {
 		RespawnBall();
 	}
-
 
 	float deltaTime = engine::time::GetDeltaTime();
 	float speed = ball.speed;
@@ -303,10 +250,35 @@ void Game::Update() {
 
 	glm::vec2 nextDirection = tangent * speed * deltaTime;
 	ball.path.begin = ball.path.end;
-	ball.path.end   = ball.path.begin + nextDirection;
+	ball.path.end = ball.path.begin + nextDirection;
 
 	ResolveCollision(ball);
 }
+
+
+
+
+void Game::RespawnBall() {
+	ball.ResetAll();
+
+	ball.tangent = glm::normalize(ballSpawn.tangent);
+	ball.path.begin = ballSpawn.globalPos;
+	ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;
+}
+
+
+
+void Game::UpdateAnimValues() {
+	speedAnim = speedAnim + engine::time::GetDeltaTime() * (0.f - speedAnim);
+	ball.color = ball.color + engine::time::GetDeltaTime() * 2.f * (glm::vec4(1.f, 1.f, 1.f, 1.f) - ball.color);
+
+	ball.speed = 1.f + speedAnim;
+
+
+	engine::core::vars::view_scale = engine::core::vars::view_scale + engine::time::GetDeltaTime() * 2.f*(glm::vec2(1.f) - engine::core::vars::view_scale);
+
+}
+
 
 
 void Game::SetNextPosition(Ball& ball_, const glm::vec2 tangent, const  glm::vec2 begin, const  glm::vec2 end) {
@@ -317,21 +289,21 @@ void Game::SetNextPosition(Ball& ball_, const glm::vec2 tangent, const  glm::vec
 	//debug_path.push_back(ball_.path.begin);
 }
 
-std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, bool alwaysInside) {
+std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, COLLISION_PUSH_TYPE collision_push_type) {
 
 	bool collision_have = Collision_Segment_and_AABB(ball_.path, ball_.radius, aabb);
 	if (!collision_have) return std::nullopt;
 
-	return TryCollision(ball_, vertices, alwaysInside);
+	return TryCollision(ball_, vertices, collision_push_type);
 
 }
 
-std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const std::vector<glm::vec2>& vertices, bool alwaysInside) {
+std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const std::vector<glm::vec2>& vertices, COLLISION_PUSH_TYPE collision_push_type) {
 	return GetCollision(
 		vertices,
 		ball_.path.begin,
 		ball_.path.end,
-		alwaysInside
+		collision_push_type
 	);
 }
 
@@ -397,51 +369,15 @@ bool Game::ResolveCollision(Ball& ball_) {
 		collision_objects.reserve(objs.size());
 		for (auto& obj : objs)
 			collision_objects.push_back(
-								 TryCollision(ball_, obj.GetCurrentAABB(), obj.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_OUTSIDE));
+								 TryCollision(ball_,    obj.GetCurrentAABB(),    obj.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_OUTSIDE));
 		auto collision_player  = TryCollision(ball_, player.GetCurrentAABB(), player.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_OUTSIDE);
-		auto collision_border  = TryCollision(ball_, border.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_INSIDE);
+		auto collision_border  = TryCollision(ball_,                          border.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_INSIDE);
 
 		auto collisionData = GetClosestCollision(ball_, collision_objects, collision_player, collision_border);
 
 		if (collisionData.info.has_value()) {
-			const CollisionInfo& collision = collisionData.info.value();
-
-			float length_after_collision = glm::length(ball_.path.end - collision.position);
-
-			if (length_after_collision < 1e-4f) {
-				SetNextPosition(ball_,
-					collision.tangentBound,
-					collision.position + collision.tangentBound * 0.0001f,
-					collision.position + collision.tangentBound * 0.001f
-				);
-			}
-			else {
-				SetNextPosition(ball_,
-					collision.tangentBound,
-					collision.position + collision.tangentBound * 0.0001f,
-					collision.position + collision.tangentBound * length_after_collision
-				);
-			}
-
-			// reacting to collision
-			switch (collisionData.object) {
-			case COLLISION_OBJECT_TYPE::COLLISION_PLAYER:
-				speedAnim = speedAnimValue;
-				ball.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
-				player.ReactToCollision();
-				break;
-			case COLLISION_OBJECT_TYPE::COLLISION_DESTROYABLE:
-				objs[collisionData.index].SetDamage(25.f);
-				if (objs[collisionData.index].IsShouldDelete())
-					objs.erase(objs.begin() + collisionData.index);
-				break;
-			default:
-				break;
-			}
-
-
-			//if (GetLengthPath() > debug_length_path || debug_path.size() > 1000)
-			//	return true;
+			ApplyCollision(ball_, collisionData);
+			ReactToCollision(collisionData);
 		}
 		else {
 			break;
@@ -455,6 +391,49 @@ bool Game::ResolveCollision(Ball& ball_) {
 	return count_recals > 0;
 }
 
+void Game::ApplyCollision(Ball& ball_, const ClosestCollisionData& data) {
+	const CollisionInfo& collision = data.info.value();
+	float length_after_collision = glm::length(ball_.path.end - collision.position);
+	if (length_after_collision < 1e-4f) {
+		SetNextPosition(ball_,
+			collision.tangentBound,
+			collision.position + collision.tangentBound * 0.0001f,
+			collision.position + collision.tangentBound * 0.001f
+		);
+	}
+	else {
+		SetNextPosition(ball_,
+			collision.tangentBound,
+			collision.position + collision.tangentBound * 0.0001f,
+			collision.position + collision.tangentBound * length_after_collision
+		);
+	}
+}
+
+void Game::ReactToCollision(const ClosestCollisionData& data) {
+	switch (data.object) {
+
+	case COLLISION_OBJECT_TYPE::COLLISION_PLAYER:
+		speedAnim = speedAnimValue;
+		ball.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+		player.ReactToCollision();
+
+		engine::core::vars::view_scale = glm::vec2(1.025f);
+
+		break;
+
+
+	case COLLISION_OBJECT_TYPE::COLLISION_DESTROYABLE:
+		objs[data.index].SetDamage(25.f);
+		if (objs[data.index].IsShouldDelete())
+			objs.erase(objs.begin() + data.index);
+		break;
+
+
+	default:
+		break;
+	}
+}
 
 void Game::Load(const nlohmann::json& dataLevel) {
 	this->data = dataLevel;

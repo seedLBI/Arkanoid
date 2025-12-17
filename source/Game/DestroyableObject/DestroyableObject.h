@@ -1,6 +1,8 @@
 #ifndef DESTROYABLE_OBJECT_H
 #define DESTROYABLE_OBJECT_H
 
+#include "Core/Engine/Engine.h"
+
 #include "Game/Math/AABB/AABB.h"
 #include "Game/Math/Triangulation/EarClipping/Triangulation.EarClipping.h"
 
@@ -23,13 +25,19 @@ struct DestroyableObject {
 	float Health	= 100.f;
 	float MaxHealth = 100.f;
 	glm::vec4 color;
+	glm::vec4 colorAnim;
 
 	// for gradient
 	glm::vec4 colorFrom;
 	glm::vec4 colorTo;
+	glm::vec4 colorTouched;
+	glm::vec4 colorShining;
+
 
 	void SetDamage(const float& damage);
 	bool IsShouldDelete();
+
+	void Update();
 
 	void UpdateColor();
 

@@ -41,6 +41,11 @@ namespace engine {
 			extern GLFWwindow* handle_window;
 			extern FPS_Timer* fps_limiter;
 
+
+			extern glm::vec2 view_translate;
+			extern glm::vec2 view_scale;
+			extern float view_rotate_angle;
+
 			extern MainBlock mainBlock;
 			extern UBO<MainBlock>* ubo_mainBlock;
 

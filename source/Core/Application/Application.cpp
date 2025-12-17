@@ -66,11 +66,14 @@ void Application::MainLoop() {
 		//game.DrawDebug(triangles, quads, circles);
 
 
+		triangles.Render();
 		quads.Render();
 		circles.Render();
-		triangles.Render();
 
+
+#ifdef _DEBUG
 		DrawDebugOverlay();
+#endif
 		DrawEnd();
 	}
 }
@@ -101,7 +104,9 @@ void Application::DrawDebugOverlay() {
 
 
 void Application::DrawBegin() {
+#ifdef _DEBUG
 	ImGui_BeginDraw();
+#endif
 	engine::core::UpdateFrame();
 	glfwPollEvents();
 
@@ -110,7 +115,9 @@ void Application::DrawBegin() {
 
 }
 void Application::DrawEnd() {
+#ifdef _DEBUG
 	ImGui_EndDraw();
+#endif
 	glfwSwapBuffers(engine::window::GetHandle());
 	engine::time::LimitFrameRate();
 }

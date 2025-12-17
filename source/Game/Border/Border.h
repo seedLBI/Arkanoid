@@ -1,5 +1,5 @@
-#ifndef LEVEL_BORDER_H
-#define LEVEL_BORDER_H
+#ifndef BORDER_H
+#define BORDER_H
 
 #include <optional>
 #include <glm/glm.hpp>
@@ -7,17 +7,21 @@
 
 #include "Game/CollisionInfo/CollisionInfo.h"
 
+#include "Game/Math/Triangle/Triangle.h"
+#include "Game/Math/Triangulation/EarClipping/Triangulation.EarClipping.h"
+
 #include "Rendering/RenderObjects/DebugLine/Render.Debug.Line.h"
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"	
+#include "Rendering/RenderObjects/TriangleInstanced/Render.Triangle.Instanced.h"
 
 
-class LevelBorder {
+class Border {
 public:
-	LevelBorder();
-	LevelBorder(const std::vector<glm::vec2>& vertices, const float& global_radius);
-	~LevelBorder();
+	Border();
+	Border(const std::vector<glm::vec2>& vertices, const float& global_radius);
+	~Border();
 
-	void Draw(QuadInstanced& renderer);
+	void Draw(QuadInstanced& quads_renderer, TriangleInstanced& triangle_renderer);
 	void Draw(DebugLine& renderer);
 	void DrawDebug(QuadInstanced& renderer);
 
@@ -37,8 +41,11 @@ private:
 	const glm::vec4 color_borders = glm::vec4(1.f);
 
 	std::vector<glm::vec2> vertices;
-
 	std::vector<glm::vec2> vertices_inner;
+	std::vector<glm::vec2> vertices_outer;
+
+	std::vector<Triangle> triangulation;
+
 };
 
 

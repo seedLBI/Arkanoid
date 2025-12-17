@@ -17,12 +17,19 @@ namespace engine {
                 MainBlock& block = mainBlock;
 
                 glm::mat4 view = glm::mat4(1.f);
+                view = glm::rotate(view, view_rotate_angle, glm::vec3(0.f, 0.f, 1.f));
+                view = glm::translate(view, glm::vec3(view_translate, 0.f));
+                view = glm::scale(view, glm::vec3(view_scale, 1.f));
+
+
+
+
                 glm::mat4 proj = glm::ortho(0.f, block.Resolution.x, block.Resolution.y, 0.f, -1.f, 1.f);
 
                 block.deltaTime = fps_limiter->GetDeltaTime();
                 block.timeProgramm = glfwGetTime();
                 block.Resolution = engine::window::GetFramebufferSize();
-                block.projectionView = proj * view;
+                block.projectionView = view * proj;
 
                 currentCursor = engine::window::Cursor::Arrow;
 

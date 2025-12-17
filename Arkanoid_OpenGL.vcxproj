@@ -167,7 +167,7 @@
     <ClCompile Include="source\Game\Ball\Ball.cpp" />
     <ClCompile Include="source\Game\DestroyableObject\DestroyableObject.cpp" />
     <ClCompile Include="source\Game\Game.cpp" />
-    <ClCompile Include="source\Game\LevelBorder\LevelBorder.cpp" />
+    <ClCompile Include="source\Game\Border\Border.cpp" />
     <ClCompile Include="source\Game\LevelCreator\LevelCreator.cpp" />
     <ClCompile Include="source\Game\Math\AABB\AABB.cpp" />
     <ClCompile Include="source\Game\Math\Arkanoid_Math.cpp" />
@@ -222,7 +222,7 @@
     <ClInclude Include="source\Game\CollisionInfo\CollisionInfo.h" />
     <ClInclude Include="source\Game\DestroyableObject\DestroyableObject.h" />
     <ClInclude Include="source\Game\Game.h" />
-    <ClInclude Include="source\Game\LevelBorder\LevelBorder.h" />
+    <ClInclude Include="source\Game\Border\Border.h" />
     <ClInclude Include="source\Game\LevelCreator\LevelCreator.h" />
     <ClInclude Include="source\Game\Math\AABB\AABB.h" />
     <ClInclude Include="source\Game\Math\Arkanoid_Math.h" />
@@ -381,6 +381,14 @@
       <FileType>Document</FileType>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\TriangleInstanced</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\TriangleInstanced</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\shaders\Quad\Quad.Pattern.Pluses.frag">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\Quad</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\shaders\Quad\Quad.vert">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\Quad</DestinationFolders>
     </CopyFileToFolders>
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
   </ItemGroup>

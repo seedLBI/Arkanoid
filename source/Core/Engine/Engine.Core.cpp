@@ -7,6 +7,11 @@ namespace engine {
         namespace vars {
             GLFWwindow* handle_window = nullptr;
             FPS_Timer* fps_limiter = nullptr;
+
+            glm::vec2 view_translate = {0.f,0.f};
+            glm::vec2 view_scale = {1.f,1.f};
+            float view_rotate_angle = 0.f;
+
             MainBlock mainBlock;
             UBO<MainBlock>* ubo_mainBlock = nullptr;
 

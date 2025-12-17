@@ -43,7 +43,12 @@ enum COLLISION_PUSH_TYPE {
 	ALWAYS_PUSH_INSIDE = true,
 	ALWAYS_PUSH_OUTSIDE = false,
 };
-std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_vertices, const glm::vec2& begin, const glm::vec2& end, bool always_inside = true);
+
+std::optional<CollisionInfo> GetCollision(
+	const std::vector<glm::vec2>& border_vertices, 
+	const glm::vec2& begin, 
+	const glm::vec2& end, 
+	COLLISION_PUSH_TYPE collision_push_type = ALWAYS_PUSH_INSIDE);
 
 
 std::vector<glm::vec2> GenerateRadiusBorder(const std::vector<glm::vec2>& original_border, const float& radius, const bool& outer_border);

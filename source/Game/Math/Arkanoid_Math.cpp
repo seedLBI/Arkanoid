@@ -209,7 +209,12 @@ bool isClockwise(const std::vector<glm::vec2>& polygon, bool yAxisUp ) {
 }
 
 
-std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_vertices, const glm::vec2& begin, const glm::vec2& end, bool always_inside) {
+std::optional<CollisionInfo> GetCollision(
+	const std::vector<glm::vec2>& border_vertices, 
+	const glm::vec2& begin, 
+	const glm::vec2& end, 
+	COLLISION_PUSH_TYPE collision_push_type) {
+
 	const Segment ball_path{ begin,end };
 	glm::vec2 direction_path = getDirection(begin, end);
 
@@ -238,7 +243,7 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 			temp.position = near_point + temp.tangentBound * 0.001f;
 			return temp;
 		}
-		else if (always_inside && end_in_polygon == false) {
+		else if (collision_push_type == ALWAYS_PUSH_INSIDE && end_in_polygon == false) {
 
 			glm::vec2 normal;
 
@@ -254,7 +259,7 @@ std::optional<CollisionInfo> GetCollision(const std::vector<glm::vec2>& border_v
 	}
 
 
-	if (always_inside == false && begin_in_polygon == true && end_in_polygon == true) {
+	if (collision_push_type == ALWAYS_PUSH_OUTSIDE && begin_in_polygon == true && end_in_polygon == true) {
 
 		glm::vec2 normal;
 

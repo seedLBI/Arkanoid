@@ -79,7 +79,7 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInst
 	}
 
 
-	levelBorder.Draw(quads);
+	levelBorder.Draw(quads, triangles);
 	player.Draw(quads);
 	for (size_t i = 0; i < destroyable.size(); i++)
 		destroyable[i].Draw(quads, triangles);

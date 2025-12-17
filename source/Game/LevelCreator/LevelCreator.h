@@ -6,7 +6,7 @@
 
 #include "Game/CollisionInfo/CollisionInfo.h"
 #include "Game/DestroyableObject/DestroyableObject.h"
-#include "Game/LevelBorder/LevelBorder.h"
+#include "Game/Border/Border.h"
 #include "Game/Player/Player.h"
 #include "Game/BallSpawnPosition/BallSpawnPosition.h"
 
@@ -31,7 +31,7 @@ private:
 
 	// Border
 	bool flag_MODE_CreatorBorder = true;
-	LevelBorder levelBorder;
+	Border levelBorder;
 	std::vector<glm::vec2> vertices_border;
 
 	int index_vertex_cover = -1;

@@ -1,6 +1,11 @@
 #ifndef BALL_H
 #define BALL_H
 
+#include <vector>
+#include <deque>
+
+#include "Core/Engine/Engine.h"
+
 #include <glm/glm.hpp>
 #include "Game/Math/Segment/Segment.h"
 
@@ -17,6 +22,25 @@ struct Ball {
 
 	void Draw(DebugCircle& renderer);
 	void DrawDebug(DebugCircle& renderer, QuadInstanced& quads);
+
+
+	void Update();
+
+	void ResetAll();
+
+private:
+	struct TrailPoint {
+		glm::vec2 pos;
+		float timeCreation;
+	};
+	std::deque<TrailPoint> trail;
+	float LifeTimePoints = 0.5f;
+	float LengthTrail = 0.5f;
+	int MAX_count_trail = 130;
+
+	void TrailUpdate();
+
+
 };
 
 

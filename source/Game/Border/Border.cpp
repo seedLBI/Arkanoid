@@ -1,4 +1,4 @@
-#include "LevelBorder.h"
+#include "Border.h"
 
 #include "Game/Math/Segment/Segment.h"
 #include "Game/Math/Arkanoid_Math.h"
@@ -9,35 +9,46 @@
 #include <algorithm>
 
 
-LevelBorder::LevelBorder() {
+Border::Border() {
 
 }
 
-LevelBorder::LevelBorder(const std::vector<glm::vec2>& vertices_input, const float& global_radius) {
+Border::Border(const std::vector<glm::vec2>& vertices_input, const float& global_radius) {
 	vertices = vertices_input;
 	vertices_inner = GenerateRadiusBorder(vertices, global_radius, !isClockwise(this->vertices, true));
+	vertices_outer = GenerateRadiusBorder(vertices, global_radius, isClockwise(this->vertices, true));
+
+	triangulation = MakeTriangulationEarClipping(vertices_outer);
 }
 
-LevelBorder::~LevelBorder() {
+Border::~Border() {
 
 }
 
-const std::vector<glm::vec2>& LevelBorder::GetVertices() {
+const std::vector<glm::vec2>& Border::GetVertices() {
 	return vertices_inner;
 }
 
-const std::vector<glm::vec2>& LevelBorder::GetVertices_OriginalBorder() {
+const std::vector<glm::vec2>& Border::GetVertices_OriginalBorder() {
 	return vertices;
 }
 
-void LevelBorder::UpdateRadius(const float& global_radius) {
+void Border::UpdateRadius(const float& global_radius) {
 	vertices_inner = GenerateRadiusBorder(vertices, global_radius, !isClockwise(this->vertices, true));
+	vertices_outer = GenerateRadiusBorder(vertices, global_radius, isClockwise(this->vertices, true));
 	std::reverse(vertices_inner.begin(), vertices_inner.end());
+
+	triangulation = MakeTriangulationEarClipping(vertices_outer);
 }
 
-void LevelBorder::Draw(QuadInstanced& renderer) {
+void Border::Draw(QuadInstanced& renderer, TriangleInstanced& triangle_renderer) {
 	if (vertices.empty())
 		return;
+
+	for (size_t i = 0; i < triangulation.size(); i++) {
+		triangle_renderer.Add(triangulation[i], glm::vec4(0.f, 0.f, 0.f, 0.9f), TranslateGlobalToScreen);
+	}
+
 
 	for (size_t i = 0; i < vertices.size(); i++)
 		renderer.AddLine(
@@ -48,7 +59,7 @@ void LevelBorder::Draw(QuadInstanced& renderer) {
 			TranslateGlobalToScreen);
 }
 
-void LevelBorder::DrawDebug(QuadInstanced& renderer) {
+void Border::DrawDebug(QuadInstanced& renderer) {
 	if (vertices.empty())
 		return;
 
@@ -79,9 +90,11 @@ void LevelBorder::DrawDebug(QuadInstanced& renderer) {
 	}
 }
 
-void LevelBorder::Draw(DebugLine& renderer) {
+void Border::Draw(DebugLine& renderer) {
 	if (vertices.empty())
 		return;
+
+
 
 	for (size_t i = 0; i < vertices.size(); i++)
 		renderer.Add(vertices[i], vertices[(i + 1) % vertices.size()], 3.f, color_borders, TranslateGlobalToScreen);
@@ -90,13 +103,16 @@ void LevelBorder::Draw(DebugLine& renderer) {
 		renderer.Add(vertices_inner[i], vertices_inner[(i + 1) % vertices_inner.size()], 8.f, glm::vec4(0.2f, 1.f, 0.2f, 1.f), TranslateGlobalToScreen);
 }
 
-void LevelBorder::SetVertices(const std::vector<glm::vec2>& vertices, const float& global_radius) {
+void Border::SetVertices(const std::vector<glm::vec2>& vertices, const float& global_radius) {
 	this->vertices = vertices;
 	vertices_inner = GenerateRadiusBorder(this->vertices, global_radius, !isClockwise(this->vertices, true));
 	std::reverse(vertices_inner.begin(), vertices_inner.end());
+
+	vertices_outer = GenerateRadiusBorder(vertices, global_radius, isClockwise(this->vertices, true));
+	triangulation = MakeTriangulationEarClipping(vertices_outer);
 }
 
-nlohmann::json LevelBorder::Save() {
+nlohmann::json Border::Save() {
 	nlohmann::json output;
 	for (size_t i = 0; i < vertices.size(); i++) {
 		output[i]["x"] = vertices[i].x;
@@ -105,7 +121,7 @@ nlohmann::json LevelBorder::Save() {
 	return output;
 }
 
-void LevelBorder::Load(const nlohmann::json& data) {
+void Border::Load(const nlohmann::json& data) {
 
 	vertices.clear();
 	vertices.reserve(data.size());
@@ -125,6 +141,9 @@ void LevelBorder::Load(const nlohmann::json& data) {
 	if (isClockwise(vertices, true) == false) {
 		std::reverse(vertices.begin(), vertices.end());
 	}
+
+	vertices_outer = GenerateRadiusBorder(vertices, 0.05f, isClockwise(this->vertices, true));
+	triangulation = MakeTriangulationEarClipping(vertices_outer);
 
 	vertices_inner = GenerateRadiusBorder(this->vertices, 0.05f, !isClockwise(this->vertices, true));
 	std::reverse(vertices_inner.begin(), vertices_inner.end());

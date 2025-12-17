@@ -4,7 +4,6 @@
 
 
 Player::Player() {
-
 	glm::vec2 size = { 0.15f,0.02f };
 	this->mesh = { -size, {-size.x,size.y}, size, {size.x,-size.y} };
 
@@ -25,6 +24,7 @@ Player::Player() {
 	pos.x = (pos_left_bound + pos_right_bound) / 2.f;
 
 	begin_position = pos;
+	this->posAnim = pos;
 }
 
 Player::Player(const std::vector<glm::vec2>& mesh_player) {
@@ -46,6 +46,7 @@ Player::Player(const std::vector<glm::vec2>& mesh_player) {
 	pos.x = (pos_left_bound + pos_right_bound) / 2.f;
 
 	begin_position = pos;
+	this->posAnim = pos;
 }
 
 Player::~Player() {
@@ -54,7 +55,12 @@ Player::~Player() {
 
 void Player::Draw(QuadInstanced& renderer) {
 	for (size_t i = 0; i < mesh.size(); i++)
-		renderer.AddLine(mesh[i] + pos + glm::vec2{0.f, fake_height_anim}, mesh[(i + 1) % mesh.size()] + pos + glm::vec2{0.f, fake_height_anim}, 2.f, glm::vec4(1.f), TranslateGlobalToScreen);
+		renderer.AddLine(
+			mesh[i] + posAnim + glm::vec2{0.f, fake_height_anim}, 
+			mesh[(i + 1) % mesh.size()] + posAnim + glm::vec2{0.f, fake_height_anim}, 
+			2.f, 
+			glm::vec4(1.f), 
+			TranslateGlobalToScreen);
 }
 
 void Player::DrawDebug(QuadInstanced& renderer) {
@@ -95,6 +101,7 @@ void Player::SetRightBound(const float& global_value) {
 }
 void Player::SetBeginPosition(const glm::vec2& global_pos) {
 	this->pos = global_pos;
+	this->posAnim = pos;
 	this->begin_position = pos;
 }
 
@@ -134,18 +141,21 @@ void Player::Update() {
 
 	pos.x = glm::clamp(pos_center.x, pos_left_bound  + width/2.f, pos_right_bound - width/2.f);
 
+	posAnim = posAnim + engine::time::GetDeltaTime() * 20.f * (pos - posAnim);
+
+
 
 	for (size_t i = 0; i < mesh_border.size(); i++)
-		updated_mesh_border[i] = mesh_border[i] + pos;
+		updated_mesh_border[i] = mesh_border[i] + posAnim;
 
 	for (size_t i = 0; i < mesh.size(); i++)
-		updated_mesh[i] = mesh[i] + pos;
+		updated_mesh[i] = mesh[i] + posAnim;
 
 
 	updated_aabb = aabb;
 
-	updated_aabb.min += pos;
-	updated_aabb.max += pos;
+	updated_aabb.min += posAnim;
+	updated_aabb.max += posAnim;
 }
 
 
@@ -182,16 +192,20 @@ nlohmann::json Player::Save() {
 }
 void Player::Load(const nlohmann::json& data) {
 
+	pos_left_bound = data["left_bound"].get<float>();
+	pos_right_bound = data["right_bound"].get<float>();
+
 	pos.x = data["begin_pos"]["x"].get<float>();
 	pos.y = data["begin_pos"]["y"].get<float>();
 
 	begin_position = pos;
+	this->posAnim = pos;
 
 	mesh.clear();
 
 	if (data.contains("mesh"))
 	{
-		int sampleRate = 4;
+		int sampleRate = 10;
 		for (size_t i = 0; i <= sampleRate; i++)
 		{
 			float angle = -(glm::pi<float>() / (float)sampleRate) * (float)i;
@@ -246,6 +260,8 @@ void Player::Load(const nlohmann::json& data) {
 	updated_mesh_border = mesh_border;
 	updated_mesh = mesh;
 
+
+	/*
 	printf("\n\nPLAYER\n[");
 	for (size_t i = 0; i < mesh.size(); i++) {
 
@@ -263,9 +279,7 @@ void Player::Load(const nlohmann::json& data) {
 			printf(",");
 	}
 	printf("]\n");
-
-
-	pos_left_bound  = data["left_bound"].get<float>();
-	pos_right_bound = data["right_bound"].get<float>();
+	(/
+	*/
 
 }

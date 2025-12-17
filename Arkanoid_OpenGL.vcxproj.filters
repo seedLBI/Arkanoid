@@ -126,7 +126,7 @@
     <ClCompile Include="source\Core\Application\Application.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="source\Game\LevelBorder\LevelBorder.cpp">
+    <ClCompile Include="source\Game\Border\Border.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="source\Game\Math\Arkanoid_Math.cpp">
@@ -317,7 +317,7 @@
     <ClInclude Include="source\Game\Player\Player.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="source\Game\LevelBorder\LevelBorder.h">
+    <ClInclude Include="source\Game\Border\Border.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="source\Game\CollisionInfo\CollisionInfo.h">
@@ -514,6 +514,8 @@
     <CopyFileToFolders Include="resources\shaders\TriangleInstanced\TriangleInstanced.frag" />
     <CopyFileToFolders Include="resources\shaders\TriangleInstanced\TriangleInstanced.vert" />
     <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.vert" />
+    <CopyFileToFolders Include="resources\shaders\Quad\Quad.Pattern.Pluses.frag" />
+    <CopyFileToFolders Include="resources\shaders\Quad\Quad.vert" />
   </ItemGroup>
   <ItemGroup>
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
