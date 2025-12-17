@@ -54,7 +54,7 @@ void Border::Draw(QuadInstanced& renderer, TriangleInstanced& triangle_renderer)
 		renderer.AddLine(
 			vertices[i], 
 			vertices[(i + 1) % vertices.size()], 
-			2.f, 
+			5.f, 
 			color_borders, 
 			TranslateGlobalToScreen);
 }

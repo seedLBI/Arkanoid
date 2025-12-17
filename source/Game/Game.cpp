@@ -11,6 +11,7 @@ Game::Game() {
 		(std::string)"resources/shaders/Quad/Quad.vert",
 		(std::string)"resources/shaders/Quad/Quad.Pattern.Pluses.frag");
 
+	shader_background->use();
 	engine::shader::BindUBO_MainBlock(*shader_background);
 }
 

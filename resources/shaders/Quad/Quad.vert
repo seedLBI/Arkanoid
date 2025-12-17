@@ -10,6 +10,9 @@ layout (std140) uniform MainBlock {
     float deltaTime;
 };
 
+out vec2 input_uv;
+
 void main() {
-    gl_Position =  vec4((localUV - 0.5)*2.0, 0.0, 1.0);
+    gl_Position = projectionView * vec4(localPos * Resolution.xy, 0.0, 1.0);
+    input_uv = (localUV - 0.5)*2.0;
 }

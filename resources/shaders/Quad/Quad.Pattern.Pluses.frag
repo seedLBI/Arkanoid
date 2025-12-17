@@ -2,6 +2,8 @@
 
 out vec4 fragColor;
 
+in vec2 input_uv;
+
 layout (std140) uniform MainBlock {
     mat4 projectionView;
     vec2 Resolution;
@@ -47,8 +49,12 @@ vec3 hueShift(vec3 color, float hue) {
 
 void main() {
 
-    vec2 uv = (2.0*gl_FragCoord.xy - Resolution.xy)/Resolution.y;
+    vec2 uv = (2.0*input_uv - Resolution.xy)/Resolution.y;
     
+    uv = input_uv;
+    uv.x *= Resolution.x/Resolution.y;
+
+
     float time = timeProgramm;
     
     float s = sin((time*2.0 - PI)*0.5);    
