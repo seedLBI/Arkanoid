@@ -82,12 +82,12 @@ private:
 		Ball& ball_, 
 		const AABB_Region& aabb, 
 		const std::vector<glm::vec2>& vertices, 
-		COLLISION_PUSH_TYPE collision_push_type = ALWAYS_PUSH_INSIDE);
+		int collision_push_type = ALWAYS_PUSH_INSIDE);
 
 	std::optional<CollisionInfo> TryCollision(
 		Ball& ball_, 
 		const std::vector<glm::vec2>& vertices, 
-		COLLISION_PUSH_TYPE collision_push_type = ALWAYS_PUSH_INSIDE);
+		int collision_push_type = ALWAYS_PUSH_INSIDE);
 
 
 	enum COLLISION_OBJECT_TYPE {

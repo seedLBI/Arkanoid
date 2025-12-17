@@ -290,7 +290,7 @@ void Game::SetNextPosition(Ball& ball_, const glm::vec2 tangent, const  glm::vec
 	//debug_path.push_back(ball_.path.begin);
 }
 
-std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, COLLISION_PUSH_TYPE collision_push_type) {
+std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const AABB_Region& aabb, const std::vector<glm::vec2>& vertices, int collision_push_type) {
 
 	bool collision_have = Collision_Segment_and_AABB(ball_.path, ball_.radius, aabb);
 	if (!collision_have) return std::nullopt;
@@ -299,7 +299,7 @@ std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const AABB_Region& 
 
 }
 
-std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const std::vector<glm::vec2>& vertices, COLLISION_PUSH_TYPE collision_push_type) {
+std::optional<CollisionInfo> Game::TryCollision(Ball& ball_, const std::vector<glm::vec2>& vertices, int collision_push_type) {
 	return GetCollision(
 		vertices,
 		ball_.path.begin,
@@ -370,9 +370,9 @@ bool Game::ResolveCollision(Ball& ball_) {
 		collision_objects.reserve(objs.size());
 		for (auto& obj : objs)
 			collision_objects.push_back(
-								 TryCollision(ball_,    obj.GetCurrentAABB(),    obj.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_OUTSIDE));
-		auto collision_player  = TryCollision(ball_, player.GetCurrentAABB(), player.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_OUTSIDE);
-		auto collision_border  = TryCollision(ball_,                          border.GetVertices(), COLLISION_PUSH_TYPE::ALWAYS_PUSH_INSIDE);
+								 TryCollision(ball_,    obj.GetCurrentAABB(),    obj.GetVertices(), ALWAYS_PUSH_OUTSIDE));
+		auto collision_player  = TryCollision(ball_, player.GetCurrentAABB(), player.GetVertices(), ALWAYS_PUSH_OUTSIDE | BOUNCE_DIRECTION_EQUAL_NORMAL);
+		auto collision_border  = TryCollision(ball_,                          border.GetVertices(), ALWAYS_PUSH_INSIDE);
 
 		auto collisionData = GetClosestCollision(ball_, collision_objects, collision_player, collision_border);
 

@@ -213,7 +213,12 @@ std::optional<CollisionInfo> GetCollision(
 	const std::vector<glm::vec2>& border_vertices, 
 	const glm::vec2& begin, 
 	const glm::vec2& end, 
-	COLLISION_PUSH_TYPE collision_push_type) {
+	int collision_push_type) {
+
+	bool flag_push_inside = collision_push_type & ALWAYS_PUSH_INSIDE;
+	bool flag_push_outside = collision_push_type & ALWAYS_PUSH_OUTSIDE;
+	bool flag_bounce_direction_normal = collision_push_type & BOUNCE_DIRECTION_EQUAL_NORMAL;
+
 
 	const Segment ball_path{ begin,end };
 	glm::vec2 direction_path = getDirection(begin, end);
@@ -235,15 +240,25 @@ std::optional<CollisionInfo> GetCollision(
 			bool opposite = glm::dot(normal, direction_path) < 0.f? true: false;
 			CollisionInfo temp;
 
-			if (opposite)
-				temp.tangentBound = glm::normalize(glm::reflect(direction_path, normal));
-			else
-				temp.tangentBound = glm::normalize(direction_path);
+			if (opposite) {
+				
 
-			temp.position = near_point + temp.tangentBound * 0.001f;
+				if (flag_bounce_direction_normal) 
+					temp.tangentBound = glm::normalize(normal);
+				else
+					temp.tangentBound = glm::normalize(glm::reflect(direction_path, normal));
+
+			}
+			else {
+				temp.tangentBound = glm::normalize(direction_path);
+			}
+			if (flag_bounce_direction_normal)
+				temp.position = near_point + temp.tangentBound * 0.01f;
+			else
+				temp.position = near_point + temp.tangentBound * 0.001f;
 			return temp;
 		}
-		else if (collision_push_type == ALWAYS_PUSH_INSIDE && end_in_polygon == false) {
+		else if (flag_push_inside && end_in_polygon == false) {
 
 			glm::vec2 normal;
 
@@ -259,18 +274,22 @@ std::optional<CollisionInfo> GetCollision(
 	}
 
 
-	if (collision_push_type == ALWAYS_PUSH_OUTSIDE && begin_in_polygon == true && end_in_polygon == true) {
+	if (flag_push_outside && begin_in_polygon == true && end_in_polygon == true) {
 
 		glm::vec2 normal;
-
 		glm::vec2 near = findClosestPointOnPolygon(border_vertices, begin, normal);
 
 		CollisionInfo temp;
-		temp.tangentBound = glm::normalize(glm::reflect(direction_path, normal));
-		temp.position = near + temp.tangentBound * 0.001f;
+		if (flag_bounce_direction_normal) {
+			temp.tangentBound = glm::normalize(normal);
+			temp.position = near + temp.tangentBound * 0.05f;
+		}
+		else {
+			temp.tangentBound = glm::normalize(glm::reflect(direction_path, normal));
+			temp.position = near + temp.tangentBound * 0.001f;
+		}
+
 		return temp;
-
-
 	}
 
 
