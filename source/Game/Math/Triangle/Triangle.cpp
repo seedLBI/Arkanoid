@@ -15,6 +15,9 @@ float Triangle::getArea() const {
 	return getAreaTriangle(p1, p2, p3);
 }
 
+glm::vec2 Triangle::getCenter() {
+	return (p1 + p2 + p3) / 3.f;
+}
 
 bool Collision_Point_and_Triangle(const glm::vec2& point, const Triangle& triangle) {
 

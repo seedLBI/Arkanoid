@@ -35,7 +35,7 @@ void DestroyableObject::SetDamage(const float& damage) {
 }
 
 bool DestroyableObject::IsShouldDelete() {
-	return Health <= 0.f;
+	return time_fly_after_crack >= time_fly_after_crack_valueMAX;
 }
 
 void DestroyableObject::Update() {
@@ -44,11 +44,21 @@ void DestroyableObject::Update() {
 
 	colorAnim = colorAnim + engine::time::GetDeltaTime() * 5.f * ( glm::mix(color, colorShining, sin_height_offset * 0.5f) - colorAnim);
 
+	UpdateCrack();
+}
 
+void DestroyableObject::UpdateCrack() {
+	if (Health <= 0.f) {
+		time_fly_after_crack += engine::time::GetDeltaTime();
 
+		float speedFlyTriangles = 2.f;
 
-
-
+		for (size_t i = 0; i < triangles.size(); i++) {
+			triangles[i].p1 += direction_move_triangle[i] * engine::time::GetDeltaTime() * speedFlyTriangles;
+			triangles[i].p2 += direction_move_triangle[i] * engine::time::GetDeltaTime() * speedFlyTriangles;
+			triangles[i].p3 += direction_move_triangle[i] * engine::time::GetDeltaTime() * speedFlyTriangles;
+		}
+	}
 }
 
 void DestroyableObject::Draw(QuadInstanced& renderer, TriangleInstanced& triangles_renderer) {
@@ -61,6 +71,7 @@ void DestroyableObject::Draw(QuadInstanced& renderer, TriangleInstanced& triangl
 		renderer.AddLine(begin, end,  2.f, glm::vec4(1.f, 0.f, 0.f, 1.f), TranslateGlobalToScreen);
 	}
 	*/
+
 
 	for (size_t i = 0; i < triangles.size(); i++) {
 		triangles_renderer.Add(triangles[i], colorAnim, TranslateGlobalToScreen);
@@ -90,6 +101,17 @@ void DestroyableObject::UpdateColor() {
 	float time = 1.f - Health / MaxHealth;
 	color = colorFrom + time * (colorTo - colorFrom);
 }
+
+void DestroyableObject::SetCollisionPos(const glm::vec2& Collision) {
+	for (size_t i = 0; i < direction_move_triangle.size(); i++) {
+		direction_move_triangle[i] = glm::normalize(getDirection(Collision, triangles[i].getCenter()));
+	}
+}
+
+bool DestroyableObject::IsCollidable() {
+	return Health > 0.f;
+}
+
 
 nlohmann::json DestroyableObject::Save() {
 	nlohmann::json data;
@@ -124,6 +146,10 @@ void DestroyableObject::Load(const nlohmann::json& data) {
 		}
 
 		triangles = MakeTriangulationEarClipping(mesh);
+		direction_move_triangle.resize(triangles.size());
+
+
+
 
 		Health = 100.f;
 		MaxHealth = 100.f;
@@ -134,7 +160,7 @@ void DestroyableObject::Load(const nlohmann::json& data) {
 		colorTo = glm::vec4(1.f, 0.f, 0.f, 0.f);
 		colorTouched = glm::vec4(1.f, 1.f, 1.f, 1.f);
 		colorShining = glm::vec4(1.f, 0.5f, 0.f, 1.f);
-
+		colorCracked = glm::vec4(1.f, 0.3f, 0.3f, 0.3f);
 
 		color = colorFrom;
 		colorAnim = color;

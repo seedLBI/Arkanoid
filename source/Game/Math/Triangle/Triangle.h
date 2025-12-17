@@ -12,6 +12,7 @@ struct Triangle {
 	void DrawLine(QuadInstanced& renderer);
 
 	float getArea() const;
+	glm::vec2 getCenter();
 };
 
 

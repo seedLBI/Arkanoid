@@ -228,11 +228,27 @@ void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_rend
 }
 void Game::Update() {
 	UpdateAnimValues();
-	ball.Update();
-
 	player.Update();
+
 	for (auto& obj : objs)
 		obj.Update();
+
+	for (size_t i = 0; i < objs.size(); i++) {
+		auto& obj = objs[i];
+		if (obj.IsShouldDelete()) {
+			objs.erase(objs.begin() + i);
+			i--;
+		}
+	}
+
+
+	if (timeHitStop > 0.f)
+		return;
+
+	ball.Update();
+
+
+
 
 
 	if (ball.path.end.y > 0.62f) {
@@ -270,14 +286,22 @@ void Game::RespawnBall() {
 
 
 void Game::UpdateAnimValues() {
+
+	timeHitStop -= engine::time::GetDeltaTime();
+	timeHitStop = glm::clamp(timeHitStop, 0.f, 1.f);
+
+
+	if (timeHitStop > 0.f) {
+		return;
+	}
+
 	speedAnim = speedAnim + engine::time::GetDeltaTime() * (0.f - speedAnim);
 	ball.color = ball.color + engine::time::GetDeltaTime() * 2.f * (glm::vec4(1.f, 1.f, 1.f, 1.f) - ball.color);
 
 	ball.speed = 1.f + speedAnim;
 
-
-	engine::core::vars::view_scale = engine::core::vars::view_scale + engine::time::GetDeltaTime() * 2.f*(glm::vec2(1.f) - engine::core::vars::view_scale);
-
+	engine::core::vars::view_scale = engine::core::vars::view_scale + engine::time::GetDeltaTime() * 8.f * (glm::vec2(1.f) - engine::core::vars::view_scale);
+	engine::core::vars::view_translate = engine::core::vars::view_translate + engine::time::GetDeltaTime() * 8.f*(glm::vec2(0.f) - engine::core::vars::view_translate);
 }
 
 
@@ -369,7 +393,8 @@ bool Game::ResolveCollision(Ball& ball_) {
 		std::vector<std::optional<CollisionInfo>> collision_objects;
 		collision_objects.reserve(objs.size());
 		for (auto& obj : objs)
-			collision_objects.push_back(
+			if(obj.IsCollidable())
+				collision_objects.push_back(
 								 TryCollision(ball_,    obj.GetCurrentAABB(),    obj.GetVertices(), ALWAYS_PUSH_OUTSIDE));
 		auto collision_player  = TryCollision(ball_, player.GetCurrentAABB(), player.GetVertices(), ALWAYS_PUSH_OUTSIDE | BOUNCE_DIRECTION_EQUAL_NORMAL);
 		auto collision_border  = TryCollision(ball_,                          border.GetVertices(), ALWAYS_PUSH_INSIDE);
@@ -419,15 +444,18 @@ void Game::ReactToCollision(const ClosestCollisionData& data) {
 		ball.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 		player.ReactToCollision();
 
-		engine::core::vars::view_scale = glm::vec2(1.025f);
+
 
 		break;
 
 
 	case COLLISION_OBJECT_TYPE::COLLISION_DESTROYABLE:
 		objs[data.index].SetDamage(25.f);
-		if (objs[data.index].IsShouldDelete())
-			objs.erase(objs.begin() + data.index);
+		objs[data.index].SetCollisionPos(data.info.value().position);
+
+		timeHitStop = timeHitStop_valueMax;
+		engine::core::vars::view_scale = glm::vec2(1.05f);
+		engine::core::vars::view_translate = glm::normalize(data.info.value().tangentBound) * 0.1f;
 		break;
 
 

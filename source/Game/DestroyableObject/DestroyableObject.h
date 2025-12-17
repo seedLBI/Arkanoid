@@ -19,7 +19,15 @@
 struct DestroyableObject {
 	std::vector<glm::vec2> mesh;
 	std::vector<glm::vec2> collision_border;
+
 	std::vector<Triangle> triangles;
+	std::vector<glm::vec2> direction_move_triangle;
+
+	float time_fly_after_crack_valueMAX = 0.3f;
+	float time_fly_after_crack = 0.f;
+
+
+
 	AABB_Region aabb;
 
 	float Health	= 100.f;
@@ -32,12 +40,17 @@ struct DestroyableObject {
 	glm::vec4 colorTo;
 	glm::vec4 colorTouched;
 	glm::vec4 colorShining;
+	glm::vec4 colorCracked;
 
 
 	void SetDamage(const float& damage);
 	bool IsShouldDelete();
+	bool IsCollidable();
+
+	void SetCollisionPos(const glm::vec2& Collision);
 
 	void Update();
+	void UpdateCrack();
 
 	void UpdateColor();
 

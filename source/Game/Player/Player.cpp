@@ -212,7 +212,7 @@ void Player::Load(const nlohmann::json& data) {
 
 			glm::vec2 p = getPointOnCircle(angle) * 0.1f;
 
-			p.x *= 2.f;
+			p.x *= 3.f;
 
 			mesh.push_back(p);
 

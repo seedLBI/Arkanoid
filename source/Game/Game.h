@@ -62,7 +62,11 @@ private:
 	Ball ball;
 
 	float speedAnim = 1.f;
-	float speedAnimValue = 1.f;
+	float speedAnimValue = 3.f;
+
+
+	float timeHitStop = 0.f;
+	float timeHitStop_valueMax = 0.15f;
 
 	BallSpawnPosition ballSpawn;
 	Border border;
