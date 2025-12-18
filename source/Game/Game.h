@@ -7,7 +7,7 @@
 
 
 #include "Core/Engine/Engine.h"
-
+#include "Core/Font/Font.Atlas.h"
 
 #include "Game/BallSpawnPosition/BallSpawnPosition.h"
 #include "Game/DestroyableObject/DestroyableObject.h"
@@ -58,6 +58,8 @@ public:
 
 
 private:
+	FontAtlas font;
+	
 	Player player;
 	Ball ball;
 

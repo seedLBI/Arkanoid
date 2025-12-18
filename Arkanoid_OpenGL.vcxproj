@@ -163,6 +163,8 @@
     <ClCompile Include="source\Core\Engine\Engine.Shader.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Time.cpp" />
     <ClCompile Include="source\Core\Engine\Engine.Window.cpp" />
+    <ClCompile Include="source\Core\Font\Font.Atlas.cpp" />
+    <ClCompile Include="source\Core\Font\Font.Atlas.Structures.cpp" />
     <ClCompile Include="source\Game\BallSpawnPosition\BallSpawnPosition.cpp" />
     <ClCompile Include="source\Game\Ball\Ball.cpp" />
     <ClCompile Include="source\Game\DestroyableObject\DestroyableObject.cpp" />
@@ -216,6 +218,8 @@
     <ClInclude Include="source\Core\Engine\Engine.h" />
     <ClInclude Include="source\Core\Engine\Engine.Keyboard.Enums.h" />
     <ClInclude Include="source\Core\Engine\Engine.Mouse.Enums.h" />
+    <ClInclude Include="source\Core\Font\Font.Atlas.h" />
+    <ClInclude Include="source\Core\Font\Font.Atlas.Structures.h" />
     <ClInclude Include="source\Core\UBOs\MainBlock.h" />
     <ClInclude Include="source\Game\BallSpawnPosition\BallSpawnPosition.h" />
     <ClInclude Include="source\Game\Ball\Ball.h" />
@@ -390,6 +394,11 @@
       <FileType>Document</FileType>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\Quad</DestinationFolders>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\fonts\Chicoree.json">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+    </CopyFileToFolders>
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
   </ItemGroup>
   <ItemGroup>
@@ -405,6 +414,12 @@
     <Library Include="THIRD-PARTY\lib\imgui.lib" />
     <Library Include="THIRD-PARTY\lib\nfd.lib" />
     <Library Include="THIRD-PARTY\lib\OpenGL32.Lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="resources\fonts\Chicoree.png">
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,6 +13,8 @@ Game::Game() {
 
 	shader_background->use();
 	engine::shader::BindUBO_MainBlock(*shader_background);
+
+	font.Load("resources/fonts/Chicoree");
 }
 
 Game::~Game() {
