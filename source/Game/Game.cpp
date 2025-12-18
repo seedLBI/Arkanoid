@@ -14,11 +14,14 @@ Game::Game() {
 	shader_background->use();
 	engine::shader::BindUBO_MainBlock(*shader_background);
 
-	font.Load("resources/fonts/Chicoree");
 }
 
 Game::~Game() {
 
+}
+
+void Game::AttachFont(FontAtlas* font) {
+	this->font = font;
 }
 
 
@@ -201,7 +204,7 @@ void Game::UpdateDebug() {
 
 
 
-void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer) {
+void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer, TextInstanced& text_renderer) {
 
 #ifdef _DEBUG
 	player.DrawDebug(quads_renderer);
@@ -224,8 +227,6 @@ void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_rend
 	}
 
 	ball.Draw(circles_renderer);
-
-
 
 }
 void Game::Update() {

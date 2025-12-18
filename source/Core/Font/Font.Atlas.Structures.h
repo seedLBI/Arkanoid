@@ -50,6 +50,9 @@ struct FontAtlas_Bounds {
 	float top;
 
 	static FontAtlas_Bounds json_to_bounds(const nlohmann::json&);
+
+	void normalize(const float& maxValue);
+
 };
 
 struct FontAtlas_Glyph {

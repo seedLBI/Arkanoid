@@ -18,6 +18,7 @@ void FontAtlas::Load(const std::string& path2file_without_extension) {
 	tex_settings.WrapY = TextureWrap::CLAMP_TO_EDGE;
 
 	texture.SetSetting(tex_settings);
+	texture.Init();
 }
 
 void FontAtlas::parseJson(const nlohmann::json& json) {
@@ -59,8 +60,12 @@ void FontAtlas::parseJson(const nlohmann::json& json) {
 		if (glyphData.contains("planeBounds"))
 			glyph.planeBounds = FontAtlas_Bounds::json_to_bounds(glyphData["planeBounds"]);
 
-		if (glyphData.contains("atlasBounds"))
+		if (glyphData.contains("atlasBounds")) {
 			glyph.atlasBounds = FontAtlas_Bounds::json_to_bounds(glyphData["atlasBounds"]);
+			glyph.atlasBounds.normalize(this->atlas.height);
+		}
+
+
 
 		this->glyphs[unicode] = glyph;
 	}
@@ -71,8 +76,15 @@ const FontAtlas_Glyph& FontAtlas::getGlyph(const uint64_t& unicode) {
 	return this->glyphs[unicode];
 }
 
-const Texture& FontAtlas::getTexture() {
+Texture& FontAtlas::getTexture() {
 	return texture;
+}
+
+const FontAtlas_Info& FontAtlas::getAtlasInfo() {
+	return atlas;
+}
+const FontAtlas_Metrics& FontAtlas::getMetrics() {
+	return metrics;
 }
 
 

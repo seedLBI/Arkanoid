@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <string>
-#include <string>
 #include <sstream>
 #include <iomanip>
 #include "Utils/Text/Text.h"

@@ -25,6 +25,9 @@
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
 #include "Rendering/RenderObjects/Quad/Render.Quad.h"
 
+#include "Rendering/RenderObjects/TextInstanced/Render.TextInstanced.h"
+
+#include "Core/Text/Text.Atlas.h"
 
 
 class Game {
@@ -46,20 +49,22 @@ public:
 	Game();
 	~Game();
 
-	void Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer);
+	void Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer, TextInstanced& text_renderer);
 	void Update();
 
 	void Load(const nlohmann::json& dataLevel);
 
-
+	void AttachFont(FontAtlas* font);
 
 	void DrawDebug(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer);
 	void UpdateDebug();
 
 
 private:
-	FontAtlas font;
-	
+	FontAtlas* font;
+
+
+
 	Player player;
 	Ball ball;
 
@@ -78,6 +83,7 @@ private:
 
 	Shader* shader_background;
 	Quad quad_fullscreen;
+
 
 
 	void UpdateAnimValues();

@@ -54,3 +54,10 @@ FontAtlas_Bounds FontAtlas_Bounds::json_to_bounds(const nlohmann::json& jsonData
 
 	return output;
 }
+
+void FontAtlas_Bounds::normalize(const float& maxValue) {
+	this->bottom /= maxValue;
+	this->top /= maxValue;
+	this->left /= maxValue;
+	this->right /= maxValue;
+}

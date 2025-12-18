@@ -165,6 +165,7 @@
     <ClCompile Include="source\Core\Engine\Engine.Window.cpp" />
     <ClCompile Include="source\Core\Font\Font.Atlas.cpp" />
     <ClCompile Include="source\Core\Font\Font.Atlas.Structures.cpp" />
+    <ClCompile Include="source\Core\Text\Text.Atlas.cpp" />
     <ClCompile Include="source\Game\BallSpawnPosition\BallSpawnPosition.cpp" />
     <ClCompile Include="source\Game\Ball\Ball.cpp" />
     <ClCompile Include="source\Game\DestroyableObject\DestroyableObject.cpp" />
@@ -184,6 +185,7 @@
     <ClCompile Include="source\Rendering\RenderObjects\QuadInstanced\Render.Quad.Instanced.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\QuadTexture\Render.QuadTexture.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\Quad\Render.Quad.cpp" />
+    <ClCompile Include="source\Rendering\RenderObjects\TextInstanced\Render.TextInstanced.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\TriangleInstanced\Render.Triangle.Instanced.cpp" />
     <ClCompile Include="source\Utils\File\File.cpp" />
     <ClCompile Include="source\Utils\ImGui\Utils.ImGui.cpp" />
@@ -220,6 +222,7 @@
     <ClInclude Include="source\Core\Engine\Engine.Mouse.Enums.h" />
     <ClInclude Include="source\Core\Font\Font.Atlas.h" />
     <ClInclude Include="source\Core\Font\Font.Atlas.Structures.h" />
+    <ClInclude Include="source\Core\Text\Text.Atlas.h" />
     <ClInclude Include="source\Core\UBOs\MainBlock.h" />
     <ClInclude Include="source\Game\BallSpawnPosition\BallSpawnPosition.h" />
     <ClInclude Include="source\Game\Ball\Ball.h" />
@@ -241,6 +244,7 @@
     <ClInclude Include="source\Rendering\RenderObjects\QuadInstanced\Render.Quad.Instanced.h" />
     <ClInclude Include="source\Rendering\RenderObjects\QuadTexture\Render.QuadTexture.h" />
     <ClInclude Include="source\Rendering\RenderObjects\Quad\Render.Quad.h" />
+    <ClInclude Include="source\Rendering\RenderObjects\TextInstanced\Render.TextInstanced.h" />
     <ClInclude Include="source\Rendering\RenderObjects\TriangleInstanced\Render.Triangle.Instanced.h" />
     <ClInclude Include="source\ThirdParty\utf8.h" />
     <ClInclude Include="source\ThirdParty\utf8\checked.h" />
@@ -398,6 +402,16 @@
       <FileType>Document</FileType>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\fonts</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\shaders\TextInstanced\TextInstanced.frag">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\TextInstanced</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\TextInstanced</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\shaders\TextInstanced\TextInstanced.vert">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\TextInstanced</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\TextInstanced</DestinationFolders>
     </CopyFileToFolders>
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
   </ItemGroup>

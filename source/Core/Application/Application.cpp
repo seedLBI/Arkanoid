@@ -4,7 +4,7 @@
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"	
 #include "Rendering/RenderObjects/TriangleInstanced/Render.Triangle.Instanced.h"
-
+#include "Rendering/RenderObjects/TextInstanced/Render.TextInstanced.h"
 
 #include "Game/LevelCreator/LevelCreator.h"
 #include "Game/Game.h"
@@ -30,10 +30,19 @@ void Application::MainLoop() {
 	DebugCircle circles;
 	QuadInstanced quads;
 	TriangleInstanced triangles;
+	TextInstanced texts;
 
 	LevelCreator levelCreator;
 
+
+	FontAtlas font;
+	font.Load("resources/fonts/Chicoree");
+
+	texts.AttachTexture(font.getTexture());
+
+
 	Game game;
+	game.AttachFont(&font);
 
 	std::ifstream ifn("resources/levels/TightCorners.level");
 	nlohmann::json data_level = nlohmann::json::parse(ifn);
@@ -43,6 +52,9 @@ void Application::MainLoop() {
 
 
 	glfwSetTime(0.0);
+	auto test = makeText(u8"Привет! Oxlamon.", glm::vec4(1.f, 0.f, 1.f, 1.f), glm::vec4(0.f));
+
+
 
 	while (!engine::window::IsShouldClose()) {
 		DrawBegin();
@@ -59,17 +71,27 @@ void Application::MainLoop() {
 		//levelCreator.Update();
 		//levelCreator.Draw(circles, quads,triangles);
 
-		game.Update();
-		game.Draw(triangles, quads, circles);
+		//game.Update();
+		//game.Draw(triangles, quads, circles, texts);
 
 		//game.UpdateDebug();
 		//game.DrawDebug(triangles, quads, circles);
 
 
-		triangles.Render();
-		quads.Render();
-		circles.Render();
+		float size_text = 80.f + 550.f * (sinf(glfwGetTime()) * 0.5f + 0.5f);
 
+		glm::vec2 size = test.getSize(font, size_text, 0.f);
+		size.y *= -1.f;
+
+		test.addToRender(texts, font, engine::input::GetMouseWindow() , size_text, 0.f);
+
+		quads.AddLine({ 200.f,200.f }, { 800.f,200.f }, glm::vec4(0.f, 1.f, 1.f, 1.f), nullptr);
+
+		//triangles.Render();
+
+		//circles.Render();
+		texts.Render();
+		quads.Render();
 
 #ifdef _DEBUG
 		DrawDebugOverlay();
@@ -99,6 +121,15 @@ void Application::DrawDebugOverlay() {
 	ImGui::Text("FPS: %i", (int)ImGui::GetIO().Framerate);
 	ImGui::Text("Time: %f", engine::time::GetProgrammTime());
 	ImGui::Text("DeltaTime: %f", engine::time::GetDeltaTime());
+
+
+
+	glm::vec2 mouse_screen = engine::input::GetMouseScreen();
+	glm::vec2 mouse_global = TranslateScreenToGlobal(engine::input::GetMouseScreen());
+
+	ImGui::Text("Mouse (screen): (%f, %f)", mouse_screen.x, mouse_screen.y);
+	ImGui::Text("Mouse (global): (%f, %f)", mouse_global.x, mouse_global.y);
+
 	ImGui::End();
 }
 

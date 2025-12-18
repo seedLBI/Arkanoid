@@ -180,6 +180,12 @@
     <ClCompile Include="source\Core\Font\Font.Atlas.Structures.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="source\Rendering\RenderObjects\TextInstanced\Render.TextInstanced.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Core\Text\Text.Atlas.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Utils\File\File.h">
@@ -512,6 +518,12 @@
     <ClInclude Include="source\Core\Font\Font.Atlas.Structures.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="source\Rendering\RenderObjects\TextInstanced\Render.TextInstanced.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Core\Text\Text.Atlas.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\shaders\Debug\Circle\DebugCircle.frag" />
@@ -532,6 +544,8 @@
       <Filter>Файлы ресурсов</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\fonts\Chicoree.json" />
+    <CopyFileToFolders Include="resources\shaders\TextInstanced\TextInstanced.vert" />
+    <CopyFileToFolders Include="resources\shaders\TextInstanced\TextInstanced.frag" />
   </ItemGroup>
   <ItemGroup>
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
