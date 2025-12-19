@@ -546,6 +546,14 @@
     <CopyFileToFolders Include="resources\fonts\Chicoree.json" />
     <CopyFileToFolders Include="resources\shaders\TextInstanced\TextInstanced.vert" />
     <CopyFileToFolders Include="resources\shaders\TextInstanced\TextInstanced.frag" />
+    <CopyFileToFolders Include="resources\fonts\IBM.json" />
+    <CopyFileToFolders Include="resources\fonts\IBM.png">
+      <Filter>Файлы ресурсов</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\fonts\VCROSD.json" />
+    <CopyFileToFolders Include="resources\fonts\VCROSD.png">
+      <Filter>Файлы ресурсов</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />

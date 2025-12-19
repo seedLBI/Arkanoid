@@ -10,7 +10,7 @@ glm::vec2 TextAtlas::getSize(FontAtlas& atlas, const float& size, const float& s
 		const auto& glyph = atlas.getGlyph(text[i]);
 		x += glyph.advance * size + spacing;
 
-		y_max = (std::max)(y_max, glyph.planeBounds.top * size);
+		y_max = (std::max)(y_max, glyph.planeBounds.top    * size);
 		y_min = (std::min)(y_min, glyph.planeBounds.bottom * size);
 	}
 	x -= spacing;

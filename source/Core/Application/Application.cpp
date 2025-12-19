@@ -36,7 +36,7 @@ void Application::MainLoop() {
 
 
 	FontAtlas font;
-	font.Load("resources/fonts/Chicoree");
+	font.Load("resources/fonts/IBM");
 
 	texts.AttachTexture(font.getTexture());
 
@@ -78,12 +78,12 @@ void Application::MainLoop() {
 		//game.DrawDebug(triangles, quads, circles);
 
 
-		float size_text = 80.f + 550.f * (sinf(glfwGetTime()) * 0.5f + 0.5f);
+		float size_text = 80.f; //+ 100.f * (sinf(engine::time::GetProgrammTime()) * 0.5f + 0.5f);
 
 		glm::vec2 size = test.getSize(font, size_text, 0.f);
 		size.y *= -1.f;
 
-		test.addToRender(texts, font, engine::input::GetMouseWindow() , size_text, 0.f);
+		test.addToRender(texts, font, engine::input::GetMouseWindow()   - size/2.f, size_text, 0.f);
 
 		quads.AddLine({ 200.f,200.f }, { 800.f,200.f }, glm::vec4(0.f, 1.f, 1.f, 1.f), nullptr);
 
@@ -124,11 +124,15 @@ void Application::DrawDebugOverlay() {
 
 
 
-	glm::vec2 mouse_screen = engine::input::GetMouseScreen();
-	glm::vec2 mouse_global = TranslateScreenToGlobal(engine::input::GetMouseScreen());
+	glm::vec2 mouse_window_screen = engine::input::GetMouseWindow();
+	glm::vec2 mouse_window_global = TranslateScreenToGlobal(engine::input::GetMouseWindow());
+	glm::vec2 mouse_screen_screen = engine::input::GetMouseScreen();
+	glm::vec2 mouse_screen_global = TranslateScreenToGlobal(engine::input::GetMouseScreen());
 
-	ImGui::Text("Mouse (screen): (%f, %f)", mouse_screen.x, mouse_screen.y);
-	ImGui::Text("Mouse (global): (%f, %f)", mouse_global.x, mouse_global.y);
+	ImGui::Text("Mouse window (screen): (%f, %f)", mouse_window_screen.x, mouse_window_screen.y);
+	ImGui::Text("Mouse window (global): (%f, %f)", mouse_window_global.x, mouse_window_global.y);
+	ImGui::Text("Mouse screen (screen): (%f, %f)", mouse_screen_screen.x, mouse_screen_screen.y);
+	ImGui::Text("Mouse screen (global): (%f, %f)", mouse_screen_global.x, mouse_window_global.y);
 
 	ImGui::End();
 }

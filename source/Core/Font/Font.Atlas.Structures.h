@@ -44,10 +44,10 @@ struct FontAtlas_Metrics {
 };
 
 struct FontAtlas_Bounds {
-	float left;
-	float bottom;
-	float right;
-	float top;
+	float left = 0.f;
+	float bottom = 0.f;
+	float right = 0.f;
+	float top = 0.f;
 
 	static FontAtlas_Bounds json_to_bounds(const nlohmann::json&);
 
@@ -56,7 +56,7 @@ struct FontAtlas_Bounds {
 };
 
 struct FontAtlas_Glyph {
-	float advance;
+	float advance = 0.f;
 	FontAtlas_Bounds planeBounds;
 	FontAtlas_Bounds atlasBounds;
 };

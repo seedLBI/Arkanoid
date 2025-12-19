@@ -32,8 +32,20 @@ void main() {
      float dist_sdf  = texture(mtsdf_texture, fragUV).a;
      float dist_msdf = median(texture(mtsdf_texture, fragUV).rgb);
 
-     float screenPxDistance = 0.6 * screenPxRange() * (dist_msdf - 0.5);
+     float a = sin(timeProgramm) * 0.5 + 0.5;
+
+     float screenPxDistance = screenPxRange() * (dist_msdf - 0.5 * a);
+
+
+     //float base     = smoothstep(-0.2,1.0,screenPxDistance);
+     //float outline  = smoothstep(0.01,0.0,screenPxDistance);
+
+
+
      float opacity = clamp(screenPxDistance + 0.5, 0.0, 1.0);
+
+
+
 
      vec4 color = mix(vec4(0.0),color_base, opacity);
      fragColor = color;

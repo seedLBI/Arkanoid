@@ -413,6 +413,16 @@
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\shaders\TextInstanced</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\shaders\TextInstanced</DestinationFolders>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\fonts\IBM.json">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\fonts\VCROSD.json">
+      <FileType>Document</FileType>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+    </CopyFileToFolders>
     <None Include="THIRD-PARTY\debug\lib\glew32d.pdb" />
   </ItemGroup>
   <ItemGroup>
@@ -431,6 +441,16 @@
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\fonts\Chicoree.png">
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="resources\fonts\IBM.png">
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\fonts</DestinationFolders>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\fonts\VCROSD.png">
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\resources\fonts</DestinationFolders>
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)\resources\fonts</DestinationFolders>
     </CopyFileToFolders>
