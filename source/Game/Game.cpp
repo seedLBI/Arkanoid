@@ -4,6 +4,7 @@
 #include "Core/CoordinateSystem/CoordinateSystem.h"
 
 #include <imgui.h>
+#include <random>
 
 Game::Game() {
 	shader_background = new Shader(
@@ -200,10 +201,6 @@ void Game::UpdateDebug() {
 }
 
 
-
-
-
-
 void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_renderer, DebugCircle& circles_renderer, TextInstanced& text_renderer) {
 
 #ifdef _DEBUG
@@ -213,7 +210,6 @@ void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_rend
 		obj.DrawDebug(quads_renderer);
 	}
 #endif
-
 
 	shader_background->use();
 	quad_fullscreen.Draw();
@@ -227,6 +223,8 @@ void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_rend
 	}
 
 	ball.Draw(circles_renderer);
+
+	particle_text_manager_damage.Draw(text_renderer, *font);
 
 }
 void Game::Update() {
@@ -244,14 +242,12 @@ void Game::Update() {
 		}
 	}
 
+	ball.Update();
+
+	particle_text_manager_damage.Update();
 
 	if (timeHitStop > 0.f)
 		return;
-
-	ball.Update();
-
-
-
 
 
 	if (ball.path.end.y > 0.62f) {
@@ -275,9 +271,6 @@ void Game::Update() {
 	ResolveCollision(ball);
 }
 
-
-
-
 void Game::RespawnBall() {
 	ball.ResetAll();
 
@@ -285,8 +278,6 @@ void Game::RespawnBall() {
 	ball.path.begin = ballSpawn.globalPos;
 	ball.path.end = ballSpawn.globalPos + glm::normalize(ballSpawn.tangent) * ball.radius;
 }
-
-
 
 void Game::UpdateAnimValues() {
 
@@ -306,8 +297,6 @@ void Game::UpdateAnimValues() {
 	engine::core::vars::view_scale = engine::core::vars::view_scale + engine::time::GetDeltaTime() * 8.f * (glm::vec2(1.f) - engine::core::vars::view_scale);
 	engine::core::vars::view_translate = engine::core::vars::view_translate + engine::time::GetDeltaTime() * 8.f*(glm::vec2(0.f) - engine::core::vars::view_translate);
 }
-
-
 
 void Game::SetNextPosition(Ball& ball_, const glm::vec2 tangent, const  glm::vec2 begin, const  glm::vec2 end) {
 	ball_.tangent = tangent;
@@ -459,6 +448,28 @@ void Game::ReactToCollision(const ClosestCollisionData& data) {
 		timeHitStop = timeHitStop_valueMax;
 		engine::core::vars::view_scale = glm::vec2(1.05f);
 		engine::core::vars::view_translate = glm::normalize(data.info.value().tangentBound) * 0.1f;
+
+		if (objs[data.index].IsCollidable() == false) {
+
+			std::vector<std::pair<std::string, glm::vec4>> phrases = {
+				{u8"Жоска", glm::vec4(1.f,0.1f,0.1f,1.f)},
+				{u8"Домашний", glm::vec4(1.f,0.5f,0.5f,1.f)},
+				{u8"Сюда", glm::vec4(0.f,1.f,0.2f,1.f)},
+				{u8"Чел хорош!", glm::vec4(0.5f,0.3f,1.0f,1.f)}
+			};
+
+			int index_add = rand() % phrases.size();
+
+			auto& phrase = phrases[index_add];
+
+
+			particle_text_manager_damage.Add(phrase.first, 0.2f, data.info.value().position, { 0.f,-1.f }, phrase.second);
+		}
+		else {
+			particle_text_manager_damage.Add("-20", 0.1f, data.info.value().position, { 0.f,-1.f }, glm::vec4(1.f));
+		}
+
+
 		break;
 
 

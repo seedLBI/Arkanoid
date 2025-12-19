@@ -34,9 +34,9 @@ private:
 		float timeCreation;
 	};
 	std::deque<TrailPoint> trail;
-	float LifeTimePoints = 0.5f;
+	float LifeTimePoints = 10.5f;
 	float LengthTrail = 0.5f;
-	int MAX_count_trail = 130;
+	int MAX_count_trail = 150;
 
 	void TrailUpdate();
 

@@ -34,7 +34,7 @@ void main() {
 
      float a = sin(timeProgramm) * 0.5 + 0.5;
 
-     float screenPxDistance = screenPxRange() * (dist_msdf - 0.5 * a);
+     float screenPxDistance = screenPxRange() * (dist_msdf - 0.5);
 
 
      //float base     = smoothstep(-0.2,1.0,screenPxDistance);

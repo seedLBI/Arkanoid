@@ -2,6 +2,9 @@
 
 glm::vec2 TextAtlas::getSize(FontAtlas& atlas, const float& size, const float& spacing) {
 
+	if (text.empty())
+		return glm::vec2{ 0.f,0.f };
+	
 	float y_min = std::numeric_limits<float>::max();
 	float y_max = std::numeric_limits<float>::min();
 

@@ -9,8 +9,6 @@
 #include "Game/LevelCreator/LevelCreator.h"
 #include "Game/Game.h"
 
-
-
 #include "Core/Colors/Colors.h"
 
 
@@ -71,31 +69,32 @@ void Application::MainLoop() {
 		//levelCreator.Update();
 		//levelCreator.Draw(circles, quads,triangles);
 
-		//game.Update();
-		//game.Draw(triangles, quads, circles, texts);
+		game.Update();
+		game.Draw(triangles, quads, circles, texts);
 
 		//game.UpdateDebug();
 		//game.DrawDebug(triangles, quads, circles);
 
 
-		float size_text = 80.f; //+ 100.f * (sinf(engine::time::GetProgrammTime()) * 0.5f + 0.5f);
+		//float size_text = 80.f; //+ 100.f * (sinf(engine::time::GetProgrammTime()) * 0.5f + 0.5f);
 
-		glm::vec2 size = test.getSize(font, size_text, 0.f);
-		size.y *= -1.f;
+		//glm::vec2 size = test.getSize(font, size_text, 0.f);
+		//size.y *= -1.f;
 
-		test.addToRender(texts, font, engine::input::GetMouseWindow()   - size/2.f, size_text, 0.f);
+		//test.addToRender(texts, font, engine::input::GetMouseWindow()   - size/2.f, size_text, 0.f);
 
-		quads.AddLine({ 200.f,200.f }, { 800.f,200.f }, glm::vec4(0.f, 1.f, 1.f, 1.f), nullptr);
 
-		//triangles.Render();
 
-		//circles.Render();
+		//quads.AddLine({ 200.f,200.f }, { 800.f,200.f }, glm::vec4(0.f, 1.f, 1.f, 1.f), nullptr);
+
+		triangles.Render();
+		circles.Render();
 		texts.Render();
 		quads.Render();
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 		DrawDebugOverlay();
-#endif
+//#endif
 		DrawEnd();
 	}
 }
@@ -139,9 +138,9 @@ void Application::DrawDebugOverlay() {
 
 
 void Application::DrawBegin() {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	ImGui_BeginDraw();
-#endif
+//#endif
 	engine::core::UpdateFrame();
 	glfwPollEvents();
 
@@ -150,9 +149,9 @@ void Application::DrawBegin() {
 
 }
 void Application::DrawEnd() {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	ImGui_EndDraw();
-#endif
+//#endif
 	glfwSwapBuffers(engine::window::GetHandle());
 	engine::time::LimitFrameRate();
 }

@@ -30,6 +30,9 @@
 #include "Core/Text/Text.Atlas.h"
 
 
+#include "Game/Particles/Text/Particle.Text.Manager.h"
+
+
 class Game {
 private:
 
@@ -63,7 +66,7 @@ public:
 private:
 	FontAtlas* font;
 
-
+	ParticleTextManager particle_text_manager_damage;
 
 	Player player;
 	Ball ball;

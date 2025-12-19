@@ -19,7 +19,10 @@ layout (std140) uniform MainBlock {
 out vec4  color;
 
 void main() {
-    vec2 vertexes[3] = {instance_vertex_1, instance_vertex_2, instance_vertex_3}; 
+    vec2 vertexes[3];
+    vertexes[0] = instance_vertex_1;
+    vertexes[1] = instance_vertex_2;
+    vertexes[2] = instance_vertex_3;
     gl_Position = projectionView * vec4(vertexes[gl_VertexID], 0.0, 1.0);
 
     color = instance_color;
