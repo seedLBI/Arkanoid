@@ -34,7 +34,7 @@ void Application::MainLoop() {
 
 
 	FontAtlas font;
-	font.Load("resources/fonts/IBM");
+	font.Load("resources/fonts/VCROSD");
 
 	texts.AttachTexture(font.getTexture());
 
@@ -92,9 +92,9 @@ void Application::MainLoop() {
 		texts.Render();
 		quads.Render();
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 		DrawDebugOverlay();
-//#endif
+#endif
 		DrawEnd();
 	}
 }
@@ -138,9 +138,9 @@ void Application::DrawDebugOverlay() {
 
 
 void Application::DrawBegin() {
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	ImGui_BeginDraw();
-//#endif
+#endif
 	engine::core::UpdateFrame();
 	glfwPollEvents();
 
@@ -149,9 +149,9 @@ void Application::DrawBegin() {
 
 }
 void Application::DrawEnd() {
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	ImGui_EndDraw();
-//#endif
+#endif
 	glfwSwapBuffers(engine::window::GetHandle());
 	engine::time::LimitFrameRate();
 }

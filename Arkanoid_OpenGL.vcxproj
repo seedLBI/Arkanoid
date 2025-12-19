@@ -177,7 +177,7 @@
     <ClCompile Include="source\Game\Math\Triangle\Triangle.cpp" />
     <ClCompile Include="source\Game\Math\Triangulation\EarClipping\Triangulation.EarClipping.cpp" />
     <ClCompile Include="source\Game\Math\Triangulation\Greedy\Triangulation.Greedy.cpp" />
-    <ClCompile Include="source\Game\Particles\Text\Particle.Text.cpp" />
+    <ClCompile Include="source\Game\Particles\Sparks\Particle.Spark.Manager.cpp" />
     <ClCompile Include="source\Game\Particles\Text\Particle.Text.Manager.cpp" />
     <ClCompile Include="source\Game\Player\Player.cpp" />
     <ClCompile Include="source\Game\Math\Segment\Segment.cpp" />
@@ -238,6 +238,8 @@
     <ClInclude Include="source\Game\Math\Triangle\Triangle.h" />
     <ClInclude Include="source\Game\Math\Triangulation\EarClipping\Triangulation.EarClipping.h" />
     <ClInclude Include="source\Game\Math\Triangulation\Greedy\Triangulation.Greedy.h" />
+    <ClInclude Include="source\Game\Particles\Sparks\Particle.Spark.h" />
+    <ClInclude Include="source\Game\Particles\Sparks\Particle.Spark.Manager.h" />
     <ClInclude Include="source\Game\Particles\Text\Particle.Text.h" />
     <ClInclude Include="source\Game\Particles\Text\Particle.Text.Manager.h" />
     <ClInclude Include="source\Game\Player\Player.h" />
