@@ -24,34 +24,35 @@ Application::~Application() {
 }
 
 void Application::MainLoop() {
-	DebugLine lines;
-	DebugCircle circles;
-	QuadInstanced quads;
+	// renderer
+	DebugLine		  lines;
+	DebugCircle		  circles;
+	QuadInstanced	  quads;
 	TriangleInstanced triangles;
-	TextInstanced texts;
-
-	LevelCreator levelCreator;
+	TextInstanced	  texts;
 
 
 	FontAtlas font;
-	font.Load("resources/fonts/VCROSD");
-
-	texts.AttachTexture(font.getTexture());
 
 
+	LevelCreator levelCreator;
 	Game game;
+	
+	
+	font.Load("resources/fonts/VCROSD");
+	texts.AttachTexture(font.getTexture());
 	game.AttachFont(&font);
 
+
+
 	std::ifstream ifn("resources/levels/TightCorners.level");
-	nlohmann::json data_level = nlohmann::json::parse(ifn);
+		game.Load(nlohmann::json::parse(ifn));
 	ifn.close();
 
-	game.Load(data_level);
+	
 
 
 	glfwSetTime(0.0);
-	auto test = makeText(u8"Привет! Oxlamon.", glm::vec4(1.f, 0.f, 1.f, 1.f), glm::vec4(0.f));
-
 
 
 	while (!engine::window::IsShouldClose()) {
@@ -74,16 +75,13 @@ void Application::MainLoop() {
 
 		//game.UpdateDebug();
 		//game.DrawDebug(triangles, quads, circles);
-
-
+		
 		//float size_text = 80.f; //+ 100.f * (sinf(engine::time::GetProgrammTime()) * 0.5f + 0.5f);
 
 		//glm::vec2 size = test.getSize(font, size_text, 0.f);
 		//size.y *= -1.f;
 
 		//test.addToRender(texts, font, engine::input::GetMouseWindow()   - size/2.f, size_text, 0.f);
-
-
 
 		//quads.AddLine({ 200.f,200.f }, { 800.f,200.f }, glm::vec4(0.f, 1.f, 1.f, 1.f), nullptr);
 

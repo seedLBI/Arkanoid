@@ -31,6 +31,7 @@
 
 
 #include "Game/Particles/Text/Particle.Text.Manager.h"
+#include "Game/Particles/Sparks/Particle.Spark.Manager.h"
 
 
 class Game {
@@ -67,6 +68,7 @@ private:
 	FontAtlas* font;
 
 	ParticleTextManager particle_text_manager_damage;
+	ParticleSparkManager particle_spark_manager;
 
 	Player player;
 	Ball ball;

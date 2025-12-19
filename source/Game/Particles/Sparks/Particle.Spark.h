@@ -4,10 +4,13 @@
 #include <glm/glm.hpp>
 
 struct ParticleSpark {
+	glm::vec2 lastPos;
 	glm::vec2 pos;
 	glm::vec2 dir;
 	float speed;
 	float size;
+
+	float length;
 
 	float timeCrated;
 	float timeLife;

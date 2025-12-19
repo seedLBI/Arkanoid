@@ -148,7 +148,7 @@ void Border::Load(const nlohmann::json& data) {
 	vertices_inner = GenerateRadiusBorder(this->vertices, 0.05f, !isClockwise(this->vertices, true));
 	std::reverse(vertices_inner.begin(), vertices_inner.end());
 
-
+	/*
 	printf("\n\nBorder\n[");
 	for (size_t i = 0; i < vertices.size(); i++) {
 
@@ -167,5 +167,6 @@ void Border::Load(const nlohmann::json& data) {
 			printf(",");
 	}
 	printf("]\n");
+	*/
 
 }

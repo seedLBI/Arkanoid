@@ -4,6 +4,8 @@
 #include "Core/Engine/Engine.h"
 #include "Particle.Spark.h"
 
+#include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
+
 #include <vector>
 
 
@@ -12,7 +14,7 @@ public:
 	ParticleSparkManager();
 	~ParticleSparkManager();
 
-	void Draw();
+	void Draw(QuadInstanced& quad_renderer);
 	void Update();
 
 	void Add(
