@@ -6,6 +6,9 @@
 
 #include "Utils/OpenGL/Enums/OpenGL.Enums.h"
 
+
+// https://github.com/psycholns/TinyDX11/blob/master/Main.cpp
+
 class Application {
 public:
 	Application();
