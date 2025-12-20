@@ -5,21 +5,25 @@ glm::vec2 TextAtlas::getSize(FontAtlas& atlas, const float& size, const float& s
 	if (text.empty())
 		return glm::vec2{ 0.f,0.f };
 	
-	float y_min = std::numeric_limits<float>::max();
-	float y_max = std::numeric_limits<float>::min();
+	//float y_min = std::numeric_limits<float>::max();
+	//float y_max = std::numeric_limits<float>::min();
 
 	float x = 0.f;
 	for (size_t i = 0; i < text.size(); i++) {
 		const auto& glyph = atlas.getGlyph(text[i]);
 		x += glyph.advance * size + spacing;
 
-		y_max = (std::max)(y_max, glyph.planeBounds.top    * size);
-		y_min = (std::min)(y_min, glyph.planeBounds.bottom * size);
+		//y_max = (std::max)(y_max, glyph.planeBounds.top    * size);
+		//y_min = (std::min)(y_min, glyph.planeBounds.bottom * size);
 	}
 	x -= spacing;
 
-	float x_min = atlas.getGlyph(text.front()).planeBounds.left;
-	float x_max = x + atlas.getGlyph(text.back()).planeBounds.right;
+	float x_min = size * atlas.getGlyph(text.front()).planeBounds.left;
+	float x_max = x + size * atlas.getGlyph(text.back()).planeBounds.right;
+
+	float y_min = size * atlas.getMetrics().descender;
+	float y_max = size * atlas.getMetrics().ascender;
+
 
 	float width = x_max - x_min;
 	float height = y_max - y_min;

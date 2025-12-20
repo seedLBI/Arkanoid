@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -181,6 +181,7 @@
     <ClCompile Include="source\Game\Particles\Text\Particle.Text.Manager.cpp" />
     <ClCompile Include="source\Game\Player\Player.cpp" />
     <ClCompile Include="source\Game\Math\Segment\Segment.cpp" />
+    <ClCompile Include="source\Game\Score\Game.Score.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\DebugCircle\Render.Debug.Circle.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\DebugLine\Render.Debug.Line.cpp" />
     <ClCompile Include="source\Rendering\RenderObjects\QuadInstancedTextured\Render.Quad.Instanced.Textured.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="source\Game\Particles\Text\Particle.Text.Manager.h" />
     <ClInclude Include="source\Game\Player\Player.h" />
     <ClInclude Include="source\Game\Math\Segment\Segment.h" />
+    <ClInclude Include="source\Game\Score\Game.Score.h" />
     <ClInclude Include="source\Rendering\RenderObjects\DebugCircle\Render.Debug.Circle.h" />
     <ClInclude Include="source\Rendering\RenderObjects\DebugLine\Render.Debug.Line.h" />
     <ClInclude Include="source\Rendering\RenderObjects\QuadInstancedTextured\Render.Quad.Instanced.Textured.h" />

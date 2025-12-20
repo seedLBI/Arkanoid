@@ -227,6 +227,9 @@ void Game::Draw(TriangleInstanced& triangles_renderer, QuadInstanced& quads_rend
 	particle_text_manager_damage.Draw(text_renderer, *font);
 	particle_spark_manager.Draw(quads_renderer);
 
+
+	score.Draw(quads_renderer, text_renderer, *font, {0,0}, TranslateScalar_GlobalToScreen(0.2f));
+
 }
 void Game::Update() {
 	UpdateAnimValues();
@@ -244,6 +247,8 @@ void Game::Update() {
 	}
 
 	ball.Update();
+
+	score.Update();
 
 	particle_text_manager_damage.Update();
 	particle_spark_manager.Update();
@@ -448,7 +453,7 @@ void Game::ReactToCollision(const ClosestCollisionData& data) {
 		objs[data.index].SetCollisionPos(data.info.value().position);
 
 
-
+		score.AddScore(20.0);
 
 		timeHitStop = timeHitStop_valueMax;
 		engine::core::vars::view_scale = glm::vec2(1.05f);

@@ -20,6 +20,9 @@
 #include "Game/Math/Triangulation/Greedy/Triangulation.Greedy.h"
 #include "Game/Math/Triangulation/EarClipping/Triangulation.EarClipping.h"
 
+#include "Game/Score/Game.Score.h"
+
+
 #include "Rendering/RenderObjects/TriangleInstanced/Render.Triangle.Instanced.h"
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
@@ -69,6 +72,8 @@ private:
 
 	ParticleTextManager particle_text_manager_damage;
 	ParticleSparkManager particle_spark_manager;
+
+	GameScore score;
 
 	Player player;
 	Ball ball;
