@@ -168,6 +168,7 @@
     <ClCompile Include="source\Core\Text\Text.Atlas.cpp" />
     <ClCompile Include="source\Game\BallSpawnPosition\BallSpawnPosition.cpp" />
     <ClCompile Include="source\Game\Ball\Ball.cpp" />
+    <ClCompile Include="source\Game\Combo\Game.Combo.cpp" />
     <ClCompile Include="source\Game\DestroyableObject\DestroyableObject.cpp" />
     <ClCompile Include="source\Game\Game.cpp" />
     <ClCompile Include="source\Game\Border\Border.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="source\Game\BallSpawnPosition\BallSpawnPosition.h" />
     <ClInclude Include="source\Game\Ball\Ball.h" />
     <ClInclude Include="source\Game\CollisionInfo\CollisionInfo.h" />
+    <ClInclude Include="source\Game\Combo\Game.Combo.h" />
     <ClInclude Include="source\Game\DestroyableObject\DestroyableObject.h" />
     <ClInclude Include="source\Game\Game.h" />
     <ClInclude Include="source\Game\Border\Border.h" />

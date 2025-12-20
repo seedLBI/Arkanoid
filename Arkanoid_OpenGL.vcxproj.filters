@@ -195,6 +195,9 @@
     <ClCompile Include="source\Game\Score\Game.Score.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="source\Game\Combo\Game.Combo.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Utils\File\File.h">
@@ -546,6 +549,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="source\Game\Score\Game.Score.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Game\Combo\Game.Combo.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
