@@ -11,12 +11,14 @@
 
 #include "Core/Colors/Colors.h"
 
+#include <tuple>
+
 
 Application::Application() {
 	engine::core::Initialize();
 
-	//engine::window::EnableVSync();
 	engine::time::SetTargetFPS(0);
+	//engine::window::EnableVSync();
 	//engine::window::SetFullscreen();
 }
 Application::~Application() {
@@ -55,6 +57,9 @@ void Application::MainLoop() {
 	glfwSetTime(0.0);
 
 
+	TextAtlas test = makeText(u8"Дарова поворот!", glm::vec4(1.f), glm::vec4(1.f));
+
+
 	while (!engine::window::IsShouldClose()) {
 		DrawBegin();
 
@@ -76,19 +81,11 @@ void Application::MainLoop() {
 		//game.UpdateDebug();
 		//game.DrawDebug(triangles, quads, circles);
 		
-		//float size_text = 80.f; //+ 100.f * (sinf(engine::time::GetProgrammTime()) * 0.5f + 0.5f);
-
-		//glm::vec2 size = test.getSize(font, size_text, 0.f);
-		//size.y *= -1.f;
-
-		//test.addToRender(texts, font, engine::input::GetMouseWindow()   - size/2.f, size_text, 0.f);
-
-		//quads.AddLine({ 200.f,200.f }, { 800.f,200.f }, glm::vec4(0.f, 1.f, 1.f, 1.f), nullptr);
 
 		triangles.Render();
 		circles.Render();
-		texts.Render();
 		quads.Render();
+		texts.Render();
 
 #ifdef _DEBUG
 		DrawDebugOverlay();

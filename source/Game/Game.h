@@ -21,6 +21,7 @@
 #include "Game/Math/Triangulation/EarClipping/Triangulation.EarClipping.h"
 
 #include "Game/Score/Game.Score.h"
+#include "Game/Combo/Game.Combo.h"
 
 
 #include "Rendering/RenderObjects/TriangleInstanced/Render.Triangle.Instanced.h"
@@ -74,6 +75,7 @@ private:
 	ParticleSparkManager particle_spark_manager;
 
 	GameScore score;
+	GameCombo combo;
 
 	Player player;
 	Ball ball;

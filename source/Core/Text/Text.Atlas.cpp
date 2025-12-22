@@ -1,5 +1,7 @@
 #include "Text.Atlas.h"
 
+#include "Game/Math/Arkanoid_Math.h"
+
 glm::vec2 TextAtlas::getSize(FontAtlas& atlas, const float& size, const float& spacing) {
 
 	if (text.empty())
@@ -31,6 +33,61 @@ glm::vec2 TextAtlas::getSize(FontAtlas& atlas, const float& size, const float& s
 	return glm::vec2{ width,height };
 
 }
+
+glm::vec2 TextAtlas::getCenter(FontAtlas& atlas, const float& size, const float& spacing) {
+
+	if (text.empty())
+		return glm::vec2{ 0.f,0.f };
+
+	float x = 0.f;
+	for (size_t i = 0; i < text.size(); i++) {
+		const auto& glyph = atlas.getGlyph(text[i]);
+		x += glyph.advance * size + spacing;
+	}
+	x -= spacing;
+
+	float x_min = size * atlas.getGlyph(text.front()).planeBounds.left;
+	float x_max = x + size * atlas.getGlyph(text.back()).planeBounds.right;
+
+	float y_min = size * atlas.getMetrics().descender;
+	float y_max = size * atlas.getMetrics().ascender;
+
+	float width = x_max - x_min;
+	float height = y_max - y_min;
+
+	return glm::vec2{ (x_max + x_min)/2.f, (y_max + y_min)/2.f };
+
+}
+
+std::pair<glm::vec2, glm::vec2> TextAtlas::getSizeAndCenter(FontAtlas& atlas, const float& size, const float& spacing) {
+	if (text.empty())
+		return { { 0.f,0.f }, { 0.f,0.f } };
+
+	float x = 0.f;
+	for (size_t i = 0; i < text.size(); i++) {
+		const auto& glyph = atlas.getGlyph(text[i]);
+		x += glyph.advance * size + spacing;
+	}
+	x -= spacing;
+
+	float x_min = size * atlas.getGlyph(text.front()).planeBounds.left;
+	float x_max = x + size * atlas.getGlyph(text.back()).planeBounds.right;
+
+	float y_min = size * atlas.getMetrics().descender;
+	float y_max = size * atlas.getMetrics().ascender;
+
+	float width = x_max - x_min;
+	float height = y_max - y_min;
+
+	float centerX = (x_max + x_min) / 2.f;
+	float centerY = (y_max + y_min) / 2.f;
+
+	glm::vec2 outSize   = glm::vec2{ width, height };
+	glm::vec2 outCenter = glm::vec2{ centerX, centerY };
+
+	return { outSize, outCenter };
+}
+
 
 void TextAtlas::addToRender(
 	TextInstanced& renderer,
@@ -74,6 +131,57 @@ void TextAtlas::addToRender(
 	}
 
 }
+
+void TextAtlas::addToRender(
+	TextInstanced& renderer,
+	FontAtlas& atlas,
+	const glm::vec2& pos,
+	const glm::vec2& anchor,
+	const float& angleRotate,
+	const float& size,
+	const float& spacing) {
+
+	float x = 0.f;
+
+
+	glm::vec2 tangent = rotate({ 0.f,-1.f }, angleRotate);
+	glm::vec2 normal  = rotate({ 1.f,0.f }, angleRotate);
+
+
+	for (size_t i = 0; i < text.size(); i++) {
+		const auto& glyph = atlas.getGlyph(text[i]);
+
+		float pos_width_half = size * ((glyph.planeBounds.left + glyph.planeBounds.right) / 2.f);
+		float pos_height_half = size * ((glyph.planeBounds.top + glyph.planeBounds.bottom) / 2.f);
+
+		glm::vec2 glyph_pos = pos + glm::vec2{ x + pos_width_half, -pos_height_half };
+
+
+		glyph_pos = rotate(glyph_pos - anchor - pos, angleRotate) + anchor + pos;
+
+		float width = (glyph.planeBounds.right - glyph.planeBounds.left) * size;
+		float height = (glyph.planeBounds.top - glyph.planeBounds.bottom) * size;
+
+		glm::vec2 glyph_size = { width, height };
+
+		glm::vec2 uv_min, uv_size;
+
+		uv_min.x = glyph.atlasBounds.left;
+		uv_size.x = glyph.atlasBounds.right - glyph.atlasBounds.left;
+
+		uv_min.y = glyph.atlasBounds.bottom;
+		uv_size.y = (glyph.atlasBounds.top - glyph.atlasBounds.bottom);
+
+
+		renderer.Add(glyph_pos, glyph_size, tangent, normal, uv_min, uv_size, this->color_base, this->color_outline);
+
+		x += glyph.advance * size + spacing;
+	}
+
+
+}
+
+
 
 
 #include "Utils/Text/Encoding/UTF8/UTF8.h"
