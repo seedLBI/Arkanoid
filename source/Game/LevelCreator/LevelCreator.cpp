@@ -14,7 +14,7 @@ LevelCreator::~LevelCreator() {
 
 }
 
-void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInstanced& triangles) {
+void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInstanced& triangles, TextInstanced& text_renderer, FontAtlas& font) {
 	if (flag_MODE_CreatorBorder) {
 		quads.AddLine(glm::vec2(-1.f, -1.f), glm::vec2(-1.f,  1.f), glm::vec4(1.f), TranslateGlobalToScreen);
 		quads.AddLine(glm::vec2(-1.f,  1.f), glm::vec2( 1.f,  1.f), glm::vec4(1.f),   TranslateGlobalToScreen);
@@ -22,7 +22,7 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInst
 		quads.AddLine(glm::vec2( 1.f, -1.f), glm::vec2( 1.f,  1.f), glm::vec4(1.f),   TranslateGlobalToScreen);
 
 
-		levelBorder.DrawDebug(quads);
+		levelBorder.DrawDebug(quads, false);
 
 		for (size_t i = 0; i < vertices_border.size(); i++)
 		{
@@ -30,6 +30,13 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInst
 			if (index_vertex_cover == i)
 				color.r = 0.1f;
 			circles.Add(vertices_border[i], radius_control_points, color, TranslateGlobalToScreen);
+
+
+			makeText(std::to_string(i), glm::vec4(1.f,0.f,0.f,1.f)).addToRender(text_renderer, font, TranslateGlobalToScreen(vertices_border[i]), 50.f, 0.f);
+
+
+
+
 		}
 
 
@@ -84,114 +91,196 @@ void LevelCreator::Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInst
 	for (size_t i = 0; i < destroyable.size(); i++)
 		destroyable[i].Draw(quads, triangles);
 
-
+	
 
 	 
 
 
 
 
-	ImGui::Begin("Level Creator");
+	if (ImGui::Begin("Level Creator",nullptr)) {
 
-	if (ImGui::Button("Save")) {
-		Save();
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Load")) {
-		Load();
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Play")) {
-		
-	}
-
-
-	if (ImGui::RadioButton("BorderMode", flag_MODE_CreatorBorder)) {
-		flag_MODE_CreatorBorder = !flag_MODE_CreatorBorder;
-		flag_MODE_EditPlayer = false;
-		flag_MODE_CreatorDestroyableObject = false;
-		flag_MODE_EditBallPosition = false;
-	}
-	if (ImGui::RadioButton("BallEditorMode", flag_MODE_EditBallPosition)) {
-		flag_MODE_EditBallPosition = !flag_MODE_EditBallPosition;
-		flag_MODE_EditPlayer = false;
-		flag_MODE_CreatorBorder = false;
-		flag_MODE_CreatorDestroyableObject = false;
-	}
-	if (flag_MODE_EditBallPosition)
-	{
-		if (ImGui::SliderFloat("Radius", &ballSpawnPosition.global_radius, 0.001f,0.2f)) {
-			player.UpdateRadius(ballSpawnPosition.global_radius);
-			levelBorder.UpdateRadius(ballSpawnPosition.global_radius);
-			
-			for (size_t i = 0; i < destroyable.size(); i++)
-				destroyable[i].UpdateRadius(ballSpawnPosition.global_radius);
+		if (ImGui::Button("Save")) {
+			Save();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load")) {
+			Load();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Play")) {
 
 		}
 
-	}
 
-
-	if (ImGui::RadioButton("PlayerEditorMode", flag_MODE_EditPlayer)) {
-		flag_MODE_EditPlayer = !flag_MODE_EditPlayer;
-		flag_MODE_EditBallPosition = false;
-		flag_MODE_CreatorBorder = false;
-		flag_MODE_CreatorDestroyableObject = false;
-	}
-	if (flag_MODE_EditPlayer)
-	{
-		if (ImGui::SliderFloat("leftBound", &global_left_border_player, -2.f, 2.f)) {
-			player.SetLeftBound(global_left_border_player);
+		if (ImGui::RadioButton("BorderMode", flag_MODE_CreatorBorder)) {
+			flag_MODE_CreatorBorder = !flag_MODE_CreatorBorder;
+			flag_MODE_EditPlayer = false;
+			flag_MODE_CreatorDestroyableObject = false;
+			flag_MODE_EditBallPosition = false;
 		}
-		if (ImGui::SliderFloat("rightBound", &global_right_border_player, -2.f, 2.f)) {
-			player.SetRightBound(global_right_border_player);
+		if (ImGui::RadioButton("BallEditorMode", flag_MODE_EditBallPosition)) {
+			flag_MODE_EditBallPosition = !flag_MODE_EditBallPosition;
+			flag_MODE_EditPlayer = false;
+			flag_MODE_CreatorBorder = false;
+			flag_MODE_CreatorDestroyableObject = false;
 		}
-	}
-	if (ImGui::RadioButton("DestroyableCreatorMode", flag_MODE_CreatorDestroyableObject)) {
-		flag_MODE_CreatorDestroyableObject = !flag_MODE_CreatorDestroyableObject;
-		flag_MODE_EditPlayer = false;
-		flag_MODE_CreatorBorder = false;
-		flag_MODE_EditBallPosition = false;
-	}
+		if (flag_MODE_EditBallPosition)
+		{
+			if (ImGui::SliderFloat("Radius", &ballSpawnPosition.global_radius, 0.001f, 0.2f)) {
+				player.UpdateRadius(ballSpawnPosition.global_radius);
+				levelBorder.UpdateRadius(ballSpawnPosition.global_radius);
 
-	if (flag_MODE_CreatorDestroyableObject) {
+				for (size_t i = 0; i < destroyable.size(); i++)
+					destroyable[i].UpdateRadius(ballSpawnPosition.global_radius);
 
-		for (size_t i = 0; i < choosedForEdit.size(); i++) {
-			if (ImGui::RadioButton(("Edit ##" + std::to_string(i)).c_str(), choosedForEdit[i])) {
+			}
 
-				for (size_t k = 0; k < choosedForEdit.size(); k++) {
-					if (i != k) {
-						choosedForEdit[k] = false;
+		}
+
+
+		if (ImGui::RadioButton("PlayerEditorMode", flag_MODE_EditPlayer)) {
+			flag_MODE_EditPlayer = !flag_MODE_EditPlayer;
+			flag_MODE_EditBallPosition = false;
+			flag_MODE_CreatorBorder = false;
+			flag_MODE_CreatorDestroyableObject = false;
+		}
+		if (flag_MODE_EditPlayer)
+		{
+			if (ImGui::SliderFloat("leftBound", &global_left_border_player, -2.f, 2.f)) {
+				player.SetLeftBound(global_left_border_player);
+			}
+			if (ImGui::SliderFloat("rightBound", &global_right_border_player, -2.f, 2.f)) {
+				player.SetRightBound(global_right_border_player);
+			}
+		}
+		if (ImGui::RadioButton("DestroyableCreatorMode", flag_MODE_CreatorDestroyableObject)) {
+			flag_MODE_CreatorDestroyableObject = !flag_MODE_CreatorDestroyableObject;
+			flag_MODE_EditPlayer = false;
+			flag_MODE_CreatorBorder = false;
+			flag_MODE_EditBallPosition = false;
+		}
+
+		if (flag_MODE_CreatorDestroyableObject) {
+
+			for (size_t i = 0; i < choosedForEdit.size(); i++) {
+				if (ImGui::RadioButton(("Edit ##" + std::to_string(i)).c_str(), choosedForEdit[i])) {
+
+					for (size_t k = 0; k < choosedForEdit.size(); k++) {
+						if (i != k) {
+							choosedForEdit[k] = false;
+						}
+						index_destroyable_choosed = -1;
+
 					}
-					index_destroyable_choosed = -1;
+					if (choosedForEdit[i] == 0) {
+						choosedForEdit[i] = 1;
+						index_destroyable_choosed = i;
+					}
+					else {
+						choosedForEdit[i] = 0;
+						index_destroyable_choosed = -1;
+					}
+				}
+			}
 
-				}
-				if (choosedForEdit[i] == 0) {
-					choosedForEdit[i] = 1;
-					index_destroyable_choosed = i;
-				}
-				else {
-					choosedForEdit[i] = 0;
-					index_destroyable_choosed = -1;
-				}
+			ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 10.f);
+			if (ImGui::Button("ADD destroyable")) {
+
+				DestroyableObject temp;
+
+				destroyable.push_back(temp);
+				choosedForEdit.push_back(0);
+				mesh_destroyables.push_back(std::vector<glm::vec2>{});
+			}
+
+		}
+
+
+		ImGui::End();
+	}
+}
+
+
+void LevelCreator::BorderEditor_AddNewVertex(const glm::vec2& vertex) {
+
+
+	if (vertices_border.size() < 3){
+		vertices_border.push_back(vertex);
+		levelBorder.SetVertices(vertices_border, ballSpawnPosition.global_radius);
+
+		return;
+	}
+
+	glm::vec2 closestPoint = vertex;
+	float minDistance = FLT_MAX;
+	int index_cadidate = -1;
+
+	for (size_t i = 0; i < vertices_border.size(); ++i) {
+		size_t j = (i + 1) % vertices_border.size();
+		glm::vec2 candidate = closestPointOnSegment(vertices_border[i], vertices_border[j], vertex);
+		float distance = glm::length(candidate - vertex);
+
+		if (distance < minDistance) {
+			minDistance = distance;
+			closestPoint = candidate;
+			index_cadidate = i;
+		}
+
+	}
+
+	int i = index_cadidate, 
+		j = (index_cadidate + 1) % vertices_border.size();
+
+
+	if ((std::min)(i, j) == 0 && (std::max)(i, j) == vertices_border.size() - 1) {
+		vertices_border.push_back(vertex);
+	}
+	else {
+		int index = (std::min)(i, j);
+		vertices_border.insert(vertices_border.begin() + index + 1, vertex);
+	}
+
+
+
+	levelBorder.SetVertices(vertices_border, ballSpawnPosition.global_radius);
+
+}
+
+void LevelCreator::BorderEditor_Hover_and_DragVertex(const glm::vec2& newPos) {
+
+	index_vertex_cover = -1;
+	for (size_t i = 0; i < vertices_border.size(); i++) {
+
+		if (Collision_Point_and_Circle(newPos, vertices_border[i], TranslateScalar_ScreenToGlobal(radius_control_points))) {
+
+			index_vertex_cover = i;
+
+			if (engine::input::IsMousePressed(MOUSE_LEFT)) {
+				index_vertex_grab = i;
+				break;
+			}
+
+			if (engine::input::IsKeyPressed(KEY_X)) {
+				vertices_border.erase(vertices_border.begin() + i);
+				levelBorder.SetVertices(vertices_border, ballSpawnPosition.global_radius);
+				break;
 			}
 		}
 
-		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 10.f);
-		if (ImGui::Button("ADD destroyable")) {
-
-			DestroyableObject temp;
-
-			destroyable.push_back(temp);
-			choosedForEdit.push_back(0);
-			mesh_destroyables.push_back(std::vector<glm::vec2>{});
-		}
-
 	}
 
+	if (engine::input::IsMouseDown(MOUSE_LEFT) && index_vertex_grab != -1) {
+		vertices_border[index_vertex_grab] = newPos;
 
-	ImGui::End();
+		levelBorder.SetVertices(vertices_border, ballSpawnPosition.global_radius);
+	}
+	else {
+		index_vertex_grab = -1;
+	}
 }
+
+
 void LevelCreator::Update() {
 	
 	player.Update();
@@ -200,41 +289,10 @@ void LevelCreator::Update() {
 
 	if (flag_MODE_CreatorBorder) {
 
-		if (engine::input::IsMousePressed(MOUSE_RIGHT)) {
-			vertices_border.push_back(mouse_global);
-			levelBorder.SetVertices(vertices_border, ballSpawnPosition.global_radius);
-		}
+		if (engine::input::IsMousePressed(MOUSE_RIGHT))
+			BorderEditor_AddNewVertex(mouse_global);
 
-		index_vertex_cover = -1;
-		for (size_t i = 0; i < vertices_border.size(); i++) {
-
-			if (Collision_Point_and_Circle(mouse_global, vertices_border[i], TranslateScalar_ScreenToGlobal(radius_control_points))){
-
-				index_vertex_cover = i;
-
-				if (engine::input::IsMousePressed(MOUSE_LEFT)) {
-					index_vertex_grab = i;
-					break;
-				}
-
-				if (engine::input::IsKeyPressed(KEY_X)) {
-					vertices_border.erase(vertices_border.begin() + i);
-					break;
-				}
-			}
-
-		}
-
-		if (engine::input::IsMouseDown(MOUSE_LEFT) && index_vertex_grab != -1) {
-			vertices_border[index_vertex_grab] = mouse_global;
-
-			levelBorder.SetVertices(vertices_border, ballSpawnPosition.global_radius);
-		}
-		else {
-			index_vertex_grab = -1;
-		}
-		
-
+		BorderEditor_Hover_and_DragVertex(mouse_global);
 
 	}
 	else if (flag_MODE_EditBallPosition) {
@@ -471,7 +529,9 @@ void LevelCreator::Load() {
 				destroyable.emplace_back(temp);
 
 				mesh_destroyables.emplace_back(temp.mesh);
-				mesh_destroyables.back().pop_back();
+				if (!mesh_destroyables.back().empty())
+					mesh_destroyables.back().pop_back();
+				
 
 
 

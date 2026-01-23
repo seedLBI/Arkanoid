@@ -55,7 +55,7 @@ struct DestroyableObject {
 	void UpdateColor();
 
 	void Draw(QuadInstanced& quads_renderer, TriangleInstanced& triangles_renderer);
-	void DrawDebug(QuadInstanced& renderer);
+	void DrawDebug(QuadInstanced& renderer, const bool& drawNormals = true);
 
 	void SetMesh(const std::vector<glm::vec2>& mesh, const float& radius);
 

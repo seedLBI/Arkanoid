@@ -14,13 +14,17 @@
 #include "Rendering/RenderObjects/QuadInstanced/Render.Quad.Instanced.h"
 #include "Rendering/RenderObjects/DebugCircle/Render.Debug.Circle.h"
 #include "Rendering/RenderObjects/TriangleInstanced/Render.Triangle.Instanced.h"
+#include "Rendering/RenderObjects/TextInstanced/Render.TextInstanced.h"
+
+#include "Core/Font/Font.Atlas.h"
+#include "Core/Text/Text.Atlas.h"
 
 class LevelCreator {
 public:
 	LevelCreator();
 	~LevelCreator();
 
-	void Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInstanced& triangles);
+	void Draw(DebugCircle& circles, QuadInstanced& quads, TriangleInstanced& triangles, TextInstanced& text_renderer, FontAtlas& font);
 	void Update();
 
 	void Save();
@@ -37,6 +41,10 @@ private:
 	int index_vertex_cover = -1;
 	int index_vertex_grab = -1;
 	float radius_control_points = 10.f;
+
+	void BorderEditor_AddNewVertex(const glm::vec2& vertices);
+	void BorderEditor_Hover_and_DragVertex(const glm::vec2& newPos);
+
 
 
 	// Player

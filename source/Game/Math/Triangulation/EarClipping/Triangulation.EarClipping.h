@@ -6,7 +6,7 @@
 #include "Game/Math/Triangle/Triangle.h"
 
 std::vector<Triangle> MakeTriangulationEarClipping(
-	std::vector<glm::vec2>& polygon);
+	const std::vector<glm::vec2>& polygon);
 
 
 #endif

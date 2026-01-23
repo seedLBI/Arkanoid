@@ -6,8 +6,14 @@
 
 void DestroyableObject::SetMesh(const std::vector<glm::vec2>& mesh, const float& radius) {
 	this->mesh = mesh;
-
+	this->triangles = MakeTriangulationEarClipping(mesh);
 	this->collision_border = GenerateRadiusBorder(this->mesh, radius, isClockwise(this->mesh, true));
+
+	// fix normals
+	if (!isClockwise(this->collision_border, true))
+		std::reverse(this->collision_border.begin(), this->collision_border.end());
+
+
 	this->aabb = GetAABB(this->collision_border);
 }
 
@@ -78,7 +84,7 @@ void DestroyableObject::Draw(QuadInstanced& renderer, TriangleInstanced& triangl
 	}
 }
 
-void DestroyableObject::DrawDebug(QuadInstanced& renderer) {
+void DestroyableObject::DrawDebug(QuadInstanced& renderer, const bool& drawNormals) {
 	if (this->collision_border.empty()) return;
 
 	for (size_t i = 0; i < this->collision_border.size(); i++) {
@@ -87,12 +93,26 @@ void DestroyableObject::DrawDebug(QuadInstanced& renderer) {
 
 		renderer.AddLine(begin, end, 1.f, glm::vec4(0.f, 1.f, 0.f, 1.f), TranslateGlobalToScreen);
 
-		glm::vec2 perp = perp_normalized(getDirection(begin, end)) * 0.05f;
-		const glm::vec4 color_normal = glm::vec4{ 1.f,0.4f,1.f,1.f };
+		if (drawNormals) {
+			glm::vec2 perp = perp_normalized(getDirection(begin, end)) * 0.05f;
+			const glm::vec4 color_normal = glm::vec4{ 1.f,0.4f,1.f,1.f };
 
-		renderer.AddLine(begin, begin + perp, 1.f, color_normal, TranslateGlobalToScreen);
-		renderer.AddLine(end, end + perp, 1.f, color_normal, TranslateGlobalToScreen);
+			renderer.AddLine(begin, begin + perp, 1.f, color_normal, TranslateGlobalToScreen);
+			renderer.AddLine(end, end + perp, 1.f, color_normal, TranslateGlobalToScreen);
+		}
+
 	}
+
+	if (mesh.empty()) return;
+
+	for (size_t i = 0; i < mesh.size(); i++) {
+		glm::vec2& begin = mesh[i];
+		glm::vec2& end = mesh[(i + 1) % mesh.size()];
+
+		renderer.AddLine(begin, end, 1.f, glm::vec4(1.f, 1.f, 0.2f, 1.f), TranslateGlobalToScreen);
+
+	}
+
 
 	renderer.AddRectangleLines(this->aabb.min, this->aabb.max, 1.f, glm::vec4(0.f, 0.f, 1.f, 0.2f), TranslateGlobalToScreen);
 }

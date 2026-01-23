@@ -23,7 +23,7 @@ public:
 
 	void Draw(QuadInstanced& quads_renderer, TriangleInstanced& triangle_renderer);
 	void Draw(DebugLine& renderer);
-	void DrawDebug(QuadInstanced& renderer);
+	void DrawDebug(QuadInstanced& renderer, const bool& drawNormal = true);
 
 	const std::vector<glm::vec2>& GetVertices();
 	const std::vector<glm::vec2>& GetVertices_OriginalBorder();

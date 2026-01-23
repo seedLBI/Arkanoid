@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <memory>
 #include <vector>
 #include <deque>
 #include <nlohmann/json.hpp>

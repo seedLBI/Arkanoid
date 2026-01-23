@@ -57,9 +57,6 @@ void Application::MainLoop() {
 	glfwSetTime(0.0);
 
 
-	TextAtlas test = makeText(u8"Дарова поворот!", glm::vec4(1.f), glm::vec4(1.f));
-
-
 	while (!engine::window::IsShouldClose()) {
 		DrawBegin();
 
@@ -73,7 +70,7 @@ void Application::MainLoop() {
 			engine::window::ToggleVSync();
 
 		//levelCreator.Update();
-		//levelCreator.Draw(circles, quads,triangles);
+		//levelCreator.Draw(circles, quads, triangles, texts, font);
 
 		game.Update();
 		game.Draw(triangles, quads, circles, texts);
@@ -103,6 +100,7 @@ void Application::ImGui_BeginDraw() {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 }
+
 void Application::ImGui_EndDraw() {
 	ImGui::EndFrame();
 	ImGui::Render();
@@ -133,9 +131,9 @@ void Application::DrawDebugOverlay() {
 
 
 void Application::DrawBegin() {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	ImGui_BeginDraw();
-#endif
+//#endif
 	engine::core::UpdateFrame();
 	glfwPollEvents();
 
@@ -144,9 +142,9 @@ void Application::DrawBegin() {
 
 }
 void Application::DrawEnd() {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	ImGui_EndDraw();
-#endif
+//#endif
 	glfwSwapBuffers(engine::window::GetHandle());
 	engine::time::LimitFrameRate();
 }

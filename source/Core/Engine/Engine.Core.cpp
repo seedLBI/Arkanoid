@@ -105,7 +105,7 @@ namespace engine {
 
             ImGui_ImplGlfw_InitForOpenGL(handle_window, true);
             ImGui_ImplOpenGL3_Init("#version 330");
-
+            ImGui_ImplGlfw_RestoreCallbacks(handle_window);
 
             auto& s = ImGui::GetStyle();
             s.ImageBorderSize = 1.f;

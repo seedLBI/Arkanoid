@@ -5,7 +5,7 @@
 #include <numeric>
 
 std::vector<Triangle> MakeTriangulationEarClipping(
-	std::vector<glm::vec2>& polygon) {
+	const std::vector<glm::vec2>& polygon) {
 
 	std::vector<Triangle> triangles;
 
