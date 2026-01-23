@@ -66,6 +66,8 @@ namespace engine {
 		void Initialize();
 		void Terminate();
 
+		void Error_callback(int error, const char* description);
+
 		void InitGLFW();
 		void InitNFD();
 		void InitWindow();

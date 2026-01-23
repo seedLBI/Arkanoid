@@ -28,7 +28,14 @@ namespace engine {
         }
 
         void InitGLFW() {
-            glfwInit();
+            printf("void InitGLFW()\n");
+            glfwSetErrorCallback(engine::core::Error_callback);
+
+            if (!glfwInit()) {
+                std::cout << "Failed to initialize GLFW" << std::endl;
+                exit(-11111);
+            }
+
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -36,6 +43,8 @@ namespace engine {
         }
 
         void InitNFD() {
+            printf("void InitNFD()\n");
+
             nfdresult_t nfdInitResult = NFD_Init();
             if (nfdInitResult != NFD_OKAY)
                 printf("NFD_Init failed: %s\n", NFD_GetError());
@@ -44,6 +53,7 @@ namespace engine {
         }
 
         void InitWindow() {
+            printf("void InitWindow()\n");
             using namespace vars;
             handle_window = glfwCreateWindow(1280, 720, "Arkanoid", NULL, NULL);
             if (handle_window == NULL) {
@@ -63,7 +73,13 @@ namespace engine {
                 glfwSetInputMode(handle_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
             }
         }
+
+        void Error_callback(int error, const char* description) {
+            std::printf("GLFW Error %d: %s\n", error, description);
+        }
+
         void InitGLEW() {
+            printf("void InitGLEW()\n");
             glewExperimental = GL_TRUE;
 
             if (glewInit() != GLEW_OK) {
@@ -75,8 +91,10 @@ namespace engine {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glBlendEquation(GL_FUNC_ADD);
+            
         }
         void InitImGui() {
+            printf("void InitImGui()\n");
             using namespace vars;
             ImGui::CreateContext();
 
@@ -105,15 +123,41 @@ namespace engine {
             ImGui::GetIO().LogFilename = NULL;
         }
         void InitCallbacks() {
+            printf("void InitCallbacks()\n");
             using namespace vars;
-            glfwSetKeyCallback(handle_window, engine::update::keyboard::Keyboard_Buttons_Callback);
-            glfwSetMouseButtonCallback(handle_window, engine::update::mouse::Mouse_Buttons_Callback);
-            glfwSetScrollCallback(handle_window, engine::update::mouse::Mouse_Scroll_Callback);
-            glfwSetCursorEnterCallback(handle_window, engine::update::window::Cursor_Enter_Callback);
-            glfwSetWindowSizeCallback(handle_window, engine::update::window::Window_Size_Callback);
-            glfwSetFramebufferSizeCallback(handle_window, engine::update::window::Framebuffer_Size_Callback);
+
+
+            glfwSetKeyCallback(handle_window, 
+                engine::update::keyboard::Keyboard_Buttons_Callback
+            );
+
+            glfwSetMouseButtonCallback(
+                handle_window, 
+                engine::update::mouse::Mouse_Buttons_Callback
+            );
+
+            glfwSetScrollCallback(
+                handle_window, 
+                engine::update::mouse::Mouse_Scroll_Callback
+            );
+
+            glfwSetCursorEnterCallback(
+                handle_window, 
+                engine::update::window::Cursor_Enter_Callback
+            );
+
+            glfwSetWindowSizeCallback(
+                handle_window, 
+                engine::update::window::Window_Size_Callback
+            );
+
+            glfwSetFramebufferSizeCallback(
+                handle_window, 
+                engine::update::window::Framebuffer_Size_Callback
+            );
         }
         void InitCursors() {
+            printf("void InitCursors()\n");
             using namespace vars;
 
             cursors.resize(4);
@@ -125,6 +169,7 @@ namespace engine {
         }
 
         void Terminate() {
+            printf("void Terminate()\n");
             using namespace vars;
 
             bool static WasTerminated = false;
@@ -146,6 +191,7 @@ namespace engine {
             
         }
         void Initialize() {
+            printf("void Initialize()\n");
             bool static WasInited = false;
             if (WasInited) {
                 std::cout << "WAS INITED!!!!\n";
@@ -153,12 +199,13 @@ namespace engine {
             }
             WasInited = true;
 
+
             InitGLFW();
             InitNFD();
             InitWindow();
             InitGLEW();
-            InitImGui();
             InitCallbacks();
+            InitImGui();
             InitCursors();
 
             engine::core::vars::fps_limiter = new FPS_Timer();
